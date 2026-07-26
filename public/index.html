@@ -132,12 +132,13 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden} /* contient le menu coulissant hors écran */
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
   margin:0;background:var(--fond);color:var(--encre);
   font-family:var(--texte);font-size:clamp(16px,1.05vw,17px);line-height:1.65;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden; /* garde-fou : le menu coulissant hors écran ne crée pas de défilement latéral */
 }
 h1,h2,h3,h4{font-family:var(--titre);line-height:1.2;color:var(--vert-nuit);margin:0 0 .4em}
 h1{font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:700}
@@ -589,6 +590,17 @@ footer.site li{margin:.35em 0}
   footer.site .cols{grid-template-columns:1fr}
   .bandeau-etat .wrap{justify-content:flex-start}
 }
+/* Très petits écrans : on allège l'en-tête pour laisser respirer l'intitulé. */
+@media (max-width:560px){
+  .entete{gap:.6em}
+  .armoiries{width:42px;height:42px}
+  .marque{gap:.6em;max-width:none}
+  .marque .lignes strong{font-size:.9rem}
+  .marque .lignes span{display:none}          /* sous-titre masqué (répété dans le bandeau d'État) */
+  .langue>button{padding:.5em .55em;gap:.25em}
+  .hero .imgslot{min-height:200px}
+  .pied-bas .wrap{gap:.5em}
+}
 
 /* Voile sombre derrière le menu mobile ouvert. */
 .voile{position:fixed;inset:0;background:rgba(3,20,13,.45);z-index:90;border:0}
@@ -671,9 +683,8 @@ footer.site li{margin:.35em 0}
       </div>
 
       <!-- Bouton menu mobile. -->
-      <button class="burger" id="btnBurger" aria-expanded="false" aria-controls="navPrincipale">
+      <button class="burger" id="btnBurger" aria-label="Menu" aria-expanded="false" aria-controls="navPrincipale">
         <svg class="ic ic--lg" aria-hidden="true"><use href="#ic-menu"></use></svg>
-        <span class="skip" style="position:static">Menu</span>
       </button>
     </div>
   </div>
