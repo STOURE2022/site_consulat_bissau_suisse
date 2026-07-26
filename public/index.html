@@ -183,9 +183,19 @@ li{margin:.25em 0}
    3. EN-TÊTE / NAVIGATION
    ========================================================================== */
 .bandeau-etat{background:var(--vert-nuit);color:#dfe8e2;font-size:.8rem}
-.bandeau-etat .wrap{display:flex;gap:1em;flex-wrap:wrap;align-items:center;
+.bandeau-etat .wrap{display:flex;gap:.5em 1.2em;flex-wrap:wrap;align-items:center;
   justify-content:space-between;padding-top:.4em;padding-bottom:.4em}
 .bandeau-etat strong{color:#fff;font-weight:700}
+.etat-droite{display:flex;align-items:center;gap:.6em 1.1em;flex-wrap:wrap}
+/* Permanence téléphonique */
+.permanence-tel{display:inline-flex;align-items:center;gap:.4em;color:#dfe8e2;text-decoration:none}
+.permanence-tel:hover{color:#fff}
+.permanence-tel .ic{color:var(--jaune)}
+.permanence-tel strong{color:#fff}
+/* Sélecteur de langue dans la barre sombre */
+.bandeau-etat .langue>button{background:transparent;border-color:rgba(255,255,255,.28);
+  color:#dfe8e2;padding:.3em .55em;font-size:.8rem}
+.bandeau-etat .langue>button:hover{color:#fff;border-color:rgba(255,255,255,.6)}
 
 header.site{position:sticky;top:0;z-index:100;background:var(--blanc);
   box-shadow:0 1px 0 var(--ligne)}
@@ -606,6 +616,7 @@ footer.site li{margin:.35em 0}
   .langue>button{padding:.5em .55em;gap:.25em}
   .hero .imgslot{min-height:200px}
   .pied-bas .wrap{gap:.5em}
+  .permanence-tel [data-ui="perm-label"]{display:none} /* on garde l'icône + le numéro */
 }
 
 /* Voile sombre derrière le menu mobile ouvert. */
@@ -651,11 +662,27 @@ footer.site li{margin:.35em 0}
   ==========================================================================
 -->
 <header class="site">
-  <!-- Bandeau d'État (fin liseré supérieur + rattachement institutionnel). -->
+  <!-- Bandeau d'État : intitulé + permanence téléphonique + sélecteur de langue. -->
   <div class="bandeau-etat">
     <div class="wrap">
       <span data-ui="etat-gauche"></span>
-      <span data-ui="etat-droite"></span>
+      <div class="etat-droite">
+        <!-- Permanence téléphonique (numéro géré depuis l'admin). -->
+        <a class="permanence-tel" id="permanenceTel" href="#">
+          <svg class="ic" aria-hidden="true"><use href="#ic-tel"></use></svg>
+          <span data-ui="perm-label"></span>
+          <strong id="permNum"></strong>
+        </a>
+        <!-- Sélecteur de langue. -->
+        <div class="langue">
+          <button id="btnLangue" aria-haspopup="true" aria-expanded="false" aria-controls="listeLangues">
+            <svg class="ic" aria-hidden="true"><use href="#ic-globe"></use></svg>
+            <span id="langueCourante">FR</span>
+            <svg class="ic" aria-hidden="true"><use href="#ic-chevron"></use></svg>
+          </button>
+          <ul id="listeLangues" role="menu" aria-labelledby="btnLangue" hidden></ul>
+        </div>
+      </div>
     </div>
   </div>
   <hr class="tricolore">
@@ -677,16 +704,6 @@ footer.site li{margin:.35em 0}
 
       <!-- Navigation principale (remplie par le routeur). -->
       <nav class="nav-principale" id="navPrincipale" aria-label="Navigation principale"></nav>
-
-      <!-- Sélecteur de langue. -->
-      <div class="langue">
-        <button id="btnLangue" aria-haspopup="true" aria-expanded="false" aria-controls="listeLangues">
-          <svg class="ic" aria-hidden="true"><use href="#ic-globe"></use></svg>
-          <span id="langueCourante">FR</span>
-          <svg class="ic" aria-hidden="true"><use href="#ic-chevron"></use></svg>
-        </button>
-        <ul id="listeLangues" role="menu" aria-labelledby="btnLangue" hidden></ul>
-      </div>
 
       <!-- Bouton menu mobile. -->
       <button class="burger" id="btnBurger" aria-label="Menu" aria-expanded="false" aria-controls="navPrincipale">
@@ -783,6 +800,7 @@ D.fr = {
     langNom: "Français",
     etatGauche: "République de Guinée-Bissau",
     etatDroite: "Consulat honoraire en Suisse",
+    permLabel: "Permanence téléphonique",
     marqueTitre: "Consulat honoraire de Guinée-Bissau",
     marqueSous: "République de Guinée-Bissau — Suisse",
 
@@ -1521,6 +1539,7 @@ D.pt = {
     langNom: "Português",
     etatGauche: "República da Guiné-Bissau",
     etatDroite: "Consulado honorário na Suíça",
+    permLabel: "Permanência telefónica",
     marqueTitre: "Consulado honorário da Guiné-Bissau",
     marqueSous: "República da Guiné-Bissau — Suíça",
     alerteCompetence: "Este consulado honorário informa, orienta e presta assistência. Não emite passaportes, vistos nem atos de registo civil, e não efetua qualquer legalização. Essas diligências são da competência da Embaixada competente.",
@@ -2014,6 +2033,7 @@ D.en = {
     langNom: "English",
     etatGauche: "Republic of Guinea-Bissau",
     etatDroite: "Honorary Consulate in Switzerland",
+    permLabel: "Telephone helpline",
     marqueTitre: "Honorary Consulate of Guinea-Bissau",
     marqueSous: "Republic of Guinea-Bissau — Switzerland",
     alerteCompetence: "This honorary consulate informs, guides and assists. It does not issue passports, visas or civil-status documents, and does not carry out any legalisation. Those matters fall to the competent Embassy.",
@@ -3687,7 +3707,19 @@ function rendreChrome(){
 
   /* Bandeau d'État + marque. */
   txt("etat-gauche", d.ui.etatGauche);
-  txt("etat-droite", d.ui.etatDroite);
+  txt("perm-label", d.ui.permLabel);
+
+  /* Permanence téléphonique : numéro issu des paramètres (repli = marqueur). */
+  var permNum = document.getElementById("permNum");
+  var permLien = document.getElementById("permanenceTel");
+  if (permNum && permLien){
+    var val = injecter("{par:telephone}");
+    permNum.innerHTML = baliser("{par:telephone}");
+    var chiffres = val.replace(/[^+0-9]/g, "");
+    /* Lien cliquable seulement si un vrai numéro est renseigné. */
+    if (chiffres.replace(/\D/g,"").length >= 6){ permLien.setAttribute("href", "tel:" + chiffres); }
+    else { permLien.removeAttribute("href"); }
+  }
   txt("marque-titre", d.ui.marqueTitre);
   txt("marque-sous", d.ui.marqueSous);
 
