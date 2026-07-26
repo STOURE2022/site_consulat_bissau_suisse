@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  MAQUETTE — ESPACE DE PUBLICATION
+  Consulat honoraire de la République de Guinée-Bissau en Suisse.
+
+  But : montrer comment le consulat pourrait partager une information avec le
+  grand public et y joindre des photos ou des PDF, puis voir son rendu public.
+
+  DÉMONSTRATION uniquement : les pièces jointes restent dans le navigateur
+  (aperçues via URL.createObjectURL) ; RIEN n'est envoyé ni enregistré.
+  La vraie publication nécessitera un back-office sécurisé (connexion +
+  stockage des fichiers) branché sur le backend. Le point de branchement est
+  indiqué dans le code (« BRANCHEMENT DU BACKEND »).
+  ============================================================================
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#04452A">
+<title>Espace de publication (démonstration) — Consulat honoraire de Guinée-Bissau</title>
+<style>
+:root{
+  --rouge:#CE1126; --jaune:#FCD116; --vert:#009E49;
+  --vert-fonce:#04452A; --vert-nuit:#032B1B;
+  --encre:#16201A; --gris:#5B6960; --ligne:#E3E7E3; --fond:#F7F9F7; --blanc:#fff;
+  --alerte-fond:#FFF7E6; --alerte-bord:#E7B008; --oui-fond:#EAF6EF; --non-fond:#FBECEE;
+  --titre:'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --texte:'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --gut:clamp(16px, 4vw, 40px); --max:1240px; --r:3px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--texte);
+  font-size:clamp(15px,1vw,16px);line-height:1.6}
+h1,h2,h3{font-family:var(--titre);line-height:1.2;color:var(--vert-nuit);margin:0 0 .4em}
+h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h2{font-size:1.25rem}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--vert-fonce)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+.tricolore{height:4px;border:0;margin:0;
+  background:linear-gradient(90deg,var(--rouge) 0 33.33%,var(--jaune) 0 66.66%,var(--vert) 0 100%)}
+.tricolore--court{width:56px;height:3px;margin:.2em 0 1em}
+:focus-visible{outline:3px solid var(--jaune);outline-offset:2px;border-radius:2px}
+svg.ic{width:1.15em;height:1.15em;fill:currentColor;vertical-align:-.15em}
+.ic--lg{width:1.5em;height:1.5em}
+
+/* En-tête */
+header{position:sticky;top:0;z-index:10;background:#fff;box-shadow:0 1px 0 var(--ligne)}
+.barre-etat{background:var(--vert-nuit);color:#dfe8e2;font-size:.78rem}
+.barre-etat .wrap{display:flex;justify-content:space-between;gap:1em;flex-wrap:wrap;padding:.4em var(--gut)}
+.entete{display:flex;align-items:center;gap:.8em;padding:.7em 0}
+.armoiries{width:44px;height:44px;border:1px solid var(--ligne);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;background:var(--fond);color:var(--vert-fonce)}
+.marque strong{display:block;font-family:var(--titre);font-weight:700;font-size:.92rem;color:var(--vert-nuit)}
+.marque span{display:block;font-size:.74rem;color:var(--gris)}
+.badge-demo{margin-left:auto;font-family:var(--titre);font-weight:600;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.04em;color:#a5730a;background:var(--alerte-fond);
+  border:1px solid var(--alerte-bord);border-radius:2px;padding:.3em .6em}
+.lien-retour{font-family:var(--titre);font-weight:600;font-size:.82rem;text-decoration:none;
+  color:var(--vert-fonce);border:1px solid var(--ligne);border-radius:var(--r);padding:.45em .7em;margin-left:.7em}
+
+/* Bandeau démo */
+.demo{background:var(--alerte-fond);border-bottom:1px solid var(--alerte-bord)}
+.demo .wrap{display:flex;gap:.7em;align-items:flex-start;padding:.7em var(--gut)}
+.demo .ic{color:#a5730a;margin-top:.15em;flex:0 0 auto}
+.demo p{margin:0;font-size:.86rem;color:#5a4406}
+
+/* Disposition : composer + aperçu public */
+main{padding:clamp(20px,4vw,40px) 0}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,34px);align-items:start}
+.carte{background:#fff;border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(16px,2.4vw,24px)}
+.col-titre{display:flex;align-items:center;gap:.5em;margin:0 0 .1em}
+.col-titre .ic{color:var(--vert-fonce)}
+
+/* Formulaire */
+.champ{margin:0 0 1.1em}
+label.etq{display:block;font-family:var(--titre);font-weight:600;margin:0 0 .35em;color:var(--vert-nuit)}
+label .req{color:var(--rouge)}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;color:var(--encre);
+  background:var(--fond);border:1px solid var(--ligne);border-radius:var(--r);padding:.6em .7em}
+input:focus,select:focus,textarea:focus{background:#fff;border-color:var(--vert);outline:none}
+textarea{min-height:120px;resize:vertical}
+.aide{font-size:.8rem;color:var(--gris);margin:.3em 0 0}
+.ligne2{display:grid;grid-template-columns:1fr 1fr;gap:1em}
+.inter{display:flex;align-items:center;gap:.5em}
+.inter input{width:auto}
+
+/* Zone de dépôt des pièces jointes */
+.depot{border:2px dashed #b9c4bc;border-radius:var(--r);background:var(--fond);
+  padding:1.3em;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.depot:hover,.depot.survol{border-color:var(--vert);background:#eef5ef}
+.depot .ic{color:var(--vert-fonce)}
+.depot strong{display:block;font-family:var(--titre);color:var(--vert-nuit);margin:.3em 0 .1em}
+.depot small{color:var(--gris)}
+.depot input[type=file]{position:absolute;left:-9999px}
+
+/* Liste des pièces jointes sélectionnées */
+.pjs{list-style:none;padding:0;margin:.9em 0 0;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6em}
+.pj{position:relative;border:1px solid var(--ligne);border-radius:var(--r);overflow:hidden;background:#fff}
+.pj .vignette{height:80px;background:#eef2ee;display:flex;align-items:center;justify-content:center;color:var(--vert-fonce)}
+.pj img{width:100%;height:80px;object-fit:cover;display:block}
+.pj .nom{font-size:.72rem;padding:.35em .4em;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj .retirer{position:absolute;top:3px;right:3px;width:22px;height:22px;border:0;border-radius:50%;
+  background:rgba(3,20,13,.72);color:#fff;cursor:pointer;font-size:12px;line-height:1;display:flex;
+  align-items:center;justify-content:center}
+.pj .retirer:hover{background:var(--rouge)}
+.pj .type{position:absolute;top:3px;left:3px;font-family:var(--titre);font-weight:700;font-size:.6rem;
+  background:#fff;border:1px solid var(--ligne);border-radius:2px;padding:.05em .3em;color:var(--vert-fonce)}
+
+.actions{display:flex;gap:.6em;flex-wrap:wrap;margin-top:.4em}
+.btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--titre);font-weight:600;
+  font-size:.95rem;cursor:pointer;border:1px solid transparent;border-radius:var(--r);padding:.7em 1.15em}
+.btn--primaire{background:var(--vert);color:#fff}
+.btn--primaire:hover{background:#00833d}
+.btn--ligne{background:#fff;color:var(--vert-fonce);border-color:var(--ligne)}
+.btn--ligne:hover{border-color:var(--vert)}
+
+/* Aperçu public */
+.apercu-info{font-size:.82rem;color:var(--gris);margin:0 0 1em}
+.pub{border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(14px,2vw,20px);margin:0 0 14px;background:#fff}
+.pub.une{border-left:4px solid var(--rouge)}
+.pub .meta{display:flex;gap:.6em;align-items:center;flex-wrap:wrap;font-size:.76rem;color:var(--gris);margin-bottom:.4em}
+.tag{font-family:var(--titre);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;
+  color:var(--vert-fonce);background:var(--oui-fond);border:1px solid #cfe6d8;border-radius:2px;padding:.15em .5em}
+.tag-une{color:var(--rouge);border-color:#f0c9cf;background:var(--non-fond)}
+.pub h3{margin:.1em 0 .2em;font-size:1.1rem}
+.pub .resume{color:var(--gris);font-size:.92rem;margin:0 0 .5em}
+.pub .corps{font-size:.92rem;white-space:pre-wrap;margin:0 0 .7em}
+.galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.4em;margin:.4em 0}
+.galerie img{width:100%;height:80px;object-fit:cover;border-radius:2px;border:1px solid var(--ligne)}
+.docs{display:flex;flex-wrap:wrap;gap:.5em;margin:.4em 0 0}
+.doc{display:inline-flex;align-items:center;gap:.4em;font-family:var(--titre);font-weight:600;font-size:.8rem;
+  text-decoration:none;color:var(--vert-fonce);border:1px solid var(--ligne);border-radius:var(--r);padding:.4em .6em}
+.doc:hover{border-color:var(--vert)}
+.vide{color:var(--gris);border:1px dashed var(--ligne);border-radius:var(--r);padding:1.4em;text-align:center}
+
+footer{background:var(--vert-nuit);color:#9db3a6;font-size:.82rem;margin-top:2em}
+footer .wrap{padding:1.3em var(--gut)}
+
+@media (max-width:860px){ .grille{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-alerte" viewBox="0 0 24 24"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6V2zm7 1.5V7h3.5L13 3.5zM8 12h8v2H8v-2zm0 4h6v2H8v-2z"/></symbol>
+  <symbol id="ic-image" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1zm1 2v9l4-4 3 3 3-3 4 4V6H5zm3 3a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></symbol>
+  <symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 3l5 5h-3v6h-4V8H7l5-5zM5 18h14v2H5v-2z"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+  <symbol id="ic-oeil" viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/></symbol>
+  <symbol id="ic-retour" viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></symbol>
+</svg>
+
+<header>
+  <div class="barre-etat">
+    <div class="wrap"><span>République de Guinée-Bissau</span><span>Consulat honoraire en Suisse</span></div>
+  </div>
+  <hr class="tricolore">
+  <div class="wrap">
+    <div class="entete">
+      <span class="armoiries" aria-hidden="true"><svg class="ic ic--lg"><use href="#ic-edit"></use></svg></span>
+      <span class="marque">
+        <strong>Consulat honoraire de Guinée-Bissau</strong>
+        <span>Espace de publication</span>
+      </span>
+      <span class="badge-demo">Démonstration</span>
+      <a class="lien-retour" href="index.html"><svg class="ic"><use href="#ic-retour"></use></svg> Site</a>
+    </div>
+  </div>
+</header>
+
+<aside class="demo">
+  <div class="wrap">
+    <svg class="ic ic--lg"><use href="#ic-alerte"></use></svg>
+    <p>Maquette de démonstration. Les fichiers ajoutés restent dans votre navigateur : <strong>rien n’est envoyé ni publié en ligne</strong>. Dans la version réelle, cet espace sera protégé par une connexion et les publications seront enregistrées sur le serveur.</p>
+  </div>
+</aside>
+
+<main>
+  <div class="wrap">
+    <div class="grille">
+
+      <!-- ================= COMPOSER ================= -->
+      <section class="carte" aria-labelledby="t-composer">
+        <h2 class="col-titre" id="t-composer"><svg class="ic ic--lg"><use href="#ic-edit"></use></svg> Rédiger une information</h2>
+        <hr class="tricolore tricolore--court">
+
+        <form id="formPub">
+          <div class="champ">
+            <label class="etq" for="titre">Titre <span class="req">*</span></label>
+            <input type="text" id="titre" name="titre" maxlength="140" required placeholder="Ex. : Fermeture exceptionnelle du bureau">
+          </div>
+
+          <div class="ligne2">
+            <div class="champ">
+              <label class="etq" for="rubrique">Rubrique <span class="req">*</span></label>
+              <select id="rubrique" required>
+                <option>Communiqué</option>
+                <option>Diaspora</option>
+                <option>Économie</option>
+                <option>Culture</option>
+              </select>
+            </div>
+            <div class="champ">
+              <label class="etq" for="date">Date</label>
+              <input type="date" id="date">
+            </div>
+          </div>
+
+          <div class="champ">
+            <label class="etq" for="resume">Résumé (une phrase)</label>
+            <input type="text" id="resume" maxlength="200" placeholder="Résumé affiché en tête de la publication">
+          </div>
+
+          <div class="champ">
+            <label class="etq" for="corps">Contenu <span class="req">*</span></label>
+            <textarea id="corps" required placeholder="Rédigez l’information destinée au public…"></textarea>
+          </div>
+
+          <div class="champ inter">
+            <input type="checkbox" id="une">
+            <label for="une" style="font-family:var(--texte);font-weight:400;margin:0">Mettre « à la une »</label>
+          </div>
+
+          <!-- Pièces jointes -->
+          <div class="champ">
+            <label class="etq" id="lbl-pj">Photos et documents (PDF)</label>
+            <div class="depot" id="depot" role="button" tabindex="0" aria-labelledby="lbl-pj"
+                 aria-describedby="depot-aide">
+              <svg class="ic ic--lg"><use href="#ic-upload"></use></svg>
+              <strong>Glissez des photos ou des PDF ici</strong>
+              <small>ou cliquez pour parcourir — JPG, PNG, PDF</small>
+              <input type="file" id="fichiers" accept="image/*,application/pdf" multiple>
+            </div>
+            <p class="aide" id="depot-aide">N’ajoutez que des documents destinés au public. Ne publiez jamais de pièce d’identité ni de donnée personnelle.</p>
+            <ul class="pjs" id="listePj"></ul>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn--primaire"><svg class="ic"><use href="#ic-check"></use></svg> Publier</button>
+            <button type="reset" class="btn btn--ligne" id="btnVider">Vider le formulaire</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= APERÇU PUBLIC ================= -->
+      <section aria-labelledby="t-apercu">
+        <div class="carte" style="margin-bottom:14px">
+          <h2 class="col-titre" id="t-apercu"><svg class="ic ic--lg"><use href="#ic-oeil"></use></svg> Aperçu public</h2>
+          <hr class="tricolore tricolore--court">
+          <p class="apercu-info">Ainsi apparaîtra votre information sur la page « Actualités » du site. Les nouvelles publications s’ajoutent en haut.</p>
+        </div>
+        <div id="liste"></div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <hr class="tricolore">
+  <div class="wrap">Maquette de démonstration — Consulat honoraire de la République de Guinée-Bissau en Suisse.</div>
+</footer>
+
+<script>
+/* ============================================================================
+   ESPACE DE PUBLICATION — logique de démonstration
+   Aucune donnée n'est envoyée : les fichiers sont prévisualisés en local via
+   URL.createObjectURL. Voir « BRANCHEMENT DU BACKEND » pour la version réelle.
+   ============================================================================ */
+(function(){
+  "use strict";
+
+  var MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  var pieces = []; /* { nom, estImage, url, fichier } */
+
+  var form = document.getElementById("formPub");
+  var inputFichiers = document.getElementById("fichiers");
+  var depot = document.getElementById("depot");
+  var listePj = document.getElementById("listePj");
+  var liste = document.getElementById("liste");
+
+  /* Date du jour par défaut. */
+  (function(){
+    var d = new Date();
+    document.getElementById("date").value =
+      d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate());
+  })();
+  function p2(n){ return (n<10?"0":"")+n; }
+
+  function dateLisible(iso){
+    var p = (iso||"").split("-"); if (p.length!==3) return iso || "";
+    return parseInt(p[2],10) + " " + MOIS[parseInt(p[1],10)-1] + " " + p[0];
+  }
+  function echap(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  /* --- Sélection / dépôt de fichiers --- */
+  depot.addEventListener("click", function(){ inputFichiers.click(); });
+  depot.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); inputFichiers.click(); }
+  });
+  ["dragover","dragenter"].forEach(function(ev){
+    depot.addEventListener(ev, function(e){ e.preventDefault(); depot.classList.add("survol"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    depot.addEventListener(ev, function(e){ e.preventDefault(); depot.classList.remove("survol"); });
+  });
+  depot.addEventListener("drop", function(e){ ajouter(e.dataTransfer.files); });
+  inputFichiers.addEventListener("change", function(){ ajouter(inputFichiers.files); inputFichiers.value=""; });
+
+  function ajouter(fileList){
+    for (var i=0;i<fileList.length;i++){
+      var f = fileList[i];
+      var estImage = /^image\//.test(f.type);
+      var estPdf = f.type === "application/pdf";
+      if (!estImage && !estPdf) continue; /* on n'accepte qu'images et PDF */
+      pieces.push({ nom:f.name, estImage:estImage, url:URL.createObjectURL(f), fichier:f });
+    }
+    rendrePieces();
+  }
+
+  function rendrePieces(){
+    listePj.innerHTML = "";
+    pieces.forEach(function(pj, idx){
+      var li = document.createElement("li");
+      li.className = "pj";
+      var vignette = pj.estImage
+        ? '<img src="'+pj.url+'" alt="">'
+        : '<div class="vignette"><svg class="ic ic--lg"><use href="#ic-doc"></use></svg></div>';
+      li.innerHTML =
+        '<span class="type">'+(pj.estImage?"IMG":"PDF")+'</span>' +
+        '<button type="button" class="retirer" aria-label="Retirer '+echap(pj.nom)+'">&times;</button>' +
+        vignette +
+        '<div class="nom" title="'+echap(pj.nom)+'">'+echap(pj.nom)+'</div>';
+      li.querySelector(".retirer").addEventListener("click", function(){
+        URL.revokeObjectURL(pj.url);
+        pieces.splice(idx,1);
+        rendrePieces();
+      });
+      listePj.appendChild(li);
+    });
+  }
+
+  /* --- Publication (aperçu) --- */
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!form.checkValidity()){ form.reportValidity(); return; }
+
+    var titre = document.getElementById("titre").value.trim();
+    var rubrique = document.getElementById("rubrique").value;
+    var iso = document.getElementById("date").value;
+    var resume = document.getElementById("resume").value.trim();
+    var corps = document.getElementById("corps").value.trim();
+    var une = document.getElementById("une").checked;
+
+    /* ------------------------------------------------------------------ */
+    /*  BRANCHEMENT DU BACKEND À FAIRE PAR LE CLIENT                       */
+    /*  Ici : envoyer (titre, rubrique, date, résumé, corps, à la une) +   */
+    /*  téléverser les fichiers « pieces[].fichier » via FormData vers un  */
+    /*  endpoint protégé par connexion, p. ex. POST /api/publications.     */
+    /*  Le serveur stocke les fichiers et enregistre la publication.       */
+    /*  En démonstration, on se contente d'afficher l'aperçu ci-dessous.   */
+    /* ------------------------------------------------------------------ */
+
+    liste.insertBefore(construireCarte({
+      titre:titre, rubrique:rubrique, iso:iso, resume:resume, corps:corps, une:une,
+      pieces: pieces.slice()
+    }), liste.firstChild);
+
+    /* Réinitialise le formulaire (les URL restent valides pour l'aperçu). */
+    form.reset();
+    pieces = [];
+    rendrePieces();
+    document.getElementById("date").value = iso; /* garde une date par défaut */
+    document.getElementById("titre").focus();
+  });
+
+  document.getElementById("btnVider").addEventListener("click", function(){
+    pieces.forEach(function(pj){ URL.revokeObjectURL(pj.url); });
+    pieces = []; rendrePieces();
+  });
+
+  function construireCarte(p){
+    var art = document.createElement("article");
+    art.className = "pub" + (p.une ? " une" : "");
+    var html = '<div class="meta">' +
+        '<span class="tag">'+echap(p.rubrique)+'</span>' +
+        (p.une ? '<span class="tag tag-une">À la une</span>' : '') +
+        '<time>'+echap(dateLisible(p.iso))+'</time>' +
+      '</div>' +
+      '<h3>'+echap(p.titre)+'</h3>' +
+      (p.resume ? '<p class="resume">'+echap(p.resume)+'</p>' : '') +
+      (p.corps ? '<div class="corps">'+echap(p.corps)+'</div>' : '');
+
+    var images = p.pieces.filter(function(x){ return x.estImage; });
+    var docs = p.pieces.filter(function(x){ return !x.estImage; });
+
+    if (images.length){
+      html += '<div class="galerie">';
+      images.forEach(function(im){ html += '<img src="'+im.url+'" alt="'+echap(im.nom)+'">'; });
+      html += '</div>';
+    }
+    if (docs.length){
+      html += '<div class="docs">';
+      docs.forEach(function(dc){
+        html += '<a class="doc" href="'+dc.url+'" download="'+echap(dc.nom)+'">' +
+          '<svg class="ic"><use href="#ic-doc"></use></svg>'+echap(dc.nom)+'</a>';
+      });
+      html += '</div>';
+    }
+    art.innerHTML = html;
+    return art;
+  }
+
+  /* --- Exemple de publication déjà en ligne (pour illustrer le rendu). --- */
+  liste.appendChild(construireCarte({
+    titre: "Exemple : rencontre culturelle de la diaspora",
+    rubrique: "Culture",
+    iso: (function(){ var d=new Date(); return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); })(),
+    resume: "Ceci est un exemple de publication. Rédigez la vôtre à gauche et cliquez sur « Publier ».",
+    corps: "Le texte complet de l’information apparaît ici. Les photos jointes s’affichent en galerie et les PDF deviennent des liens de téléchargement.",
+    une: false,
+    pieces: []
+  }));
+})();
+</script>
+</body>
+</html>

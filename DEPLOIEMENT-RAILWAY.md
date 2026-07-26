@@ -3,24 +3,29 @@
 Ce projet est une application web Node.js prête pour **Railway** :
 
 - **Frontend** : le site, dans le dossier `public/` (servi tel quel).
-- **Backend** : `server.js` (Express) sert le site **et** traite les formulaires
-  de contact et de rendez-vous, en relayant chaque demande par courriel.
+- **Backend** : `server.js` (Express) sert le site, traite les formulaires de
+  contact et de rendez-vous (relais e-mail) **et** gère les **publications**
+  (partage d'informations avec photos / PDF) stockées dans **PostgreSQL**.
 
-Aucune donnée personnelle n'est stockée sur le serveur : les demandes sont
-seulement transmises par e-mail (minimisation des données — nLPD / RGPD).
+Les demandes de contact / rendez-vous ne sont pas stockées (relais e-mail
+uniquement). Les publications, elles, sont enregistrées dans PostgreSQL, avec
+leurs pièces jointes. L'espace de publication `/admin` est protégé par mot de passe.
 
 ```
 .
-├── server.js              ← backend (Express)
+├── server.js              ← backend (Express + PostgreSQL)
 ├── package.json           ← dépendances + script « start »
 ├── railway.json           ← configuration Railway (démarrage, healthcheck)
 ├── .env.example           ← modèle des variables d'environnement
 ├── .gitignore
+├── admin/
+│   └── admin.html         ← espace de publication (servi sur /admin, protégé)
 └── public/                ← frontend (le site)
     ├── index.html
     ├── robots.txt
     ├── sitemap.xml
     ├── maquette-rdv.html
+    ├── maquette-publications.html
     └── fonts/             ← (à ajouter : polices Montserrat / Lato)
 ```
 
@@ -82,11 +87,37 @@ Dans Railway : projet → service → onglet **Variables**. Ajouter (voir
 | `SMTP_PASS` | *(secret)* | Mot de passe SMTP |
 | `MAIL_TO` | `contact@votre-domaine.ch` | Boîte qui reçoit les demandes |
 | `MAIL_FROM` | `site@votre-domaine.ch` | Expéditeur technique |
+| `ADMIN_USER` | `consul` | Identifiant de l'espace `/admin` |
+| `ADMIN_PASSWORD` | *(secret, long)* | Mot de passe de l'espace `/admin` |
 
 > Ne pas définir `PORT` : Railway le fournit automatiquement.
 > Ne jamais committer le fichier `.env` (il est déjà dans `.gitignore`).
 
 Après ajout des variables, Railway redéploie automatiquement.
+
+---
+
+## 4 bis. Ajouter la base PostgreSQL (publications)
+
+L'espace de publication (partage d'informations avec photos / PDF) nécessite une
+base PostgreSQL :
+
+1. Dans le projet Railway : **New → Database → Add PostgreSQL**.
+2. Railway crée le service et injecte automatiquement la variable **`DATABASE_URL`**
+   dans votre application (via une référence). Vérifiez sa présence dans l'onglet
+   **Variables** du service web ; **ne la recopiez pas à la main**.
+3. Au démarrage, l'application crée automatiquement les tables nécessaires.
+4. Définissez `ADMIN_USER` et `ADMIN_PASSWORD` (voir tableau ci-dessus) pour
+   pouvoir vous connecter à l'espace de publication.
+
+**Utilisation** : rendez-vous sur `https://(votre-domaine)/admin`, connectez-vous,
+rédigez une information, joignez des photos ou des PDF, puis publiez. Elle
+apparaît aussitôt sur la page **Actualités** du site, avec ses pièces jointes.
+
+> Les fichiers sont stockés dans PostgreSQL (colonne binaire) : ils sont donc
+> persistants et sauvegardés avec la base — pas de dépendance à un disque local.
+> Pour de très gros volumes d'images, un stockage objet (S3 compatible, CH/UE)
+> pourra être envisagé plus tard.
 
 ---
 
@@ -107,6 +138,8 @@ Après ajout des variables, Railway redéploie automatiquement.
 - [ ] `/(URL)/api/sante` renvoie `{"ok":true}`.
 - [ ] Un envoi de test depuis **Contact** et depuis **Rendez-vous** arrive bien
       dans la boîte `MAIL_TO`.
+- [ ] Connexion à `/admin` possible, publication d'un test avec une photo et un
+      PDF, apparition sur la page **Actualités**, puis suppression.
 - [ ] Les marqueurs `[À VALIDER …]` ont été remplacés par les vraies informations.
 - [ ] Les polices (dossier `public/fonts/`) et les images officielles sont en place.
 

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ESPACE D'ADMINISTRATION — Publications
+  Consulat honoraire de la République de Guinée-Bissau en Suisse.
+
+  Page servie sur /admin. L'écran de connexion est public ; la publication et
+  la suppression exigent les identifiants (ADMIN_USER / ADMIN_PASSWORD), envoyés
+  en en-tête HTTP Basic sur chaque requête protégée.
+
+  Les publications et leurs pièces jointes (photos, PDF) sont enregistrées dans
+  PostgreSQL par le backend (POST /api/publications). Aucune donnée n'est
+  conservée dans le navigateur.
+  ============================================================================
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Administration — Publications | Consulat honoraire de Guinée-Bissau</title>
+<style>
+:root{
+  --rouge:#CE1126; --jaune:#FCD116; --vert:#009E49;
+  --vert-fonce:#04452A; --vert-nuit:#032B1B;
+  --encre:#16201A; --gris:#5B6960; --ligne:#E3E7E3; --fond:#F7F9F7; --blanc:#fff;
+  --alerte-fond:#FFF7E6; --alerte-bord:#E7B008; --oui-fond:#EAF6EF; --non-fond:#FBECEE;
+  --titre:'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --texte:'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --gut:clamp(16px, 4vw, 40px); --max:1240px; --r:3px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--texte);
+  font-size:clamp(15px,1vw,16px);line-height:1.6}
+h1,h2,h3{font-family:var(--titre);line-height:1.2;color:var(--vert-nuit);margin:0 0 .4em}
+h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700}
+h2{font-size:1.2rem}
+p{margin:0 0 1em}
+a{color:var(--vert-fonce)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+.tricolore{height:4px;border:0;margin:0;
+  background:linear-gradient(90deg,var(--rouge) 0 33.33%,var(--jaune) 0 66.66%,var(--vert) 0 100%)}
+.tricolore--court{width:56px;height:3px;margin:.2em 0 1em}
+:focus-visible{outline:3px solid var(--jaune);outline-offset:2px;border-radius:2px}
+svg.ic{width:1.15em;height:1.15em;fill:currentColor;vertical-align:-.15em}
+.ic--lg{width:1.5em;height:1.5em}
+[hidden]{display:none !important}
+
+header{background:#fff;box-shadow:0 1px 0 var(--ligne)}
+.barre-etat{background:var(--vert-nuit);color:#dfe8e2;font-size:.78rem}
+.barre-etat .wrap{display:flex;justify-content:space-between;gap:1em;flex-wrap:wrap;padding:.4em var(--gut)}
+.entete{display:flex;align-items:center;gap:.8em;padding:.7em 0}
+.armoiries{width:44px;height:44px;border:1px solid var(--ligne);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;background:var(--fond);color:var(--vert-fonce)}
+.marque strong{display:block;font-family:var(--titre);font-weight:700;font-size:.92rem;color:var(--vert-nuit)}
+.marque span{display:block;font-size:.74rem;color:var(--gris)}
+.entete .droite{margin-left:auto;display:flex;align-items:center;gap:.7em}
+.lien{font-family:var(--titre);font-weight:600;font-size:.82rem;text-decoration:none;
+  color:var(--vert-fonce);border:1px solid var(--ligne);border-radius:var(--r);padding:.45em .7em;cursor:pointer;background:#fff}
+
+main{padding:clamp(20px,4vw,40px) 0}
+.carte{background:#fff;border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(16px,2.4vw,24px)}
+.col-titre{display:flex;align-items:center;gap:.5em;margin:0 0 .1em}
+.col-titre .ic{color:var(--vert-fonce)}
+
+/* Connexion */
+.connexion{max-width:420px;margin:6vh auto}
+/* Application */
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,34px);align-items:start}
+@media (max-width:860px){ .grille{grid-template-columns:1fr} }
+
+.champ{margin:0 0 1.1em}
+label.etq{display:block;font-family:var(--titre);font-weight:600;margin:0 0 .35em;color:var(--vert-nuit)}
+label .req{color:var(--rouge)}
+input[type=text],input[type=password],input[type=date],select,textarea{width:100%;font:inherit;color:var(--encre);
+  background:var(--fond);border:1px solid var(--ligne);border-radius:var(--r);padding:.6em .7em}
+input:focus,select:focus,textarea:focus{background:#fff;border-color:var(--vert);outline:none}
+textarea{min-height:120px;resize:vertical}
+.aide{font-size:.8rem;color:var(--gris);margin:.3em 0 0}
+.ligne2{display:grid;grid-template-columns:1fr 1fr;gap:1em}
+.inter{display:flex;align-items:center;gap:.5em}
+.inter input{width:auto}
+
+.depot{border:2px dashed #b9c4bc;border-radius:var(--r);background:var(--fond);
+  padding:1.3em;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.depot:hover,.depot.survol{border-color:var(--vert);background:#eef5ef}
+.depot .ic{color:var(--vert-fonce)}
+.depot strong{display:block;font-family:var(--titre);color:var(--vert-nuit);margin:.3em 0 .1em}
+.depot small{color:var(--gris)}
+.depot input[type=file]{position:absolute;left:-9999px}
+.pjs{list-style:none;padding:0;margin:.9em 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6em}
+.pj{position:relative;border:1px solid var(--ligne);border-radius:var(--r);overflow:hidden;background:#fff}
+.pj .vignette{height:80px;background:#eef2ee;display:flex;align-items:center;justify-content:center;color:var(--vert-fonce)}
+.pj img{width:100%;height:80px;object-fit:cover;display:block}
+.pj .nom{font-size:.72rem;padding:.35em .4em;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj .retirer{position:absolute;top:3px;right:3px;width:22px;height:22px;border:0;border-radius:50%;
+  background:rgba(3,20,13,.72);color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.pj .retirer:hover{background:var(--rouge)}
+.pj .type{position:absolute;top:3px;left:3px;font-family:var(--titre);font-weight:700;font-size:.6rem;
+  background:#fff;border:1px solid var(--ligne);border-radius:2px;padding:.05em .3em;color:var(--vert-fonce)}
+
+.actions{display:flex;gap:.6em;flex-wrap:wrap;margin-top:.4em}
+.btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--titre);font-weight:600;font-size:.95rem;
+  cursor:pointer;border:1px solid transparent;border-radius:var(--r);padding:.7em 1.15em}
+.btn--primaire{background:var(--vert);color:#fff}
+.btn--primaire:hover{background:#00833d}
+.btn--primaire[disabled]{opacity:.6;cursor:not-allowed}
+.btn--ligne{background:#fff;color:var(--vert-fonce);border-color:var(--ligne)}
+.btn--ligne:hover{border-color:var(--vert)}
+
+.message{border-radius:var(--r);padding:.7em .9em;font-size:.9rem;margin:0 0 1em;display:flex;gap:.5em;align-items:flex-start}
+.message .ic{flex:0 0 auto;margin-top:.15em}
+.message.succes{background:var(--oui-fond);border:1px solid #bfe3cd;color:#04672f}
+.message.erreur{background:var(--non-fond);border:1px solid #f0c9cf;color:#a01523}
+
+.pub{border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(12px,2vw,18px);margin:0 0 12px;background:#fff}
+.pub.une{border-left:4px solid var(--rouge)}
+.pub .meta{display:flex;gap:.6em;align-items:center;flex-wrap:wrap;font-size:.76rem;color:var(--gris);margin-bottom:.3em}
+.tag{font-family:var(--titre);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;
+  color:var(--vert-fonce);background:var(--oui-fond);border:1px solid #cfe6d8;border-radius:2px;padding:.15em .5em}
+.tag-une{color:var(--rouge);border-color:#f0c9cf;background:var(--non-fond)}
+.pub h3{margin:.1em 0 .2em;font-size:1.05rem}
+.pub .resume{color:var(--gris);font-size:.9rem;margin:0 0 .4em}
+.galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.4em;margin:.4em 0}
+.galerie img{width:100%;height:70px;object-fit:cover;border-radius:2px;border:1px solid var(--ligne)}
+.docs{display:flex;flex-wrap:wrap;gap:.5em;margin:.4em 0}
+.doc{display:inline-flex;align-items:center;gap:.4em;font-family:var(--titre);font-weight:600;font-size:.78rem;
+  text-decoration:none;color:var(--vert-fonce);border:1px solid var(--ligne);border-radius:var(--r);padding:.35em .55em}
+.pub .barre{display:flex;justify-content:flex-end;margin-top:.4em}
+.btn-suppr{font-family:var(--titre);font-weight:600;font-size:.78rem;cursor:pointer;background:#fff;
+  color:var(--rouge);border:1px solid #f0c9cf;border-radius:var(--r);padding:.35em .6em}
+.btn-suppr:hover{background:var(--non-fond)}
+.vide{color:var(--gris);border:1px dashed var(--ligne);border-radius:var(--r);padding:1.4em;text-align:center}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-alerte" viewBox="0 0 24 24"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6V2zm7 1.5V7h3.5L13 3.5zM8 12h8v2H8v-2zm0 4h6v2H8v-2z"/></symbol>
+  <symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 3l5 5h-3v6h-4V8H7l5-5zM5 18h14v2H5v-2z"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+  <symbol id="ic-oeil" viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></symbol>
+  <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
+</svg>
+
+<header>
+  <div class="barre-etat">
+    <div class="wrap"><span>République de Guinée-Bissau</span><span>Administration — publications</span></div>
+  </div>
+  <hr class="tricolore">
+  <div class="wrap">
+    <div class="entete">
+      <span class="armoiries" aria-hidden="true"><svg class="ic ic--lg"><use href="#ic-edit"></use></svg></span>
+      <span class="marque">
+        <strong>Consulat honoraire de Guinée-Bissau</strong>
+        <span>Espace de publication</span>
+      </span>
+      <span class="droite">
+        <a class="lien" href="/">Voir le site</a>
+        <button class="lien" id="btnDeco" hidden type="button">Se déconnecter</button>
+      </span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ================= CONNEXION ================= -->
+    <section class="connexion carte" id="ecranConnexion">
+      <h1 class="col-titre"><svg class="ic ic--lg"><use href="#ic-verrou"></use></svg> Connexion</h1>
+      <hr class="tricolore tricolore--court">
+      <p class="aide" style="margin-bottom:1em">Réservé au consulat. Identifiants définis par l’administrateur du site.</p>
+      <form id="formConnexion">
+        <div class="champ">
+          <label class="etq" for="u">Identifiant</label>
+          <input type="text" id="u" autocomplete="username" required>
+        </div>
+        <div class="champ">
+          <label class="etq" for="p">Mot de passe</label>
+          <input type="password" id="p" autocomplete="current-password" required>
+        </div>
+        <div id="msgConnexion"></div>
+        <button type="submit" class="btn btn--primaire" id="btnConnexion">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ================= APPLICATION ================= -->
+    <section id="ecranApp" hidden>
+      <div class="grille">
+
+        <!-- Composer -->
+        <div class="carte">
+          <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-edit"></use></svg> Rédiger une information</h2>
+          <hr class="tricolore tricolore--court">
+          <div id="msgPub"></div>
+          <form id="formPub">
+            <div class="champ">
+              <label class="etq" for="titre">Titre <span class="req">*</span></label>
+              <input type="text" id="titre" maxlength="140" required placeholder="Ex. : Fermeture exceptionnelle du bureau">
+            </div>
+            <div class="ligne2">
+              <div class="champ">
+                <label class="etq" for="rubrique">Rubrique <span class="req">*</span></label>
+                <select id="rubrique" required>
+                  <option>Communiqué</option><option>Diaspora</option>
+                  <option>Économie</option><option>Culture</option>
+                </select>
+              </div>
+              <div class="champ">
+                <label class="etq" for="date">Date</label>
+                <input type="date" id="date">
+              </div>
+            </div>
+            <div class="champ">
+              <label class="etq" for="resume">Résumé (une phrase)</label>
+              <input type="text" id="resume" maxlength="200" placeholder="Résumé affiché en tête">
+            </div>
+            <div class="champ">
+              <label class="etq" for="corps">Contenu <span class="req">*</span></label>
+              <textarea id="corps" required placeholder="Rédigez l’information destinée au public…"></textarea>
+            </div>
+            <div class="champ inter">
+              <input type="checkbox" id="une"><label for="une" style="font-family:var(--texte);font-weight:400;margin:0">Mettre « à la une »</label>
+            </div>
+            <div class="champ">
+              <label class="etq" id="lbl-pj">Photos et documents (PDF)</label>
+              <div class="depot" id="depot" role="button" tabindex="0" aria-labelledby="lbl-pj">
+                <svg class="ic ic--lg"><use href="#ic-upload"></use></svg>
+                <strong>Glissez des photos ou des PDF ici</strong>
+                <small>ou cliquez pour parcourir — JPG, PNG, PDF (10 Mo max/fichier)</small>
+                <input type="file" id="fichiers" accept="image/*,application/pdf" multiple>
+              </div>
+              <p class="aide">Ne publiez jamais de pièce d’identité ni de donnée personnelle.</p>
+              <ul class="pjs" id="listePj"></ul>
+            </div>
+            <div class="actions">
+              <button type="submit" class="btn btn--primaire" id="btnPub"><svg class="ic"><use href="#ic-check"></use></svg> Publier</button>
+              <button type="reset" class="btn btn--ligne" id="btnVider">Vider</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Publications existantes -->
+        <div>
+          <div class="carte" style="margin-bottom:14px">
+            <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-oeil"></use></svg> Publications en ligne</h2>
+            <hr class="tricolore tricolore--court">
+            <p class="aide" style="margin:0">Ces informations sont visibles sur la page « Actualités » du site.</p>
+          </div>
+          <div id="liste"><p class="vide">Chargement…</p></div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+/* ============================================================================
+   ADMINISTRATION DES PUBLICATIONS — logique
+   Connexion en page (HTTP Basic envoyé par en-tête), upload multipart vers le
+   backend (PostgreSQL), liste et suppression.
+   ============================================================================ */
+(function(){
+  "use strict";
+  var AUTH = null; /* jeton "Basic xxx" conservé en mémoire uniquement */
+  var pieces = []; /* fichiers sélectionnés : {nom, estImage, url, fichier} */
+  var MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+
+  var $ = function(id){ return document.getElementById(id); };
+  function p2(n){ return (n<10?"0":"")+n; }
+  function echap(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function dateLisible(iso){ var p=(iso||"").split("-"); if(p.length!==3) return iso||""; return parseInt(p[2],10)+" "+MOIS[parseInt(p[1],10)-1]+" "+p[0]; }
+  function base64(s){ return btoa(unescape(encodeURIComponent(s))); }
+
+  function message(cible, type, texte){
+    cible.innerHTML = '<div class="message '+type+'"><svg class="ic ic--lg"><use href="#ic-'+(type==="succes"?"check":"alerte")+'"></use></svg><div>'+echap(texte)+'</div></div>';
+  }
+
+  /* --- Connexion --- */
+  $("formConnexion").addEventListener("submit", function(e){
+    e.preventDefault();
+    var u = $("u").value, p = $("p").value;
+    var jeton = "Basic " + base64(u + ":" + p);
+    $("btnConnexion").disabled = true;
+    fetch("/api/admin/verifier", { headers: { "Authorization": jeton } })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(){
+        AUTH = jeton;
+        $("ecranConnexion").hidden = true;
+        $("ecranApp").hidden = false;
+        $("btnDeco").hidden = false;
+        $("date").value = (function(){ var d=new Date(); return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); })();
+        chargerListe();
+      })
+      .catch(function(st){
+        message($("msgConnexion"), "erreur", st===503 ? "Espace non configuré côté serveur (ADMIN_USER / ADMIN_PASSWORD)." : "Identifiants incorrects.");
+      })
+      .then(function(){ $("btnConnexion").disabled = false; });
+  });
+
+  $("btnDeco").addEventListener("click", function(){ AUTH=null; location.reload(); });
+
+  /* --- Pièces jointes --- */
+  var depot = $("depot"), inputF = $("fichiers"), listePj = $("listePj");
+  depot.addEventListener("click", function(){ inputF.click(); });
+  depot.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); inputF.click(); } });
+  ["dragover","dragenter"].forEach(function(ev){ depot.addEventListener(ev, function(e){ e.preventDefault(); depot.classList.add("survol"); }); });
+  ["dragleave","drop"].forEach(function(ev){ depot.addEventListener(ev, function(e){ e.preventDefault(); depot.classList.remove("survol"); }); });
+  depot.addEventListener("drop", function(e){ ajouter(e.dataTransfer.files); });
+  inputF.addEventListener("change", function(){ ajouter(inputF.files); inputF.value=""; });
+
+  function ajouter(fl){
+    for(var i=0;i<fl.length;i++){
+      var f=fl[i], img=/^image\//.test(f.type), pdf=f.type==="application/pdf";
+      if(!img && !pdf) continue;
+      pieces.push({ nom:f.name, estImage:img, url:URL.createObjectURL(f), fichier:f });
+    }
+    rendrePieces();
+  }
+  function rendrePieces(){
+    listePj.innerHTML="";
+    pieces.forEach(function(pj, idx){
+      var li=document.createElement("li"); li.className="pj";
+      li.innerHTML='<span class="type">'+(pj.estImage?"IMG":"PDF")+'</span>'+
+        '<button type="button" class="retirer" aria-label="Retirer">&times;</button>'+
+        (pj.estImage?'<img src="'+pj.url+'" alt="">':'<div class="vignette"><svg class="ic ic--lg"><use href="#ic-doc"></use></svg></div>')+
+        '<div class="nom" title="'+echap(pj.nom)+'">'+echap(pj.nom)+'</div>';
+      li.querySelector(".retirer").addEventListener("click", function(){ URL.revokeObjectURL(pj.url); pieces.splice(idx,1); rendrePieces(); });
+      listePj.appendChild(li);
+    });
+  }
+  $("btnVider").addEventListener("click", function(){ pieces.forEach(function(pj){ URL.revokeObjectURL(pj.url); }); pieces=[]; rendrePieces(); });
+
+  /* --- Publication (upload) --- */
+  $("formPub").addEventListener("submit", function(e){
+    e.preventDefault();
+    var form = e.target;
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    var fd = new FormData();
+    fd.append("titre", $("titre").value.trim());
+    fd.append("rubrique", $("rubrique").value);
+    fd.append("date", $("date").value);
+    fd.append("resume", $("resume").value.trim());
+    fd.append("corps", $("corps").value.trim());
+    fd.append("une", $("une").checked ? "true" : "false");
+    pieces.forEach(function(pj){ fd.append("fichiers", pj.fichier, pj.nom); });
+
+    $("btnPub").disabled = true;
+    fetch("/api/publications", { method:"POST", headers:{ "Authorization": AUTH }, body: fd })
+      .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+      .then(function(res){
+        if(res.ok && res.j.ok){
+          message($("msgPub"), "succes", "Publication enregistrée.");
+          form.reset();
+          pieces.forEach(function(pj){ URL.revokeObjectURL(pj.url); }); pieces=[]; rendrePieces();
+          $("date").value = (function(){ var d=new Date(); return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); })();
+          chargerListe();
+        } else {
+          message($("msgPub"), "erreur", (res.j && res.j.erreur) || "Échec de l’enregistrement.");
+        }
+      })
+      .catch(function(){ message($("msgPub"), "erreur", "Envoi impossible. Vérifiez votre connexion."); })
+      .then(function(){ $("btnPub").disabled = false; });
+  });
+
+  /* --- Liste des publications existantes --- */
+  function chargerListe(){
+    fetch("/api/publications")
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var liste = $("liste");
+        var pubs = (j && j.publications) || [];
+        if(!pubs.length){ liste.innerHTML = '<p class="vide">Aucune publication pour le moment.</p>'; return; }
+        liste.innerHTML = "";
+        pubs.forEach(function(p){ liste.appendChild(carte(p)); });
+      })
+      .catch(function(){ $("liste").innerHTML = '<p class="vide">Impossible de charger la liste.</p>'; });
+  }
+
+  function carte(p){
+    var art=document.createElement("article");
+    art.className="pub"+(p.une?" une":"");
+    var imgs=(p.fichiers||[]).filter(function(f){ return f.estImage; });
+    var docs=(p.fichiers||[]).filter(function(f){ return !f.estImage; });
+    var html='<div class="meta"><span class="tag">'+echap(p.rubrique)+'</span>'+
+      (p.une?'<span class="tag tag-une">À la une</span>':'')+
+      '<time>'+echap(dateLisible(p.date))+'</time></div>'+
+      '<h3>'+echap(p.titre)+'</h3>'+
+      (p.resume?'<p class="resume">'+echap(p.resume)+'</p>':'');
+    if(imgs.length){ html+='<div class="galerie">'; imgs.forEach(function(f){ html+='<img src="/api/fichier/'+f.id+'" alt="'+echap(f.nom)+'">'; }); html+='</div>'; }
+    if(docs.length){ html+='<div class="docs">'; docs.forEach(function(f){ html+='<a class="doc" href="/api/fichier/'+f.id+'" download="'+echap(f.nom)+'"><svg class="ic"><use href="#ic-doc"></use></svg>'+echap(f.nom)+'</a>'; }); html+='</div>'; }
+    html+='<div class="barre"><button class="btn-suppr" type="button">Supprimer</button></div>';
+    art.innerHTML=html;
+    art.querySelector(".btn-suppr").addEventListener("click", function(){ supprimer(p.id, p.titre); });
+    return art;
+  }
+
+  function supprimer(id, titre){
+    if(!window.confirm("Supprimer définitivement la publication « "+titre+" » ?")) return;
+    fetch("/api/publications/"+id, { method:"DELETE", headers:{ "Authorization": AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j && j.ok) chargerListe(); else message($("msgPub"),"erreur","Suppression impossible."); })
+      .catch(function(){ message($("msgPub"),"erreur","Suppression impossible."); });
+  }
+})();
+</script>
+</body>
+</html>

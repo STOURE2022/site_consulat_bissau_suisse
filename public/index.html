@@ -420,6 +420,15 @@ a.telechargement:hover{border-color:var(--vert)}
   letter-spacing:.03em;color:var(--rouge)}
 .actus-vide{color:var(--gris);padding:1.4em;border:1px dashed var(--ligne);border-radius:var(--r);text-align:center}
 
+/* Pièces jointes des actualités (photos en galerie, PDF en liens). */
+.actu .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.4em;margin:.6em 0 0}
+.actu .galerie img{width:100%;height:72px;object-fit:cover;border-radius:2px;border:1px solid var(--ligne)}
+.actu .docs{display:flex;flex-wrap:wrap;gap:.5em;margin:.6em 0 0}
+.actu .doc{display:inline-flex;align-items:center;gap:.4em;font-family:var(--titre);font-weight:600;
+  font-size:.8rem;text-decoration:none;color:var(--vert-fonce);border:1px solid var(--ligne);
+  border-radius:var(--r);padding:.35em .55em}
+.actu .doc:hover{border-color:var(--vert)}
+
 /* --- Emplacement de carte (aucune carte tierce : respect de la vie privée) --- */
 .map{min-height:320px;background:
     repeating-linear-gradient(45deg,#eef2ee 0 16px,#e6ede6 0 32px),#eef2ee;
@@ -2582,6 +2591,51 @@ function posterJSON(url, data){
   });
 }
 
+/* Charge (une seule fois) les publications enregistrées par le consulat via
+   l'espace d'administration, et les convertit au format des actualités. Renvoie
+   null en mode local ou en cas d'échec, pour retomber sur les actualités
+   statiques du dictionnaire D. */
+var PUBLICATIONS = null; // cache
+function chargerPublications(){
+  if (modeDemo()) return Promise.resolve(null);
+  if (PUBLICATIONS) return Promise.resolve(PUBLICATIONS);
+  return fetch("/api/publications")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (j && j.ok && j.publications && j.publications.length){
+        PUBLICATIONS = j.publications.map(function(p){
+          return { cat: p.rubrique, r: p.une ? 1 : 0, d: p.date,
+                   t: p.titre, x: p.resume || p.corps, fichiers: p.fichiers || [] };
+        });
+        return PUBLICATIONS;
+      }
+      return null; // aucune publication : on garde les actualités statiques
+    })
+    .catch(function(){ return null; });
+}
+
+/* Ajoute à une carte d'actualité ses pièces jointes (galerie d'images + PDF). */
+function ajouterPiecesJointes(article, n){
+  if (!n.fichiers || !n.fichiers.length) return;
+  var imgs = n.fichiers.filter(function(f){ return f.estImage; });
+  var docs = n.fichiers.filter(function(f){ return !f.estImage; });
+  if (imgs.length){
+    var g = creer("div",{class:"galerie"});
+    imgs.forEach(function(f){
+      g.appendChild(creer("img",{src:"/api/fichier/"+f.id, alt:f.nom, loading:"lazy"}));
+    });
+    article.appendChild(g);
+  }
+  if (docs.length){
+    var dd = creer("div",{class:"docs"});
+    docs.forEach(function(f){
+      dd.appendChild(creer("a",{class:"doc", href:"/api/fichier/"+f.id, download:f.nom},
+        [ icone("ic-doc"), f.nom ]));
+    });
+    article.appendChild(dd);
+  }
+}
+
 
 /* ============================================================================
    MOTEUR DE RENDU PAR BLOCS
@@ -2747,19 +2801,29 @@ function blocNewsApercu(b){
   var wrap = creer("div",{class:"wrap"});
   wrap.appendChild(enteteSection(b.title, b.rule, null));
 
-  var liste = (d.news || []).slice(0, b.limit || 3);
   var grille = creer("div",{class:"actus"});
-  liste.forEach(function(n){
-    grille.appendChild(creer("article",{class:"actu"},[
-      creer("div",{class:"meta"},[
-        creer("span",{class:"etiquette", text:n.cat}),
-        creer("time",{datetime:n.d, text:dateLisible(n.d)})
-      ]),
-      creer("h3",{html:baliser(n.t)}),
-      creer("p",{html:baliser(n.x)})
-    ]));
-  });
+  var limite = b.limit || 3;
+
+  function remplir(source){
+    grille.innerHTML = "";
+    source.slice(0, limite).forEach(function(n){
+      var art = creer("article",{class:"actu"},[
+        creer("div",{class:"meta"},[
+          creer("span",{class:"etiquette", text:n.cat}),
+          creer("time",{datetime:n.d, text:dateLisible(n.d)})
+        ]),
+        creer("h3",{html:baliser(n.t)}),
+        creer("p",{html:baliser(n.x)})
+      ]);
+      ajouterPiecesJointes(art, n);
+      grille.appendChild(art);
+    });
+  }
+  remplir(d.news || []);
   wrap.appendChild(grille);
+
+  /* Remplace par les publications réelles si disponibles. */
+  chargerPublications().then(function(pubs){ if (pubs && pubs.length) remplir(pubs); });
 
   if (b.lien){
     wrap.appendChild(creer("p",{style:"margin-top:1.4em"},
@@ -2960,31 +3024,39 @@ function blocNewsFiltre(b){
   var wrap = creer("div",{class:"wrap"});
   wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
 
-  /* Construction de la barre de filtres : « Toutes » + rubriques distinctes. */
-  var rubriques = [];
-  (d.news||[]).forEach(function(n){ if (rubriques.indexOf(n.cat) === -1) rubriques.push(n.cat); });
+  /* Données affichées : d'abord les actualités statiques du dictionnaire, puis
+     remplacées par les publications du serveur si elles existent (voir plus bas). */
+  var donnees = (d.news || []).slice();
+  var catActive = "*";
 
   var barre = creer("div",{class:"filtres", role:"group", "aria-label":b.filtresLabel||"Filtrer par rubrique"});
-  var boutons = [{cat:"*", t:b.toutes||"Toutes"}].concat(rubriques.map(function(c){ return {cat:c, t:c}; }));
-  boutons.forEach(function(o,i){
-    var bt = creer("button",{type:"button", "data-cat":o.cat, "aria-pressed": i===0?"true":"false"}, o.t);
-    barre.appendChild(bt);
-  });
   wrap.appendChild(barre);
-
   var grille = creer("div",{class:"actus", id:"listeActus"});
   wrap.appendChild(grille);
 
-  /* Fonction de (re)remplissage selon la rubrique active. */
-  function peupler(cat){
+  /* (Re)construit la barre de filtres à partir des rubriques présentes. */
+  function construireFiltres(){
+    var rubriques = [];
+    donnees.forEach(function(n){ if (rubriques.indexOf(n.cat) === -1) rubriques.push(n.cat); });
+    if (rubriques.indexOf(catActive) === -1) catActive = "*";
+    barre.innerHTML = "";
+    [{cat:"*", t:b.toutes||"Toutes"}].concat(rubriques.map(function(c){ return {cat:c, t:c}; }))
+      .forEach(function(o){
+        barre.appendChild(creer("button",{type:"button", "data-cat":o.cat,
+          "aria-pressed": o.cat===catActive ? "true" : "false"}, o.t));
+      });
+  }
+
+  /* Remplit la grille selon la rubrique active, avec pièces jointes éventuelles. */
+  function peupler(){
     grille.innerHTML = "";
-    var liste = (d.news||[]).filter(function(n){ return cat==="*" || n.cat===cat; });
+    var liste = donnees.filter(function(n){ return catActive==="*" || n.cat===catActive; });
     if (!liste.length){
       grille.appendChild(creer("p",{class:"actus-vide", text:b.vide||"Aucune actualité dans cette rubrique."}));
       return;
     }
     liste.forEach(function(n){
-      grille.appendChild(creer("article",{class:"actu" + (n.r?" actu--une":"")},[
+      var art = creer("article",{class:"actu" + (n.r?" actu--une":"")},[
         n.r ? creer("span",{class:"aune", text:b.aune||"À la une"}) : null,
         creer("div",{class:"meta"},[
           creer("span",{class:"etiquette", text:n.cat}),
@@ -2992,19 +3064,30 @@ function blocNewsFiltre(b){
         ]),
         creer("h3",{html:baliser(n.t)}),
         creer("p",{html:baliser(n.x)})
-      ]));
+      ]);
+      ajouterPiecesJointes(art, n);
+      grille.appendChild(art);
     });
   }
-  peupler("*");
 
-  /* Interaction par délégation d'événement (aucun setTimeout). */
+  construireFiltres();
+  peupler();
+
+  /* Interaction : changement de rubrique. */
   barre.addEventListener("click", function(e){
     var bt = e.target.closest("button[data-cat]");
     if (!bt) return;
     var btns = barre.querySelectorAll("button");
     for (var i=0;i<btns.length;i++) btns[i].setAttribute("aria-pressed","false");
     bt.setAttribute("aria-pressed","true");
-    peupler(bt.getAttribute("data-cat"));
+    catActive = bt.getAttribute("data-cat");
+    peupler();
+  });
+
+  /* Chargement des publications réelles (si en ligne) : elles remplacent alors
+     les actualités statiques. */
+  chargerPublications().then(function(pubs){
+    if (pubs && pubs.length){ donnees = pubs; construireFiltres(); peupler(); }
   });
 
   section.appendChild(wrap);
