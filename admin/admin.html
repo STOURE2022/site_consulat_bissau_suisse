@@ -136,6 +136,42 @@ textarea{min-height:120px;resize:vertical}
   color:var(--rouge);border:1px solid #f0c9cf;border-radius:var(--r);padding:.35em .6em}
 .btn-suppr:hover{background:var(--non-fond)}
 .vide{color:var(--gris);border:1px dashed var(--ligne);border-radius:var(--r);padding:1.4em;text-align:center}
+
+/* Onglet : pastille de compteur */
+.badge-compte{display:inline-flex;align-items:center;justify-content:center;min-width:1.5em;height:1.5em;
+  padding:0 .4em;margin-left:.2em;font-size:.72rem;font-weight:700;color:#fff;background:var(--rouge);border-radius:1em}
+.badge-compte[hidden]{display:none}
+
+/* Filtres des demandes */
+.filtres-rdv{display:flex;flex-wrap:wrap;gap:.4em;margin:.2em 0 0}
+.fbtn{font-family:var(--titre);font-weight:600;font-size:.85rem;cursor:pointer;background:#fff;
+  border:1px solid var(--ligne);border-radius:var(--r);padding:.45em .8em;color:var(--encre)}
+.fbtn:hover{border-color:var(--vert)}
+.fbtn.actif{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff}
+
+/* Carte d'une demande */
+.demande{border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(12px,2vw,18px);margin:0 0 12px;background:#fff}
+.demande .haut{display:flex;gap:.6em;align-items:center;flex-wrap:wrap;margin-bottom:.4em}
+.demande .creneau{font-family:var(--titre);font-weight:700;color:var(--vert-nuit)}
+.demande .quand{font-size:.76rem;color:var(--gris);margin-left:auto}
+.statut{font-family:var(--titre);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;border-radius:2px;padding:.15em .5em}
+.statut-en_attente{color:#a5730a;background:var(--alerte-fond);border:1px solid var(--alerte-bord)}
+.statut-confirme{color:#04672f;background:var(--oui-fond);border:1px solid #bfe3cd}
+.statut-refuse{color:#a01523;background:var(--non-fond);border:1px solid #f0c9cf}
+.statut-annule{color:var(--gris);background:var(--fond);border:1px solid var(--ligne)}
+.demande dl{margin:.4em 0;display:grid;grid-template-columns:auto 1fr;gap:.25em .8em;font-size:.9rem}
+.demande dt{font-weight:700;color:var(--vert-nuit)}
+.demande dd{margin:0}
+.demande .msg{font-size:.9rem;background:var(--fond);border-radius:var(--r);padding:.5em .7em;margin:.4em 0 0}
+.demande .barre{display:flex;gap:.5em;flex-wrap:wrap;margin-top:.6em}
+.bcta{display:inline-flex;align-items:center;gap:.35em;font-family:var(--titre);font-weight:600;font-size:.82rem;
+  cursor:pointer;border-radius:var(--r);padding:.4em .7em;border:1px solid transparent}
+.bcta-ok{background:var(--vert);color:#fff}
+.bcta-ok:hover{background:#00833d}
+.bcta-non{background:#fff;color:#a01523;border-color:#f0c9cf}
+.bcta-non:hover{background:var(--non-fond)}
+.bcta-suppr{background:#fff;color:var(--gris);border-color:var(--ligne)}
+.bcta-suppr:hover{border-color:var(--rouge);color:var(--rouge)}
 </style>
 </head>
 <body>
@@ -148,6 +184,8 @@ textarea{min-height:120px;resize:vertical}
   <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
   <symbol id="ic-oeil" viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></symbol>
   <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 00-2 2v13a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2V2h-2v2H9V2H7zM5 9h14v10H5V9z"/></symbol>
+  <symbol id="ic-croix" viewBox="0 0 24 24"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></symbol>
 </svg>
 
 <header>
@@ -197,6 +235,7 @@ textarea{min-height:120px;resize:vertical}
 
       <nav class="onglets" role="tablist" aria-label="Sections">
         <button type="button" class="onglet actif" data-panneau="pubs" aria-selected="true">Publications</button>
+        <button type="button" class="onglet" data-panneau="rdv" aria-selected="false">Rendez-vous <span id="badgeRdv" class="badge-compte" hidden></span></button>
         <button type="button" class="onglet" data-panneau="params" aria-selected="false">Paramètres &amp; bandeau</button>
       </nav>
 
@@ -267,6 +306,22 @@ textarea{min-height:120px;resize:vertical}
 
       </div>
       </div><!-- /panneau-pubs -->
+
+      <!-- ================= PANNEAU RENDEZ-VOUS ================= -->
+      <div id="panneau-rdv" hidden>
+        <div class="carte" style="margin-bottom:14px">
+          <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-cal"></use></svg> Demandes de rendez-vous</h2>
+          <hr class="tricolore tricolore--court">
+          <div class="filtres-rdv" id="filtresRdv" role="group" aria-label="Filtrer par statut">
+            <button type="button" class="fbtn actif" data-statut="en_attente">En attente</button>
+            <button type="button" class="fbtn" data-statut="confirme">Confirmés</button>
+            <button type="button" class="fbtn" data-statut="refuse">Refusés</button>
+            <button type="button" class="fbtn" data-statut="">Tous</button>
+          </div>
+          <div id="msgRdv"></div>
+        </div>
+        <div id="listeRdv"><p class="vide">Chargement…</p></div>
+      </div><!-- /panneau-rdv -->
 
       <!-- ================= PANNEAU PARAMÈTRES ================= -->
       <div id="panneau-params" hidden>
@@ -352,6 +407,7 @@ textarea{min-height:120px;resize:vertical}
         $("date").value = (function(){ var d=new Date(); return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); })();
         chargerListe();
         chargerParams();
+        majBadgeRdv();
       })
       .catch(function(st){
         message($("msgConnexion"), "erreur", st===503 ? "Espace non configuré côté serveur (ADMIN_USER / ADMIN_PASSWORD)." : "Identifiants incorrects.");
@@ -475,8 +531,99 @@ textarea{min-height:120px;resize:vertical}
       onglets[i].setAttribute("aria-selected", actif ? "true" : "false");
     }
     $("panneau-pubs").hidden = cible!=="pubs";
+    $("panneau-rdv").hidden = cible!=="rdv";
     $("panneau-params").hidden = cible!=="params";
+    if (cible==="rdv") chargerRdv();
   });
+
+  /* --- Rendez-vous : filtres, liste, actions --- */
+  var STATUT_RDV = "en_attente"; // filtre courant
+  var LIBELLE_STATUT = { en_attente:"En attente", confirme:"Confirmé", refuse:"Refusé", annule:"Annulé" };
+
+  $("filtresRdv").addEventListener("click", function(e){
+    var bt = e.target.closest(".fbtn"); if(!bt) return;
+    var btns = this.querySelectorAll(".fbtn");
+    for(var i=0;i<btns.length;i++) btns[i].classList.toggle("actif", btns[i]===bt);
+    STATUT_RDV = bt.getAttribute("data-statut");
+    chargerRdv();
+  });
+
+  function chargerRdv(){
+    var url = "/api/rendezvous" + (STATUT_RDV ? ("?statut="+encodeURIComponent(STATUT_RDV)) : "");
+    fetch(url, { headers:{ "Authorization": AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var liste = $("listeRdv");
+        var d = (j && j.demandes) || [];
+        if(!d.length){ liste.innerHTML = '<p class="vide">Aucune demande dans cette catégorie.</p>'; return; }
+        liste.innerHTML = "";
+        d.forEach(function(x){ liste.appendChild(carteRdv(x)); });
+      })
+      .catch(function(){ $("listeRdv").innerHTML = '<p class="vide">Impossible de charger les demandes.</p>'; });
+  }
+
+  function creLisible(iso){
+    if(!iso) return "";
+    var p = iso.split("T"); return dateLisible(p[0]) + (p[1]?(" à "+p[1]):"");
+  }
+
+  function carteRdv(x){
+    var art = document.createElement("article");
+    art.className = "demande";
+    var dl = '<dl>'+
+      '<dt>Motif</dt><dd>'+echap(x.motif||"—")+'</dd>'+
+      '<dt>Nom</dt><dd>'+echap(x.nom)+'</dd>'+
+      '<dt>Courriel</dt><dd><a href="mailto:'+echap(x.courriel)+'">'+echap(x.courriel)+'</a></dd>'+
+      '<dt>Téléphone</dt><dd><a href="tel:'+echap(x.tel||"")+'">'+echap(x.tel||"—")+'</a></dd>'+
+      '</dl>';
+    var msg = x.message ? '<div class="msg">'+echap(x.message)+'</div>' : '';
+    var actions = '<div class="barre">';
+    if(x.statut!=="confirme") actions += '<button class="bcta bcta-ok" data-act="confirme"><svg class="ic"><use href="#ic-check"></use></svg> Confirmer</button>';
+    if(x.statut!=="refuse")   actions += '<button class="bcta bcta-non" data-act="refuse"><svg class="ic"><use href="#ic-croix"></use></svg> Refuser</button>';
+    if(x.statut!=="en_attente") actions += '<button class="bcta bcta-suppr" data-act="en_attente">Remettre en attente</button>';
+    actions += '<button class="bcta bcta-suppr" data-act="__suppr">Supprimer</button>';
+    actions += '</div>';
+    art.innerHTML =
+      '<div class="haut">'+
+        '<span class="statut statut-'+x.statut+'">'+(LIBELLE_STATUT[x.statut]||x.statut)+'</span>'+
+        '<span class="creneau"><svg class="ic"><use href="#ic-cal"></use></svg> '+echap(dateLisible(x.jour))+' à '+echap(x.heure||"")+'</span>'+
+        '<span class="quand">reçue le '+echap(creLisible(x.cree_le))+'</span>'+
+      '</div>'+ dl + msg + actions;
+    art.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-act]"); if(!b) return;
+      var act = b.getAttribute("data-act");
+      if(act==="__suppr"){ supprimerRdv(x.id); }
+      else { changerStatut(x.id, act); }
+    });
+    return art;
+  }
+
+  function changerStatut(id, statut){
+    fetch("/api/rendezvous/"+id, { method:"PATCH",
+      headers:{ "Authorization":AUTH, "Content-Type":"application/json" }, body: JSON.stringify({statut:statut}) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.ok){ chargerRdv(); majBadgeRdv(); } else message($("msgRdv"),"erreur","Action impossible."); })
+      .catch(function(){ message($("msgRdv"),"erreur","Action impossible."); });
+  }
+
+  function supprimerRdv(id){
+    if(!window.confirm("Supprimer définitivement cette demande ?")) return;
+    fetch("/api/rendezvous/"+id, { method:"DELETE", headers:{ "Authorization":AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.ok){ chargerRdv(); majBadgeRdv(); } else message($("msgRdv"),"erreur","Suppression impossible."); })
+      .catch(function(){ message($("msgRdv"),"erreur","Suppression impossible."); });
+  }
+
+  /* Met à jour la pastille « en attente » sur l'onglet Rendez-vous. */
+  function majBadgeRdv(){
+    fetch("/api/rendezvous?statut=en_attente", { headers:{ "Authorization":AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var n = (j && j.demandes) ? j.demandes.length : 0;
+        var b = $("badgeRdv");
+        if(n>0){ b.textContent = n; b.hidden = false; } else { b.hidden = true; }
+      }).catch(function(){});
+  }
 
   /* --- Paramètres : chargement --- */
   var CHAMPS_PARAM = {

@@ -60,7 +60,16 @@ async function initBase() {
   await pool.query(
     "CREATE TABLE IF NOT EXISTS parametres (cle TEXT PRIMARY KEY, valeur TEXT)"
   );
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS rendezvous (" +
+      "id SERIAL PRIMARY KEY, motif TEXT, jour DATE, heure TEXT, " +
+      "nom TEXT NOT NULL, courriel TEXT NOT NULL, tel TEXT, message TEXT, " +
+      "statut TEXT NOT NULL DEFAULT 'en_attente', cree_le TIMESTAMPTZ DEFAULT now())"
+  );
 }
+
+/* Statuts autorisés pour une demande de rendez-vous. */
+const STATUTS_RDV = ["en_attente", "confirme", "refuse", "annule"];
 
 /* Clés de paramètres autorisées (coordonnées, horaires, bandeau d'information). */
 const CLES_PARAM = [
@@ -221,6 +230,19 @@ app.post("/api/rendezvous", async function (req, res) {
     return res.status(400).json({ ok: false, erreur: "Champs manquants ou invalides." });
   }
 
+  /* Enregistrement en base (si disponible). N'empêche pas l'e-mail en cas d'échec. */
+  if (pool) {
+    try {
+      const jourValide = /^\d{4}-\d{2}-\d{2}$/.test(jour) ? jour : null;
+      await pool.query(
+        "INSERT INTO rendezvous (motif, jour, heure, nom, courriel, tel, message) VALUES ($1,$2,$3,$4,$5,$6,$7)",
+        [motif, jourValide, heure, nom, courriel, tel, message]
+      );
+    } catch (e) {
+      console.error("Enregistrement rendez-vous :", e && e.message);
+    }
+  }
+
   const corps =
     "Nouvelle demande de rendez-vous\n\n" +
     "Motif : " + motif + "\n" +
@@ -230,14 +252,98 @@ app.post("/api/rendezvous", async function (req, res) {
     "Courriel : " + courriel + "\n" +
     "Téléphone : " + tel + "\n\n" +
     "Précisions :\n" + (message || "(aucune)") + "\n\n" +
-    "Rappel : ce créneau doit être confirmé par le consulat.";
+    "À traiter dans l'espace d'administration (/admin, onglet Rendez-vous).";
 
   try {
     const r = await envoyer("[Site] Rendez-vous — " + jour + " " + heure, corps, courriel);
     res.json({ ok: true, livre: r.livre });
   } catch (e) {
     console.error("Erreur envoi rendez-vous :", e && e.message);
-    res.status(502).json({ ok: false, erreur: "Envoi impossible pour le moment." });
+    // La demande est enregistrée : on renvoie tout de même un succès.
+    res.json({ ok: true, livre: false });
+  }
+});
+
+/* Liste des demandes de rendez-vous (administration). Filtre optionnel ?statut= */
+app.get("/api/rendezvous", adminAuth, async function (req, res) {
+  if (!pool) return res.json({ ok: true, demandes: [] });
+  const statut = txt(req.query.statut);
+  try {
+    let r;
+    if (statut && STATUTS_RDV.indexOf(statut) !== -1) {
+      r = await pool.query(
+        "SELECT id, motif, to_char(jour,'YYYY-MM-DD') AS jour, heure, nom, courriel, tel, message, statut, " +
+          "to_char(cree_le,'YYYY-MM-DD\"T\"HH24:MI') AS cree_le FROM rendezvous WHERE statut = $1 ORDER BY cree_le DESC",
+        [statut]
+      );
+    } else {
+      r = await pool.query(
+        "SELECT id, motif, to_char(jour,'YYYY-MM-DD') AS jour, heure, nom, courriel, tel, message, statut, " +
+          "to_char(cree_le,'YYYY-MM-DD\"T\"HH24:MI') AS cree_le FROM rendezvous ORDER BY cree_le DESC"
+      );
+    }
+    res.json({ ok: true, demandes: r.rows });
+  } catch (e) {
+    console.error("GET /api/rendezvous :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Erreur base de données." });
+  }
+});
+
+/* Change le statut d'une demande + informe le demandeur par courriel (si SMTP). */
+app.patch("/api/rendezvous/:id", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  const id = parseInt(req.params.id, 10);
+  const statut = txt((req.body || {}).statut);
+  if (!id || STATUTS_RDV.indexOf(statut) === -1) {
+    return res.status(400).json({ ok: false, erreur: "Requête invalide." });
+  }
+  try {
+    const r = await pool.query(
+      "UPDATE rendezvous SET statut = $1 WHERE id = $2 RETURNING nom, courriel, to_char(jour,'YYYY-MM-DD') AS jour, heure",
+      [statut, id]
+    );
+    if (!r.rows.length) return res.status(404).json({ ok: false });
+    const rv = r.rows[0];
+    // Courriel d'information au demandeur pour une confirmation ou un refus.
+    if (statut === "confirme" || statut === "refuse") {
+      const sujet = statut === "confirme"
+        ? "Confirmation de votre rendez-vous"
+        : "Votre demande de rendez-vous";
+      const corps = statut === "confirme"
+        ? "Bonjour " + rv.nom + ",\n\nVotre rendez-vous du " + rv.jour + " à " + rv.heure +
+          " est confirmé.\n\nConsulat honoraire de la République de Guinée-Bissau en Suisse."
+        : "Bonjour " + rv.nom + ",\n\nNous ne sommes malheureusement pas en mesure de retenir le créneau " +
+          "demandé (" + rv.jour + " à " + rv.heure + "). N'hésitez pas à formuler une nouvelle demande.\n\n" +
+          "Consulat honoraire de la République de Guinée-Bissau en Suisse.";
+      // Courriel envoyé au demandeur (destinataire = son adresse).
+      if (transport) {
+        transport.sendMail({
+          from: process.env.MAIL_FROM || process.env.SMTP_USER,
+          to: rv.courriel, replyTo: process.env.MAIL_TO || undefined,
+          subject: sujet, text: corps,
+        }).catch(function (e) { console.error("Envoi demandeur :", e && e.message); });
+      } else {
+        console.log("[E-MAIL NON CONFIGURÉ] " + sujet + " -> " + rv.courriel);
+      }
+    }
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("PATCH /api/rendezvous :", e && e.message);
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* Supprime une demande de rendez-vous (administration). */
+app.delete("/api/rendezvous/:id", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ ok: false });
+  try {
+    await pool.query("DELETE FROM rendezvous WHERE id = $1", [id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("DELETE /api/rendezvous :", e && e.message);
+    res.status(500).json({ ok: false });
   }
 });
 

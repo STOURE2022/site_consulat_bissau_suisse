@@ -114,6 +114,10 @@ base PostgreSQL :
 Deux onglets :
 - **Publications** : rédiger une information, joindre des photos ou des PDF, publier
   (apparaît aussitôt sur la page **Actualités**), et supprimer.
+- **Rendez-vous** : consulter les demandes reçues (filtrées par statut), les
+  **confirmer** ou **refuser** (un courriel automatique est envoyé au demandeur si
+  le SMTP est configuré), et les supprimer. Une pastille indique le nombre de
+  demandes en attente.
 - **Paramètres & bandeau** : saisir les **coordonnées et horaires** du consulat
   (ils remplacent automatiquement les marqueurs « À valider » sur tout le site :
   Contact, Rendez-vous, pied de page) et activer un **bandeau d'information
@@ -145,6 +149,8 @@ Deux onglets :
       dans la boîte `MAIL_TO`.
 - [ ] Connexion à `/admin` possible, publication d'un test avec une photo et un
       PDF, apparition sur la page **Actualités**, puis suppression.
+- [ ] Envoi d'une demande de rendez-vous depuis le site, puis dans `/admin`
+      (onglet Rendez-vous) : la demande apparaît, se confirme et se supprime.
 - [ ] Les marqueurs `[À VALIDER …]` ont été remplacés par les vraies informations.
 - [ ] Les polices (dossier `public/fonts/`) et les images officielles sont en place.
 
