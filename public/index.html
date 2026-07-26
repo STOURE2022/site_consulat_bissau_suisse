@@ -540,6 +540,10 @@ footer.site li{margin:.35em 0}
 .pied-bas .wrap{display:flex;flex-wrap:wrap;gap:.6em 1.4em;justify-content:space-between;
   padding:.9em 0;font-size:.82rem;color:#9db3a6}
 .pied-bas nav{display:flex;flex-wrap:wrap;gap:.4em 1.1em}
+.lien-admin{display:inline-flex;align-items:center;gap:.4em;font-family:var(--titre);font-weight:600;
+  font-size:.8rem;color:#c8d6cd;text-decoration:none;border:1px solid #10412a;border-radius:var(--r);padding:.35em .7em}
+.lien-admin:hover{color:#fff;border-color:var(--vert);text-decoration:none}
+.lien-admin .ic{width:1em;height:1em}
 
 /* ==========================================================================
    7. ANIMATIONS D'APPARITION (désactivées si prefers-reduced-motion)
@@ -619,6 +623,7 @@ footer.site li{margin:.35em 0}
   <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6V2zm7 1.5V7h3.5L13 3.5zM8 12h8v2H8v-2zm0 4h8v2H8v-2z"/></symbol>
   <symbol id="ic-tel" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></symbol>
   <symbol id="ic-drapeau" viewBox="0 0 24 24"><path d="M5 3v18H3V3h2zm2 1h13l-3 4 3 4H7V4z"/></symbol>
+  <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
 </svg>
 
 <!--
@@ -715,6 +720,7 @@ footer.site li{margin:.35em 0}
     <div class="wrap">
       <span data-ui="pied-copyright"></span>
       <span data-ui="pied-avis"></span>
+      <a class="lien-admin" id="lienAdmin" href="/admin"></a>
     </div>
   </div>
 </footer>
@@ -795,6 +801,7 @@ D.fr = {
     piedRattachement: "Sous l’autorité de l’Ambassade compétente : {par:ambassade}.",
     piedCopyright: "© " + "2026" + " Consulat honoraire de la République de Guinée-Bissau en Suisse.",
     piedAvis: "Ce site est informatif et ne constitue pas un acte administratif.",
+    adminLien: "Administration",
 
     /* Liens légaux du pied (id de page + libellé). */
     legal: [
@@ -1526,6 +1533,7 @@ D.pt = {
     piedRattachement: "Sob a autoridade da Embaixada competente: {par:ambassade}.",
     piedCopyright: "© 2026 Consulado honorário da República da Guiné-Bissau na Suíça.",
     piedAvis: "Este sítio é informativo e não constitui um ato administrativo.",
+    adminLien: "Administração",
     legal: [
       { id: "mentions", t: "Menções legais" },
       { id: "confidentialite", t: "Política de privacidade" },
@@ -2018,6 +2026,7 @@ D.en = {
     piedRattachement: "Under the authority of the competent Embassy: {par:ambassade}.",
     piedCopyright: "© 2026 Honorary Consulate of the Republic of Guinea-Bissau in Switzerland.",
     piedAvis: "This website is informative and does not constitute an administrative act.",
+    adminLien: "Administration",
     legal: [
       { id: "mentions", t: "Legal notice" },
       { id: "confidentialite", t: "Privacy policy" },
@@ -3688,6 +3697,14 @@ function rendreChrome(){
   if (ratt) ratt.innerHTML = baliser(d.ui.piedRattachement);
   txt("pied-copyright", d.ui.piedCopyright);
   txt("pied-avis", d.ui.piedAvis);
+
+  /* Lien discret vers l'espace d'administration (connexion réservée au consulat). */
+  var lienAdmin = document.getElementById("lienAdmin");
+  if (lienAdmin){
+    lienAdmin.innerHTML = "";
+    lienAdmin.appendChild(icone("ic-verrou"));
+    lienAdmin.appendChild(document.createTextNode(" " + (d.ui.adminLien || "Administration")));
+  }
 
   var piedNav = document.getElementById("piedNav");
   piedNav.innerHTML = "";
