@@ -1,0 +1,10 @@
+# robots.txt — Consulat honoraire de la République de Guinée-Bissau en Suisse
+#
+# IMPORTANT : remplacer le domaine ci-dessous par le domaine officiel du site
+# avant la mise en ligne (ligne « Sitemap »).
+
+User-agent: *
+Allow: /
+
+# Emplacement du plan de site.
+Sitemap: https://www.consulat-guineebissau.ch/sitemap.xml

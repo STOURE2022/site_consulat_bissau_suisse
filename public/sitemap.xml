@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Plan de site — Consulat honoraire de la République de Guinée-Bissau en Suisse.
+
+  IMPORTANT : remplacer partout « www.consulat-guineebissau.ch » par le domaine
+  officiel avant la mise en ligne, et actualiser la date <lastmod>.
+
+  Le site est une application à page unique avec navigation par ancre (#/page).
+  Les moteurs de recherche indexent l'URL de base ; les trois versions
+  linguistiques sont déclarées via le paramètre ?lang= et les liens hreflang
+  (voir aussi les balises <link rel="alternate" hreflang> dans index.html).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://www.consulat-guineebissau.ch/?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.consulat-guineebissau.ch/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.consulat-guineebissau.ch/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.consulat-guineebissau.ch/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.consulat-guineebissau.ch/"/>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://www.consulat-guineebissau.ch/?lang=pt</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.consulat-guineebissau.ch/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.consulat-guineebissau.ch/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.consulat-guineebissau.ch/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.consulat-guineebissau.ch/"/>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://www.consulat-guineebissau.ch/?lang=en</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.consulat-guineebissau.ch/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.consulat-guineebissau.ch/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.consulat-guineebissau.ch/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.consulat-guineebissau.ch/"/>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+</urlset>

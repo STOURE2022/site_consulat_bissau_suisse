@@ -1,0 +1,18 @@
+{
+  "name": "consulat-guinee-bissau-suisse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site vitrine du Consulat honoraire de la Republique de Guinee-Bissau en Suisse, avec backend de contact et de prise de rendez-vous.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "nodemailer": "^6.9.14"
+  }
+}
