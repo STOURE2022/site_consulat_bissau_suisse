@@ -76,7 +76,22 @@ const CLES_PARAM = [
   "adresse", "ville", "telephone", "permanence", "courriel", "ambassade",
   "horaires_reception", "horaires_jours", "horaires_permanence",
   "bandeau_actif", "bandeau_type", "bandeau_texte",
+  "consul_nom", "consul_fonction_fr", "consul_fonction_pt", "consul_fonction_en",
+  "consul_texte_fr", "consul_texte_pt", "consul_texte_en",
+  // consul_portrait_id est géré uniquement par l'endpoint d'upload dédié.
 ];
+
+/* Enregistre (ou met à jour) un paramètre unique. */
+async function definirParam(cle, valeur) {
+  await pool.query(
+    "INSERT INTO parametres (cle, valeur) VALUES ($1,$2) ON CONFLICT (cle) DO UPDATE SET valeur = $2",
+    [cle, valeur == null ? "" : String(valeur)]
+  );
+}
+async function lireParam(cle) {
+  const r = await pool.query("SELECT valeur FROM parametres WHERE cle = $1", [cle]);
+  return r.rows.length ? r.rows[0].valeur : null;
+}
 
 /* Réception des pièces jointes en mémoire (max 10 Mo/fichier, 8 fichiers). */
 const upload = multer({
@@ -499,6 +514,43 @@ app.put("/api/parametres", adminAuth, async function (req, res) {
     res.status(500).json({ ok: false, erreur: "Enregistrement impossible." });
   } finally {
     client.release();
+  }
+});
+
+/* Téléverse (ou remplace) la photo du Consul honoraire. Réservé à l'admin.
+   La photo est stockée dans la table « fichiers » (sans publication) et son id
+   est mémorisé dans le paramètre « consul_portrait_id ». */
+app.post("/api/consul/portrait", adminAuth, upload.single("portrait"), async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  if (!req.file || !/^image\//.test(req.file.mimetype)) {
+    return res.status(400).json({ ok: false, erreur: "Veuillez fournir une image." });
+  }
+  try {
+    const ancien = await lireParam("consul_portrait_id");
+    const ins = await pool.query(
+      "INSERT INTO fichiers (publication_id, nom, type_mime, est_image, contenu, taille) VALUES (NULL,$1,$2,true,$3,$4) RETURNING id",
+      [req.file.originalname, req.file.mimetype, req.file.buffer, req.file.size]
+    );
+    await definirParam("consul_portrait_id", String(ins.rows[0].id));
+    if (ancien) { await pool.query("DELETE FROM fichiers WHERE id = $1", [parseInt(ancien, 10)]); }
+    res.json({ ok: true, id: ins.rows[0].id });
+  } catch (e) {
+    console.error("POST /api/consul/portrait :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Enregistrement impossible." });
+  }
+});
+
+/* Retire la photo du Consul. */
+app.delete("/api/consul/portrait", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  try {
+    const ancien = await lireParam("consul_portrait_id");
+    if (ancien) await pool.query("DELETE FROM fichiers WHERE id = $1", [parseInt(ancien, 10)]);
+    await definirParam("consul_portrait_id", "");
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("DELETE /api/consul/portrait :", e && e.message);
+    res.status(500).json({ ok: false });
   }
 });
 

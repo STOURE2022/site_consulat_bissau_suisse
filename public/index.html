@@ -333,6 +333,7 @@ a.carte:hover{border-color:var(--vert);transform:translateY(-2px)}
 /* Mot du Consul */
 .mot-consul{display:grid;grid-template-columns:220px 1fr;gap:clamp(18px,3vw,36px);align-items:start}
 .mot-consul .portrait{aspect-ratio:3/4}
+.mot-consul .portrait-img{width:100%;height:100%;object-fit:cover;border-radius:var(--r);border:1px solid var(--ligne)}
 .mot-consul blockquote{margin:0;font-size:1.08rem;line-height:1.7}
 .mot-consul .signature{font-family:var(--titre);font-weight:700;color:var(--vert-nuit);margin-top:.8em}
 .mot-consul .signature span{display:block;font-weight:400;font-size:.9rem;color:var(--gris)}
@@ -910,9 +911,9 @@ D.fr = {
           title: "Mot du Consul honoraire",
           rule: true,
           portrait: "Portrait du Consul — format 3:4, fond neutre",
-          texte: "La fonction consulaire honoraire repose sur la proximité et le service. Notre rôle est d’accompagner nos ressortissants et de renforcer les liens d’amitié entre la Guinée-Bissau et la Suisse, dans le respect des compétences de l’Ambassade. [À VALIDER PAR LE CONSULAT : message personnel du Consul honoraire].",
-          nom: "[À VALIDER PAR LE CONSULAT : nom du Consul honoraire]",
-          fonction: "Consul honoraire de la République de Guinée-Bissau en Suisse"
+          texte: "{par:consul_texte_fr}",
+          nom: "{par:consul_nom}",
+          fonction: "{par:consul_fonction_fr}"
         },
 
         /* Trois dernières actualités (le moteur pioche dans D.news). */
@@ -1601,9 +1602,9 @@ D.pt = {
           title: "Mensagem do Cônsul honorário",
           rule: true,
           portrait: "Retrato do Cônsul — formato 3:4, fundo neutro",
-          texte: "A função consular honorária assenta na proximidade e no serviço. O nosso papel é acompanhar os nossos cidadãos e reforçar os laços de amizade entre a Guiné-Bissau e a Suíça, no respeito pelas competências da Embaixada. [A VALIDAR PELO CONSULADO: mensagem pessoal do Cônsul honorário].",
-          nom: "[A VALIDAR PELO CONSULADO: nome do Cônsul honorário]",
-          fonction: "Cônsul honorário da República da Guiné-Bissau na Suíça" },
+          texte: "{par:consul_texte_pt}",
+          nom: "{par:consul_nom}",
+          fonction: "{par:consul_fonction_pt}" },
         { type: "news-apercu", title: "Notícias e informações", rule: true, limit: 3,
           lien: { t: "Todas as notícias", href: "#/actualites" } },
         { type: "cards", cols: 3, title: "Descobrir a Guiné-Bissau", rule: true, variant: "sombre",
@@ -2093,9 +2094,9 @@ D.en = {
           title: "Message from the Honorary Consul",
           rule: true,
           portrait: "Portrait of the Consul — 3:4 format, neutral background",
-          texte: "The honorary consular office rests on closeness and service. Our role is to support our nationals and to strengthen the ties of friendship between Guinea-Bissau and Switzerland, while respecting the Embassy's competences. [TO BE CONFIRMED BY THE CONSULATE: personal message from the Honorary Consul].",
-          nom: "[TO BE CONFIRMED BY THE CONSULATE: name of the Honorary Consul]",
-          fonction: "Honorary Consul of the Republic of Guinea-Bissau in Switzerland" },
+          texte: "{par:consul_texte_en}",
+          nom: "{par:consul_nom}",
+          fonction: "{par:consul_fonction_en}" },
         { type: "news-apercu", title: "News & information", rule: true, limit: 3,
           lien: { t: "All news", href: "#/actualites" } },
         { type: "cards", cols: 3, title: "Discover Guinea-Bissau", rule: true, variant: "sombre",
@@ -2647,7 +2648,14 @@ var DEFAUTS_PARAM = {
   ambassade: "[À VALIDER : ville et adresse de l’Ambassade de rattachement]",
   horaires_reception: "Sur rendez-vous",
   horaires_jours: "[À VALIDER : jours et heures d’ouverture]",
-  horaires_permanence: "[À VALIDER : plage de la permanence téléphonique]"
+  horaires_permanence: "[À VALIDER : plage de la permanence téléphonique]",
+  consul_nom: "[À VALIDER : nom du Consul honoraire]",
+  consul_fonction_fr: "Consul honoraire de la République de Guinée-Bissau en Suisse",
+  consul_fonction_pt: "Cônsul honorário da República da Guiné-Bissau na Suíça",
+  consul_fonction_en: "Honorary Consul of the Republic of Guinea-Bissau in Switzerland",
+  consul_texte_fr: "La fonction consulaire honoraire repose sur la proximité et le service. Notre rôle est d’accompagner nos ressortissants et de renforcer les liens d’amitié entre la Guinée-Bissau et la Suisse, dans le respect des compétences de l’Ambassade. [À VALIDER : message personnel du Consul honoraire].",
+  consul_texte_pt: "A função consular honorária assenta na proximidade e no serviço. O nosso papel é acompanhar os nossos cidadãos e reforçar os laços de amizade entre a Guiné-Bissau e a Suíça, no respeito pelas competências da Embaixada. [A VALIDAR: mensagem pessoal do Cônsul honorário].",
+  consul_texte_en: "The honorary consular office rests on closeness and service. Our role is to support our nationals and to strengthen the ties of friendship between Guinea-Bissau and Switzerland, while respecting the Embassy’s competences. [TO BE CONFIRMED: personal message from the Honorary Consul]."
 };
 
 /* Remplace les jetons {par:clé} par la valeur du paramètre ou son repli. */
@@ -2851,10 +2859,20 @@ function blocMotConsul(b){
   wrap.appendChild(enteteSection(b.title, b.rule, null));
 
   var grille = creer("div",{class:"mot-consul"});
-  grille.appendChild(creer("div",{class:"imgslot portrait", role:"img",
-    "aria-label":"Emplacement réservé au portrait du Consul honoraire"},
-    creer("span",{},[creer("strong",{text:"Portrait officiel"}),
-                     creer("small",{text:b.portrait})])));
+
+  /* Portrait : la vraie photo si elle a été téléversée dans l'admin, sinon
+     l'emplacement réservé. */
+  var pid = PARAMS.consul_portrait_id;
+  if (pid && !modeDemo()){
+    grille.appendChild(creer("div",{class:"portrait"},
+      creer("img",{class:"portrait-img", src:"/api/fichier/"+pid,
+        alt:"Portrait du Consul honoraire de la République de Guinée-Bissau en Suisse"})));
+  } else {
+    grille.appendChild(creer("div",{class:"imgslot portrait", role:"img",
+      "aria-label":"Emplacement réservé au portrait du Consul honoraire"},
+      creer("span",{},[creer("strong",{text:"Portrait officiel"}),
+                       creer("small",{text:b.portrait})])));
+  }
 
   var corps = creer("div");
   corps.appendChild(creer("blockquote",{html:'« '+baliser(b.texte)+' »'}));

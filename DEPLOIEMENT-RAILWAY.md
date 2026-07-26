@@ -118,6 +118,8 @@ Deux onglets :
   **confirmer** ou **refuser** (un courriel automatique est envoyé au demandeur si
   le SMTP est configuré), et les supprimer. Une pastille indique le nombre de
   demandes en attente.
+- **Mot du Consul** : modifier le nom, la **photo** (téléversée), la fonction et le
+  message du Consul (dans les trois langues) affichés sur la page d'accueil.
 - **Paramètres & bandeau** : saisir les **coordonnées et horaires** du consulat
   (ils remplacent automatiquement les marqueurs « À valider » sur tout le site :
   Contact, Rendez-vous, pied de page) et activer un **bandeau d'information
