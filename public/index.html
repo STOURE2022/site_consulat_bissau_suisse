@@ -375,6 +375,7 @@ a.carte:hover{border-color:var(--vert);transform:translateY(-2px)}
 .rich--media{display:grid;grid-template-columns:1fr 260px;gap:clamp(20px,3vw,40px);
   align-items:start;max-width:none}
 .rich--media .portrait{aspect-ratio:3/4}
+.rich--media .portrait-img{width:100%;height:100%;object-fit:cover;border-radius:var(--r);border:1px solid var(--ligne)}
 
 /* --- Bloc « accordion » (FAQ dépliable, accessible clavier) --- */
 .accordion{border:1px solid var(--ligne);border-radius:var(--r);background:#fff;overflow:hidden}
@@ -691,11 +692,8 @@ footer.site li{margin:.35em 0}
     <div class="entete">
       <!-- Marque : armoiries (emplacement réservé) + intitulé officiel. -->
       <a class="marque" href="#/accueil" data-ui="marque-lien">
-        <span class="armoiries" aria-hidden="true">
-          <!-- EMPLACEMENT ARMOIRIES OFFICIELLES : remplacer par le fichier
-               vectoriel autorisé par le Ministère des Affaires étrangères. -->
-          <svg class="ic ic--lg" aria-hidden="true"><use href="#ic-drapeau"></use></svg>
-        </span>
+        <!-- Emblème officiel : emplacement à activer quand le fichier vectoriel
+             autorisé sera fourni (retiré pour l'instant afin d'alléger l'en-tête). -->
         <span class="lignes">
           <strong data-ui="marque-titre"></strong>
           <span data-ui="marque-sous"></span>
@@ -802,7 +800,7 @@ D.fr = {
     etatDroite: "Consulat honoraire en Suisse",
     permLabel: "Permanence téléphonique",
     marqueTitre: "Consulat honoraire de Guinée-Bissau",
-    marqueSous: "République de Guinée-Bissau — Suisse",
+    marqueSous: "en Suisse",
 
     /* Bandeau d'alerte permanent sur les compétences (point central du site). */
     alerteCompetence: "Ce consulat honoraire informe, oriente et assiste. Il ne délivre ni passeport, ni visa, ni acte d’état civil et ne procède à aucune légalisation. Ces démarches relèvent de l’Ambassade compétente.",
@@ -890,7 +888,6 @@ D.fr = {
         /* En-tête d'accueil (hero). */
         {
           type: "hero",
-          eyebrow: "République de Guinée-Bissau",
           title: "Consulat honoraire de Guinée-Bissau en Suisse",
           lead: "Le consulat honoraire informe, oriente et assiste les ressortissants bissau-guinéens et représente la Guinée-Bissau en Suisse. Il ne délivre aucun document officiel : ces démarches relèvent de l’Ambassade compétente.",
           img: "Photographie officielle — 1600 × 1200 px minimum (bâtiment, ville de [À VALIDER : ville] ou vue institutionnelle neutre)",
@@ -1049,7 +1046,7 @@ D.fr = {
           type: "rich",
           title: "Le Consul honoraire",
           rule: true,
-          img: "Portrait du Consul — format 3:4, fond neutre",
+          img: "Portrait du Consul — format 3:4, fond neutre", photoParam: "consul_portrait_id",
           lead: "[À VALIDER PAR LE CONSULAT : nom et titre du Consul honoraire].",
           paras: [
             "Le Consul honoraire est nommé par les autorités de la République de Guinée-Bissau et agréé par les autorités suisses. Son entrée en fonction est reconnue par un exequatur.",
@@ -1541,7 +1538,7 @@ D.pt = {
     etatDroite: "Consulado honorário na Suíça",
     permLabel: "Permanência telefónica",
     marqueTitre: "Consulado honorário da Guiné-Bissau",
-    marqueSous: "República da Guiné-Bissau — Suíça",
+    marqueSous: "na Suíça",
     alerteCompetence: "Este consulado honorário informa, orienta e presta assistência. Não emite passaportes, vistos nem atos de registo civil, e não efetua qualquer legalização. Essas diligências são da competência da Embaixada competente.",
     aria: {
       ouvrirMenu: "Abrir o menu",
@@ -1601,7 +1598,6 @@ D.pt = {
       desc: "Consulado honorário da República da Guiné-Bissau na Suíça: informar, orientar e prestar assistência aos cidadãos. Este consulado não emite passaportes, vistos nem atos oficiais.",
       blocks: [
         { type: "hero",
-          eyebrow: "República da Guiné-Bissau",
           title: "Consulado honorário da Guiné-Bissau na Suíça",
           lead: "O consulado honorário informa, orienta e presta assistência aos cidadãos guineenses e representa a Guiné-Bissau na Suíça. Não emite qualquer documento oficial: essas diligências são da competência da Embaixada competente.",
           img: "Fotografia oficial — 1600 × 1200 px no mínimo (edifício, cidade de [A VALIDAR: cidade] ou vista institucional neutra)",
@@ -1696,7 +1692,7 @@ D.pt = {
       desc: "Nomeação, exequatur, percurso e compromissos do Cônsul honorário da República da Guiné-Bissau na Suíça.",
       blocks: [
         { type: "rich", title: "O Cônsul honorário", rule: true,
-          img: "Retrato do Cônsul — formato 3:4, fundo neutro",
+          img: "Retrato do Cônsul — formato 3:4, fundo neutro", photoParam: "consul_portrait_id",
           lead: "[A VALIDAR PELO CONSULADO: nome e título do Cônsul honorário].",
           paras: [
             "O Cônsul honorário é nomeado pelas autoridades da República da Guiné-Bissau e reconhecido pelas autoridades suíças. A sua entrada em funções é reconhecida por um exequatur.",
@@ -2035,7 +2031,7 @@ D.en = {
     etatDroite: "Honorary Consulate in Switzerland",
     permLabel: "Telephone helpline",
     marqueTitre: "Honorary Consulate of Guinea-Bissau",
-    marqueSous: "Republic of Guinea-Bissau — Switzerland",
+    marqueSous: "in Switzerland",
     alerteCompetence: "This honorary consulate informs, guides and assists. It does not issue passports, visas or civil-status documents, and does not carry out any legalisation. Those matters fall to the competent Embassy.",
     aria: {
       ouvrirMenu: "Open the menu",
@@ -2095,7 +2091,6 @@ D.en = {
       desc: "Honorary Consulate of the Republic of Guinea-Bissau in Switzerland: informing, guiding and assisting nationals. This consulate does not issue passports, visas or official documents.",
       blocks: [
         { type: "hero",
-          eyebrow: "Republic of Guinea-Bissau",
           title: "Honorary Consulate of Guinea-Bissau in Switzerland",
           lead: "The honorary consulate informs, guides and assists Bissau-Guinean nationals and represents Guinea-Bissau in Switzerland. It issues no official documents: those matters fall to the competent Embassy.",
           img: "Official photograph — 1600 × 1200 px minimum (building, city of [TO BE CONFIRMED: city] or neutral institutional view)",
@@ -2190,7 +2185,7 @@ D.en = {
       desc: "Appointment, exequatur, background and commitments of the Honorary Consul of the Republic of Guinea-Bissau in Switzerland.",
       blocks: [
         { type: "rich", title: "The Honorary Consul", rule: true,
-          img: "Portrait of the Consul — 3:4 format, neutral background",
+          img: "Portrait of the Consul — 3:4 format, neutral background", photoParam: "consul_portrait_id",
           lead: "[TO BE CONFIRMED BY THE CONSULATE: name and title of the Honorary Consul].",
           paras: [
             "The Honorary Consul is appointed by the authorities of the Republic of Guinea-Bissau and approved by the Swiss authorities. His taking of office is recognised by an exequatur.",
@@ -3021,10 +3016,18 @@ function blocRich(b){
     var grille = creer("div",{class:"rich rich--media"});
     corps.classList.remove("rich");
     grille.appendChild(corps);
-    grille.appendChild(creer("div",{class:"imgslot portrait", role:"img",
-      "aria-label":"Emplacement réservé à une photographie officielle"},
-      creer("span",{},[creer("strong",{text:"Photographie officielle"}),
-                       creer("small",{text:b.img})])));
+    /* Vraie photo si un paramètre la fournit (ex. consul_portrait_id), sinon
+       l'emplacement réservé. */
+    var pidR = b.photoParam ? PARAMS[b.photoParam] : null;
+    if (pidR && !modeDemo()){
+      grille.appendChild(creer("div",{class:"portrait"},
+        creer("img",{class:"portrait-img", src:"/api/fichier/"+pidR, alt:b.img})));
+    } else {
+      grille.appendChild(creer("div",{class:"imgslot portrait", role:"img",
+        "aria-label":"Emplacement réservé à une photographie officielle"},
+        creer("span",{},[creer("strong",{text:"Photographie officielle"}),
+                         creer("small",{text:b.img})])));
+    }
     wrap.appendChild(grille);
   } else {
     wrap.appendChild(corps);
