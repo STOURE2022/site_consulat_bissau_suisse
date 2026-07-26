@@ -282,6 +282,9 @@ main{display:block}
     repeating-linear-gradient(45deg,#0a3a25 0 12px,#0c3f28 0 24px);
   border-color:#1c5a3d;color:#a9c9b7}
 .hero .imgslot small{color:#8fb6a1}
+.hero .hero-photo{border-radius:var(--r);overflow:hidden;align-self:stretch}
+.hero .hero-img{width:100%;height:100%;min-height:300px;object-fit:cover;display:block}
+@media (max-width:560px){.hero .hero-img{min-height:200px}}
 
 /* Boutons */
 .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--titre);
@@ -434,8 +437,11 @@ a.telechargement:hover{border-color:var(--vert)}
 .actus-vide{color:var(--gris);padding:1.4em;border:1px dashed var(--ligne);border-radius:var(--r);text-align:center}
 
 /* Pièces jointes des actualités (photos en galerie, PDF en liens). */
-.actu .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.4em;margin:.6em 0 0}
-.actu .galerie img{width:100%;height:72px;object-fit:cover;border-radius:2px;border:1px solid var(--ligne)}
+.actu .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5em;margin:.6em 0 0}
+.actu .galerie-lien{display:block;border-radius:2px;overflow:hidden;border:1px solid var(--ligne);cursor:zoom-in}
+.actu .galerie-lien img{width:100%;height:96px;object-fit:cover;display:block;transition:transform .2s ease}
+.actu .galerie-lien:hover img{transform:scale(1.05)}
+@media (prefers-reduced-motion:reduce){.actu .galerie-lien img{transition:none}}
 .actu .docs{display:flex;flex-wrap:wrap;gap:.5em;margin:.6em 0 0}
 .actu .doc{display:inline-flex;align-items:center;gap:.4em;font-family:var(--titre);font-weight:600;
   font-size:.8rem;text-decoration:none;color:var(--vert-fonce);border:1px solid var(--ligne);
@@ -695,14 +701,6 @@ footer.site li{margin:.35em 0}
 
 <!-- Bandeau d'information TEMPORAIRE, piloté depuis l'espace d'administration. -->
 <aside id="bandeauInfo" aria-label="Information" hidden></aside>
-
-<!-- Bandeau d'alerte PERMANENT sur les compétences (répété en haut de page). -->
-<aside class="alerte-competence" aria-label="Compétences du consulat honoraire">
-  <div class="wrap">
-    <svg class="ic ic--lg" aria-hidden="true"><use href="#ic-alerte"></use></svg>
-    <p data-ui="alerte-competence"></p>
-  </div>
-</aside>
 
 <!-- Zone de contenu principale : réinjectée par le routeur à chaque page. -->
 <main id="contenu" tabindex="-1"></main>
@@ -1012,14 +1010,14 @@ D.fr = {
           title: "Zone de compétence",
           rule: true,
           paras: [
-            "La zone de compétence du consulat honoraire couvre : [À VALIDER PAR LE CONSULAT : périmètre géographique exact, par exemple l’ensemble du territoire suisse ou certains cantons].",
+            "La zone de compétence du consulat honoraire couvre : {par:zone_competence_fr}.",
             "Pour les démarches sortant de ce périmètre ou relevant de l’Ambassade, les ressortissants sont invités à s’adresser à la représentation compétente."
           ]
         },
         {
           type: "note",
           variant: "attention",
-          text: "Articulation avec l’Ambassade : toute démarche impliquant la délivrance d’un document officiel doit être adressée à [À VALIDER PAR LE CONSULAT : ville et adresse de l’Ambassade de rattachement]. Le consulat honoraire peut vous indiquer la marche à suivre."
+          text: "Articulation avec l’Ambassade : toute démarche impliquant la délivrance d’un document officiel doit être adressée à {par:ambassade}. Le consulat honoraire peut vous indiquer la marche à suivre."
         }
       ]
     },
@@ -1129,7 +1127,7 @@ D.fr = {
             { t: "Déclarer la perte ou le vol à la police", x: "Rendez-vous au poste de police le plus proche et conservez le récépissé de déclaration." },
             { t: "Rassembler vos justificatifs d’identité", x: "Réunissez toute copie ou information permettant d’attester votre identité (sans transmettre d’original par voie électronique)." },
             { t: "Contacter le consulat honoraire", x: "Nous vous indiquons la marche à suivre et faisons le lien avec l’Ambassade compétente." },
-            { t: "Adresser votre demande à l’Ambassade", x: "La délivrance d’un nouveau passeport ou d’un laissez-passer relève de [À VALIDER PAR LE CONSULAT : Ambassade de rattachement]." }
+            { t: "Adresser votre demande à l’Ambassade", x: "La délivrance d’un nouveau passeport ou d’un laissez-passer relève de {par:ambassade}." }
           ]
         },
         {
@@ -1152,7 +1150,7 @@ D.fr = {
             {
               q: "Puis-je obtenir ou renouveler un passeport auprès du consulat honoraire ?",
               a: "Non. Le consulat honoraire ne délivre ni ne renouvelle aucun passeport. Cette démarche relève exclusivement de l’Ambassade compétente.",
-              redirection: "[À VALIDER PAR LE CONSULAT : Ambassade de rattachement]"
+              redirection: "{par:ambassade}"
             },
             {
               q: "Pouvez-vous légaliser un document ou certifier une copie conforme ?",
@@ -1168,7 +1166,7 @@ D.fr = {
               q: "J’ai perdu mes papiers. Que dois-je faire ?",
               a: ["Déclarez d’abord la perte ou le vol à la police suisse, puis contactez le consulat honoraire, qui vous indiquera la marche à suivre.",
                   "La délivrance d’un nouveau document relève de l’Ambassade."],
-              redirection: "[À VALIDER PAR LE CONSULAT : Ambassade de rattachement]"
+              redirection: "{par:ambassade}"
             },
             {
               q: "Comment prendre rendez-vous avec le consulat honoraire ?",
@@ -1392,9 +1390,9 @@ D.fr = {
           title: "Mentions légales",
           rule: true,
           paras: [
-            "<strong>Éditeur du site :</strong> Consulat honoraire de la République de Guinée-Bissau en Suisse — [À VALIDER PAR LE CONSULAT : nom de l’éditeur responsable, adresse, courriel].",
+            "<strong>Éditeur du site :</strong> Consulat honoraire de la République de Guinée-Bissau en Suisse — {par:editeur}.",
             "<strong>Représentant responsable :</strong> [À VALIDER : nom du Consul honoraire].",
-            "<strong>Hébergement :</strong> [À VALIDER : nom et adresse de l’hébergeur du site].",
+            "<strong>Hébergement :</strong> {par:hebergeur}.",
             "<strong>Nature du site :</strong> ce site est purement informatif. Il ne permet aucune démarche administrative en ligne et ne constitue pas un acte officiel.",
             "<strong>Propriété intellectuelle :</strong> les armoiries et emblèmes officiels de la République de Guinée-Bissau sont protégés ; leur reproduction est soumise à autorisation. Les textes de ce site peuvent être cités avec mention de la source."
           ]
@@ -1422,7 +1420,7 @@ D.fr = {
             "<strong>Données collectées :</strong> ce site ne collecte des données que lorsque vous remplissez volontairement le formulaire de contact (nom, adresse électronique, objet et contenu de votre message).",
             "<strong>Finalité :</strong> ces données servent uniquement à répondre à votre demande. Elles ne sont ni vendues, ni cédées à des tiers à des fins commerciales.",
             "<strong>Base légale :</strong> votre consentement et l’intérêt légitime à traiter votre demande.",
-            "<strong>Durée de conservation :</strong> [À VALIDER : durée de conservation des messages].",
+            "<strong>Durée de conservation :</strong> {par:conservation}.",
             "<strong>Vos droits :</strong> vous disposez d’un droit d’accès, de rectification et d’effacement de vos données, ainsi que du droit de vous opposer à leur traitement. Pour l’exercer, utilisez la page Contact.",
             "<strong>Absence de suivi :</strong> ce site n’utilise aucun outil de mesure d’audience, aucun réseau publicitaire et aucune police ou carte chargée depuis un serveur tiers. Aucune donnée n’est ainsi transmise à l’étranger à votre insu."
           ]
@@ -1471,7 +1469,7 @@ D.fr = {
         { type: "steps", title: "Comment ça marche", rule: true,
           items: [
             { t: "Vous envoyez une demande", x: "Indiquez le motif, un jour et un créneau souhaités, ainsi que vos coordonnées." },
-            { t: "Le consulat confirme", x: "Vous recevez une confirmation ou la proposition d’un autre créneau sous [À VALIDER : délai de réponse]." },
+            { t: "Le consulat confirme", x: "Vous recevez une confirmation ou la proposition d’un autre créneau sous {par:rdv_delai}." },
             { t: "Vous êtes reçu", x: "Présentez-vous à l’heure convenue, muni de vos documents. La réception est individuelle et confidentielle." }
           ] },
         { type: "rdv", title: "Votre demande de rendez-vous", rule: true,
@@ -1667,11 +1665,11 @@ D.pt = {
             ] } },
         { type: "rich", title: "Área de competência", rule: true,
           paras: [
-            "A área de competência do consulado honorário abrange: [A VALIDAR PELO CONSULADO: âmbito geográfico exato, por exemplo todo o território suíço ou determinados cantões].",
+            "A área de competência do consulado honorário abrange: {par:zone_competence_pt}.",
             "Para as diligências fora deste âmbito ou da competência da Embaixada, os cidadãos são convidados a dirigir-se à representação competente."
           ] },
         { type: "note", variant: "attention",
-          text: "Articulação com a Embaixada: qualquer diligência que implique a emissão de um documento oficial deve ser dirigida a [A VALIDAR PELO CONSULADO: cidade e endereço da Embaixada de referência]. O consulado honorário pode indicar-lhe os passos a seguir." }
+          text: "Articulação com a Embaixada: qualquer diligência que implique a emissão de um documento oficial deve ser dirigida a {par:ambassade}. O consulado honorário pode indicar-lhe os passos a seguir." }
       ]
     },
     consul: {
@@ -1744,7 +1742,7 @@ D.pt = {
             { t: "Declarar a perda ou o furto à polícia", x: "Dirija-se à esquadra de polícia mais próxima e conserve o comprovativo da declaração." },
             { t: "Reunir os seus comprovativos de identidade", x: "Reúna qualquer cópia ou informação que permita atestar a sua identidade (sem transmitir originais por via eletrónica)." },
             { t: "Contactar o consulado honorário", x: "Indicamos-lhe os passos a seguir e fazemos a ligação com a Embaixada competente." },
-            { t: "Dirigir o seu pedido à Embaixada", x: "A emissão de um novo passaporte ou salvo-conduto é da competência de [A VALIDAR PELO CONSULADO: Embaixada de referência]." }
+            { t: "Dirigir o seu pedido à Embaixada", x: "A emissão de um novo passaporte ou salvo-conduto é da competência de {par:ambassade}." }
           ] },
         { type: "cards", cols: 3, title: "Outras situações de emergência", rule: true, variant: "sombre",
           items: [
@@ -1756,7 +1754,7 @@ D.pt = {
           items: [
             { q: "Posso obter ou renovar um passaporte junto do consulado honorário?",
               a: "Não. O consulado honorário não emite nem renova qualquer passaporte. Esta diligência é da competência exclusiva da Embaixada competente.",
-              redirection: "[A VALIDAR PELO CONSULADO: Embaixada de referência]" },
+              redirection: "{par:ambassade}" },
             { q: "Podem legalizar um documento ou autenticar uma cópia?",
               a: "Não. O consulado honorário não efetua qualquer legalização ou autenticação. Consoante o documento, dirija-se à autoridade suíça competente ou à Embaixada.",
               redirection: "[A VALIDAR PELO CONSULADO: autoridade competente / Embaixada]" },
@@ -1766,7 +1764,7 @@ D.pt = {
             { q: "Perdi os meus documentos. O que devo fazer?",
               a: ["Declare primeiro a perda ou o furto à polícia suíça e, em seguida, contacte o consulado honorário, que lhe indicará os passos a seguir.",
                   "A emissão de um novo documento é da competência da Embaixada."],
-              redirection: "[A VALIDAR PELO CONSULADO: Embaixada de referência]" },
+              redirection: "{par:ambassade}" },
             { q: "Como marcar um atendimento com o consulado honorário?",
               a: "O atendimento é feito apenas mediante marcação. Utilize os contactos da página Contacto para combinar um horário.",
               redirection: "Página Contacto deste sítio" },
@@ -1908,9 +1906,9 @@ D.pt = {
       blocks: [
         { type: "rich", title: "Menções legais", rule: true,
           paras: [
-            "<strong>Editor do sítio:</strong> Consulado honorário da República da Guiné-Bissau na Suíça — [A VALIDAR PELO CONSULADO: nome do editor responsável, endereço, correio eletrónico].",
+            "<strong>Editor do sítio:</strong> Consulado honorário da República da Guiné-Bissau na Suíça — {par:editeur}.",
             "<strong>Representante responsável:</strong> [A VALIDAR: nome do Cônsul honorário].",
-            "<strong>Alojamento:</strong> [A VALIDAR: nome e endereço do fornecedor de alojamento do sítio].",
+            "<strong>Alojamento:</strong> {par:hebergeur}.",
             "<strong>Natureza do sítio:</strong> este sítio é puramente informativo. Não permite qualquer diligência administrativa em linha e não constitui um ato oficial.",
             "<strong>Propriedade intelectual:</strong> as armas e emblemas oficiais da República da Guiné-Bissau são protegidos; a sua reprodução está sujeita a autorização. Os textos deste sítio podem ser citados com menção da fonte."
           ] },
@@ -1929,7 +1927,7 @@ D.pt = {
             "<strong>Dados recolhidos:</strong> este sítio só recolhe dados quando preenche voluntariamente o formulário de contacto (nome, correio eletrónico, assunto e conteúdo da sua mensagem).",
             "<strong>Finalidade:</strong> estes dados servem exclusivamente para responder ao seu pedido. Não são vendidos nem cedidos a terceiros para fins comerciais.",
             "<strong>Base legal:</strong> o seu consentimento e o interesse legítimo em tratar o seu pedido.",
-            "<strong>Prazo de conservação:</strong> [A VALIDAR: prazo de conservação das mensagens].",
+            "<strong>Prazo de conservação:</strong> {par:conservation}.",
             "<strong>Os seus direitos:</strong> dispõe do direito de acesso, de retificação e de apagamento dos seus dados, bem como do direito de se opor ao seu tratamento. Para o exercer, utilize a página Contacto.",
             "<strong>Ausência de rastreio:</strong> este sítio não utiliza qualquer ferramenta de medição de audiência, qualquer rede publicitária nem qualquer tipo de letra ou mapa carregado a partir de um servidor de terceiros. Assim, nenhum dado é transmitido para o estrangeiro sem o seu conhecimento."
           ] },
@@ -1965,7 +1963,7 @@ D.pt = {
         { type: "steps", title: "Como funciona", rule: true,
           items: [
             { t: "Envia um pedido", x: "Indique o motivo, um dia e um horário pretendidos, bem como os seus contactos." },
-            { t: "O consulado confirma", x: "Recebe uma confirmação ou a proposta de outro horário no prazo de [A VALIDAR: prazo de resposta]." },
+            { t: "O consulado confirma", x: "Recebe uma confirmação ou a proposta de outro horário no prazo de {par:rdv_delai}." },
             { t: "É atendido", x: "Compareça à hora combinada, munido dos seus documentos. O atendimento é individual e confidencial." }
           ] },
         { type: "rdv", title: "O seu pedido de marcação", rule: true,
@@ -2160,11 +2158,11 @@ D.en = {
             ] } },
         { type: "rich", title: "Area of competence", rule: true,
           paras: [
-            "The area of competence of the honorary consulate covers: [TO BE CONFIRMED BY THE CONSULATE: exact geographic scope, for example the whole of Swiss territory or certain cantons].",
+            "The area of competence of the honorary consulate covers: {par:zone_competence_en}.",
             "For matters outside this scope or falling to the Embassy, nationals are invited to contact the competent representation."
           ] },
         { type: "note", variant: "attention",
-          text: "Relationship with the Embassy: any matter involving the issuance of an official document must be addressed to [TO BE CONFIRMED BY THE CONSULATE: city and address of the responsible Embassy]. The honorary consulate can tell you how to proceed." }
+          text: "Relationship with the Embassy: any matter involving the issuance of an official document must be addressed to {par:ambassade}. The honorary consulate can tell you how to proceed." }
       ]
     },
     consul: {
@@ -2237,7 +2235,7 @@ D.en = {
             { t: "Report the loss or theft to the police", x: "Go to the nearest police station and keep the acknowledgement of the report." },
             { t: "Gather your proof of identity", x: "Collect any copy or information that can attest to your identity (without sending originals electronically)." },
             { t: "Contact the honorary consulate", x: "We tell you how to proceed and liaise with the competent Embassy." },
-            { t: "Address your request to the Embassy", x: "The issuance of a new passport or travel document falls to [TO BE CONFIRMED BY THE CONSULATE: responsible Embassy]." }
+            { t: "Address your request to the Embassy", x: "The issuance of a new passport or travel document falls to {par:ambassade}." }
           ] },
         { type: "cards", cols: 3, title: "Other emergencies", rule: true, variant: "sombre",
           items: [
@@ -2249,7 +2247,7 @@ D.en = {
           items: [
             { q: "Can I obtain or renew a passport at the honorary consulate?",
               a: "No. The honorary consulate does not issue or renew any passport. This matter falls exclusively to the competent Embassy.",
-              redirection: "[TO BE CONFIRMED BY THE CONSULATE: responsible Embassy]" },
+              redirection: "{par:ambassade}" },
             { q: "Can you legalise a document or certify a copy?",
               a: "No. The honorary consulate carries out no legalisation or certification. Depending on the document, contact the competent Swiss authority or the Embassy.",
               redirection: "[TO BE CONFIRMED BY THE CONSULATE: competent authority / Embassy]" },
@@ -2259,7 +2257,7 @@ D.en = {
             { q: "I have lost my documents. What should I do?",
               a: ["First report the loss or theft to the Swiss police, then contact the honorary consulate, which will tell you how to proceed.",
                   "The issuance of a new document falls to the Embassy."],
-              redirection: "[TO BE CONFIRMED BY THE CONSULATE: responsible Embassy]" },
+              redirection: "{par:ambassade}" },
             { q: "How do I make an appointment with the honorary consulate?",
               a: "Reception is by appointment only. Use the details on the Contact page to arrange a slot.",
               redirection: "Contact page of this website" },
@@ -2401,9 +2399,9 @@ D.en = {
       blocks: [
         { type: "rich", title: "Legal notice", rule: true,
           paras: [
-            "<strong>Website publisher:</strong> Honorary Consulate of the Republic of Guinea-Bissau in Switzerland — [TO BE CONFIRMED BY THE CONSULATE: name of the responsible publisher, address, email].",
+            "<strong>Website publisher:</strong> Honorary Consulate of the Republic of Guinea-Bissau in Switzerland — {par:editeur}.",
             "<strong>Responsible representative:</strong> [TO BE CONFIRMED: name of the Honorary Consul].",
-            "<strong>Hosting:</strong> [TO BE CONFIRMED: name and address of the website's host].",
+            "<strong>Hosting:</strong> {par:hebergeur}.",
             "<strong>Nature of the website:</strong> this website is purely informative. It allows no online administrative procedure and does not constitute an official act.",
             "<strong>Intellectual property:</strong> the official arms and emblems of the Republic of Guinea-Bissau are protected; their reproduction is subject to authorisation. The texts of this website may be quoted with attribution."
           ] },
@@ -2422,7 +2420,7 @@ D.en = {
             "<strong>Data collected:</strong> this website only collects data when you voluntarily complete the contact form (name, email address, subject and content of your message).",
             "<strong>Purpose:</strong> this data is used solely to respond to your request. It is neither sold nor passed on to third parties for commercial purposes.",
             "<strong>Legal basis:</strong> your consent and the legitimate interest in processing your request.",
-            "<strong>Retention period:</strong> [TO BE CONFIRMED: retention period for messages].",
+            "<strong>Retention period:</strong> {par:conservation}.",
             "<strong>Your rights:</strong> you have the right to access, rectify and erase your data, as well as the right to object to its processing. To exercise these rights, use the Contact page.",
             "<strong>No tracking:</strong> this website uses no analytics tool, no advertising network and no font or map loaded from a third-party server. No data is thus transferred abroad without your knowledge."
           ] },
@@ -2458,7 +2456,7 @@ D.en = {
         { type: "steps", title: "How it works", rule: true,
           items: [
             { t: "You send a request", x: "Indicate the reason, a preferred day and time slot, and your contact details." },
-            { t: "The consulate confirms", x: "You receive a confirmation or a proposal for another slot within [TO BE CONFIRMED: response time]." },
+            { t: "The consulate confirms", x: "You receive a confirmation or a proposal for another slot within {par:rdv_delai}." },
             { t: "You are received", x: "Come at the agreed time, with your documents. Reception is individual and confidential." }
           ] },
         { type: "rdv", title: "Your appointment request", rule: true,
@@ -2675,7 +2673,14 @@ var DEFAUTS_PARAM = {
   consul_fonction_en: "Honorary Consul of the Republic of Guinea-Bissau in Switzerland",
   consul_texte_fr: "La fonction consulaire honoraire repose sur la proximité et le service. Notre rôle est d’accompagner nos ressortissants et de renforcer les liens d’amitié entre la Guinée-Bissau et la Suisse, dans le respect des compétences de l’Ambassade. [À VALIDER : message personnel du Consul honoraire].",
   consul_texte_pt: "A função consular honorária assenta na proximidade e no serviço. O nosso papel é acompanhar os nossos cidadãos e reforçar os laços de amizade entre a Guiné-Bissau e a Suíça, no respeito pelas competências da Embaixada. [A VALIDAR: mensagem pessoal do Cônsul honorário].",
-  consul_texte_en: "The honorary consular office rests on closeness and service. Our role is to support our nationals and to strengthen the ties of friendship between Guinea-Bissau and Switzerland, while respecting the Embassy’s competences. [TO BE CONFIRMED: personal message from the Honorary Consul]."
+  consul_texte_en: "The honorary consular office rests on closeness and service. Our role is to support our nationals and to strengthen the ties of friendship between Guinea-Bissau and Switzerland, while respecting the Embassy’s competences. [TO BE CONFIRMED: personal message from the Honorary Consul].",
+  zone_competence_fr: "[À VALIDER : périmètre géographique, par exemple l’ensemble du territoire suisse ou certains cantons]",
+  zone_competence_pt: "[A VALIDAR: âmbito geográfico, por exemplo todo o território suíço ou determinados cantões]",
+  zone_competence_en: "[TO BE CONFIRMED: geographic scope, e.g. the whole of Swiss territory or certain cantons]",
+  rdv_delai: "[À VALIDER : délai de réponse]",
+  editeur: "[À VALIDER : nom de l’éditeur responsable, adresse, courriel]",
+  hebergeur: "[À VALIDER : nom et adresse de l’hébergeur du site]",
+  conservation: "[À VALIDER : durée de conservation des messages]"
 };
 
 /* Remplace les jetons {par:clé} par la valeur du paramètre ou son repli. */
@@ -2726,14 +2731,19 @@ function ajouterPiecesJointes(article, n){
   if (imgs.length){
     var g = creer("div",{class:"galerie"});
     imgs.forEach(function(f){
-      g.appendChild(creer("img",{src:"/api/fichier/"+f.id, alt:f.nom, loading:"lazy"}));
+      /* Photo cliquable : ouvre l'image en grand dans un nouvel onglet. */
+      g.appendChild(creer("a",{class:"galerie-lien", href:"/api/fichier/"+f.id,
+        target:"_blank", rel:"noopener", title:"Ouvrir l’image : "+f.nom},
+        creer("img",{src:"/api/fichier/"+f.id, alt:f.nom, loading:"lazy"})));
     });
     article.appendChild(g);
   }
   if (docs.length){
     var dd = creer("div",{class:"docs"});
     docs.forEach(function(f){
-      dd.appendChild(creer("a",{class:"doc", href:"/api/fichier/"+f.id, download:f.nom},
+      /* PDF : s'ouvre dans un nouvel onglet (le lecteur permet de le télécharger). */
+      dd.appendChild(creer("a",{class:"doc", href:"/api/fichier/"+f.id,
+        target:"_blank", rel:"noopener"},
         [ icone("ic-doc"), f.nom ]));
     });
     article.appendChild(dd);
@@ -2809,11 +2819,20 @@ function blocHero(b){
     col.appendChild(actions);
   }
 
-  /* Emplacement d'image officiel — jamais de photo générée. */
-  var media = creer("div",{class:"imgslot", role:"img",
-    "aria-label":"Emplacement réservé à une photographie officielle"},
-    creer("span",{}, [creer("strong",{text:"Photographie officielle"}),
-                      creer("small",{text:b.img})]));
+  /* Photographie officielle : la vraie photo si elle a été téléversée dans
+     l'admin, sinon l'emplacement réservé. */
+  var media;
+  var hid = PARAMS.hero_photo_id;
+  if (hid && !modeDemo()){
+    media = creer("div",{class:"hero-photo"},
+      creer("img",{class:"hero-img", src:"/api/fichier/"+hid,
+        alt:"Photographie officielle du consulat honoraire de Guinée-Bissau en Suisse"}));
+  } else {
+    media = creer("div",{class:"imgslot", role:"img",
+      "aria-label":"Emplacement réservé à une photographie officielle"},
+      creer("span",{}, [creer("strong",{text:"Photographie officielle"}),
+                        creer("small",{text:b.img})]));
+  }
 
   grille.appendChild(col);
   grille.appendChild(media);
@@ -3672,9 +3691,6 @@ function rendreChrome(){
   txt("marque-titre", d.ui.marqueTitre);
   txt("marque-sous", d.ui.marqueSous);
 
-  /* Bandeau d'alerte permanent (compétences). */
-  var alerte = document.querySelector('[data-ui="alerte-competence"]');
-  if (alerte) alerte.innerHTML = baliser(d.ui.alerteCompetence);
 
   /* Navigation principale. */
   var nav = document.getElementById("navPrincipale");

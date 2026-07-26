@@ -78,7 +78,10 @@ const CLES_PARAM = [
   "bandeau_actif", "bandeau_type", "bandeau_texte",
   "consul_nom", "consul_fonction_fr", "consul_fonction_pt", "consul_fonction_en",
   "consul_texte_fr", "consul_texte_pt", "consul_texte_en",
-  // consul_portrait_id est géré uniquement par l'endpoint d'upload dédié.
+  // Zones institutionnelles à compléter par le consulat.
+  "zone_competence_fr", "zone_competence_pt", "zone_competence_en",
+  "rdv_delai", "editeur", "hebergeur", "conservation",
+  // consul_portrait_id et hero_photo_id sont gérés par leurs endpoints d'upload.
 ];
 
 /* Enregistre (ou met à jour) un paramètre unique. */
@@ -550,6 +553,42 @@ app.delete("/api/consul/portrait", adminAuth, async function (req, res) {
     res.json({ ok: true });
   } catch (e) {
     console.error("DELETE /api/consul/portrait :", e && e.message);
+    res.status(500).json({ ok: false });
+  }
+});
+
+/* Téléverse (ou remplace) la photographie officielle de la page d'accueil.
+   Stockée dans « fichiers », son id est mémorisé dans « hero_photo_id ». */
+app.post("/api/hero/photo", adminAuth, upload.single("photo"), async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  if (!req.file || !/^image\//.test(req.file.mimetype)) {
+    return res.status(400).json({ ok: false, erreur: "Veuillez fournir une image." });
+  }
+  try {
+    const ancien = await lireParam("hero_photo_id");
+    const ins = await pool.query(
+      "INSERT INTO fichiers (publication_id, nom, type_mime, est_image, contenu, taille) VALUES (NULL,$1,$2,true,$3,$4) RETURNING id",
+      [req.file.originalname, req.file.mimetype, req.file.buffer, req.file.size]
+    );
+    await definirParam("hero_photo_id", String(ins.rows[0].id));
+    if (ancien) { await pool.query("DELETE FROM fichiers WHERE id = $1", [parseInt(ancien, 10)]); }
+    res.json({ ok: true, id: ins.rows[0].id });
+  } catch (e) {
+    console.error("POST /api/hero/photo :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Enregistrement impossible." });
+  }
+});
+
+/* Retire la photographie officielle. */
+app.delete("/api/hero/photo", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  try {
+    const ancien = await lireParam("hero_photo_id");
+    if (ancien) await pool.query("DELETE FROM fichiers WHERE id = $1", [parseInt(ancien, 10)]);
+    await definirParam("hero_photo_id", "");
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("DELETE /api/hero/photo :", e && e.message);
     res.status(500).json({ ok: false });
   }
 });

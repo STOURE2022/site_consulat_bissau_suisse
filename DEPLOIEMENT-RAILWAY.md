@@ -120,6 +120,10 @@ Deux onglets :
   demandes en attente.
 - **Mot du Consul** : modifier le nom, la **photo** (téléversée), la fonction et le
   message du Consul (dans les trois langues) affichés sur la page d'accueil.
+- **Contenu & textes** : téléverser la **photographie officielle** de la page
+  d'accueil, et compléter les zones « À valider » (zone de compétence FR/PT/EN,
+  délai de réponse aux rendez-vous, mentions légales : éditeur, hébergeur, durée
+  de conservation). Les champs vides gardent le marqueur jaune par défaut.
 - **Paramètres & bandeau** : saisir les **coordonnées et horaires** du consulat
   (ils remplacent automatiquement les marqueurs « À valider » sur tout le site :
   Contact, Rendez-vous, pied de page) et activer un **bandeau d'information
