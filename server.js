@@ -57,7 +57,17 @@ async function initBase() {
       "nom TEXT NOT NULL, type_mime TEXT NOT NULL, est_image BOOLEAN DEFAULT FALSE, " +
       "contenu BYTEA NOT NULL, taille INTEGER)"
   );
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS parametres (cle TEXT PRIMARY KEY, valeur TEXT)"
+  );
 }
+
+/* Clés de paramètres autorisées (coordonnées, horaires, bandeau d'information). */
+const CLES_PARAM = [
+  "adresse", "ville", "telephone", "permanence", "courriel", "ambassade",
+  "horaires_reception", "horaires_jours", "horaires_permanence",
+  "bandeau_actif", "bandeau_type", "bandeau_texte",
+];
 
 /* Réception des pièces jointes en mémoire (max 10 Mo/fichier, 8 fichiers). */
 const upload = multer({
@@ -338,6 +348,51 @@ app.delete("/api/publications/:id", adminAuth, async function (req, res) {
   } catch (e) {
     console.error("DELETE /api/publications :", e && e.message);
     res.status(500).json({ ok: false });
+  }
+});
+
+/* ========================================================================== */
+/* PARAMÈTRES (coordonnées, horaires, bandeau d'information)                  */
+/* ========================================================================== */
+
+/* Lecture publique : renvoie tous les paramètres sous forme d'objet. */
+app.get("/api/parametres", async function (req, res) {
+  if (!pool) return res.json({ ok: true, parametres: {} });
+  try {
+    const r = await pool.query("SELECT cle, valeur FROM parametres");
+    const o = {};
+    r.rows.forEach(function (x) { o[x.cle] = x.valeur; });
+    res.json({ ok: true, parametres: o });
+  } catch (e) {
+    console.error("GET /api/parametres :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Erreur base de données." });
+  }
+});
+
+/* Enregistrement (réservé à l'administration). Corps JSON : { cle: valeur, … }. */
+app.put("/api/parametres", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  const b = req.body || {};
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    for (let i = 0; i < CLES_PARAM.length; i++) {
+      const cle = CLES_PARAM[i];
+      if (!(cle in b)) continue; // on ne touche qu'aux clés fournies
+      const val = b[cle] == null ? "" : String(b[cle]);
+      await client.query(
+        "INSERT INTO parametres (cle, valeur) VALUES ($1,$2) ON CONFLICT (cle) DO UPDATE SET valeur = $2",
+        [cle, val]
+      );
+    }
+    await client.query("COMMIT");
+    res.json({ ok: true });
+  } catch (e) {
+    await client.query("ROLLBACK");
+    console.error("PUT /api/parametres :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Enregistrement impossible." });
+  } finally {
+    client.release();
   }
 });
 

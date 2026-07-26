@@ -239,6 +239,17 @@ header.site .wrap, .bandeau-etat .wrap{max-width:min(95vw, 1300px)}
 .ic{width:1.15em;height:1.15em;fill:currentColor;flex:0 0 auto;vertical-align:-.15em}
 .ic--lg{width:1.7em;height:1.7em}
 
+/* Bandeau d'information temporaire (piloté par l'admin). */
+.bandeau-info{font-size:.92rem}
+.bandeau-info[hidden]{display:none}
+.bandeau-info .wrap{display:flex;gap:.6em;align-items:flex-start;padding-top:.75em;padding-bottom:.75em}
+.bandeau-info .ic{flex:0 0 auto;margin-top:.1em}
+.bandeau-info p{margin:0}
+.bandeau-info--info{background:#eef3ef;border-bottom:1px solid var(--vert);color:var(--vert-nuit)}
+.bandeau-info--info .ic{color:var(--vert-fonce)}
+.bandeau-info--attention{background:var(--alerte-fond);border-bottom:1px solid var(--alerte-bord);color:#5a4406}
+.bandeau-info--attention .ic{color:#a5730a}
+
 /* ==========================================================================
    4. BANDEAU D'ALERTE PERMANENT (compétences) — visible en haut de chaque page
    ========================================================================== */
@@ -665,6 +676,9 @@ footer.site li{margin:.35em 0}
 <!-- Voile sombre du menu mobile. -->
 <button class="voile" id="voile" hidden aria-label="Fermer le menu"></button>
 
+<!-- Bandeau d'information TEMPORAIRE, piloté depuis l'espace d'administration. -->
+<aside id="bandeauInfo" aria-label="Information" hidden></aside>
+
 <!-- Bandeau d'alerte PERMANENT sur les compétences (répété en haut de page). -->
 <aside class="alerte-competence" aria-label="Compétences du consulat honoraire">
   <div class="wrap">
@@ -777,7 +791,7 @@ D.fr = {
     piedTitre1: "Consulat honoraire",
     piedTitre2: "Navigation",
     piedTitre3: "Informations légales",
-    piedRattachement: "Sous l’autorité de l’Ambassade compétente : [À VALIDER PAR LE CONSULAT : ville et adresse de l’Ambassade de rattachement].",
+    piedRattachement: "Sous l’autorité de l’Ambassade compétente : {par:ambassade}.",
     piedCopyright: "© " + "2026" + " Consulat honoraire de la République de Guinée-Bissau en Suisse.",
     piedAvis: "Ce site est informatif et ne constitue pas un acte administratif.",
 
@@ -1287,31 +1301,31 @@ D.fr = {
             {
               icon: "ic-batiment", titre: "Adresse",
               lignes: [
-                { k: "Bureau", v: "[À VALIDER PAR LE CONSULAT : adresse complète du bureau consulaire]" },
-                { k: "Ville", v: "[À VALIDER : ville]" },
+                { k: "Bureau", v: "{par:adresse}" },
+                { k: "Ville", v: "{par:ville}" },
                 { k: "Accès", v: "Sur rendez-vous uniquement" }
               ]
             },
             {
               icon: "ic-tel", titre: "Téléphone & courriel",
               lignes: [
-                { k: "Téléphone", v: "[À VALIDER : +41 …]" },
-                { k: "Permanence", v: "[À VALIDER : numéro d’urgence, si différent]" },
-                { k: "Courriel", v: "[À VALIDER : contact@…]" }
+                { k: "Téléphone", v: "{par:telephone}" },
+                { k: "Permanence", v: "{par:permanence}" },
+                { k: "Courriel", v: "{par:courriel}" }
               ]
             },
             {
               icon: "ic-horloge", titre: "Horaires",
               lignes: [
-                { k: "Réception", v: "Sur rendez-vous" },
-                { k: "Jours", v: "[À VALIDER : jours et heures d’ouverture]" },
-                { k: "Permanence tél.", v: "[À VALIDER : plage de la permanence téléphonique]" }
+                { k: "Réception", v: "{par:horaires_reception}" },
+                { k: "Jours", v: "{par:horaires_jours}" },
+                { k: "Permanence tél.", v: "{par:horaires_permanence}" }
               ]
             },
             {
               icon: "ic-fleche", titre: "Autorité de rattachement",
               lignes: [
-                { k: "Ambassade", v: "[À VALIDER : ville et adresse de l’Ambassade compétente]" },
+                { k: "Ambassade", v: "{par:ambassade}" },
                 { k: "Documents officiels", v: "À demander à l’Ambassade" }
               ]
             }
@@ -1463,10 +1477,10 @@ D.fr = {
           aside: {
             horairesTitre: "Horaires & accès",
             horairesLignes: [
-              { k: "Réception", v: "Sur rendez-vous" },
-              { k: "Jours", v: "[À VALIDER : jours et heures]" },
-              { k: "Adresse", v: "[À VALIDER : adresse du bureau]" },
-              { k: "Téléphone", v: "[À VALIDER : +41 …]" }
+              { k: "Réception", v: "{par:horaires_reception}" },
+              { k: "Jours", v: "{par:horaires_jours}" },
+              { k: "Adresse", v: "{par:adresse}" },
+              { k: "Téléphone", v: "{par:telephone}" }
             ],
             horairesLien: { t: "Voir la page Contact →", href: "#/contact" },
             apporterTitre: "À apporter le jour J",
@@ -1508,7 +1522,7 @@ D.pt = {
     piedTitre1: "Consulado honorário",
     piedTitre2: "Navegação",
     piedTitre3: "Informação legal",
-    piedRattachement: "Sob a autoridade da Embaixada competente: [A VALIDAR PELO CONSULADO: cidade e endereço da Embaixada de referência].",
+    piedRattachement: "Sob a autoridade da Embaixada competente: {par:ambassade}.",
     piedCopyright: "© 2026 Consulado honorário da República da Guiné-Bissau na Suíça.",
     piedAvis: "Este sítio é informativo e não constitui um ato administrativo.",
     legal: [
@@ -1824,25 +1838,25 @@ D.pt = {
           fiches: [
             { icon: "ic-batiment", titre: "Endereço",
               lignes: [
-                { k: "Escritório", v: "[A VALIDAR PELO CONSULADO: endereço completo do escritório consular]" },
-                { k: "Cidade", v: "[A VALIDAR: cidade]" },
+                { k: "Escritório", v: "{par:adresse}" },
+                { k: "Cidade", v: "{par:ville}" },
                 { k: "Acesso", v: "Apenas mediante marcação" }
               ] },
             { icon: "ic-tel", titre: "Telefone e correio eletrónico",
               lignes: [
-                { k: "Telefone", v: "[A VALIDAR: +41 …]" },
-                { k: "Permanência", v: "[A VALIDAR: número de emergência, se diferente]" },
-                { k: "Correio eletrónico", v: "[A VALIDAR: contact@…]" }
+                { k: "Telefone", v: "{par:telephone}" },
+                { k: "Permanência", v: "{par:permanence}" },
+                { k: "Correio eletrónico", v: "{par:courriel}" }
               ] },
             { icon: "ic-horloge", titre: "Horário",
               lignes: [
-                { k: "Atendimento", v: "Mediante marcação" },
-                { k: "Dias", v: "[A VALIDAR: dias e horas de abertura]" },
-                { k: "Permanência tel.", v: "[A VALIDAR: período da permanência telefónica]" }
+                { k: "Atendimento", v: "{par:horaires_reception}" },
+                { k: "Dias", v: "{par:horaires_jours}" },
+                { k: "Permanência tel.", v: "{par:horaires_permanence}" }
               ] },
             { icon: "ic-fleche", titre: "Autoridade de referência",
               lignes: [
-                { k: "Embaixada", v: "[A VALIDAR: cidade e endereço da Embaixada competente]" },
+                { k: "Embaixada", v: "{par:ambassade}" },
                 { k: "Documentos oficiais", v: "A solicitar à Embaixada" }
               ] }
           ] },
@@ -1956,10 +1970,10 @@ D.pt = {
           aside: {
             horairesTitre: "Horário e acesso",
             horairesLignes: [
-              { k: "Atendimento", v: "Mediante marcação" },
-              { k: "Dias", v: "[A VALIDAR: dias e horas]" },
-              { k: "Endereço", v: "[A VALIDAR: endereço do escritório]" },
-              { k: "Telefone", v: "[A VALIDAR: +41 …]" }
+              { k: "Atendimento", v: "{par:horaires_reception}" },
+              { k: "Dias", v: "{par:horaires_jours}" },
+              { k: "Endereço", v: "{par:adresse}" },
+              { k: "Telefone", v: "{par:telephone}" }
             ],
             horairesLien: { t: "Ver a página Contacto →", href: "#/contact" },
             apporterTitre: "A trazer no dia",
@@ -2000,7 +2014,7 @@ D.en = {
     piedTitre1: "Honorary Consulate",
     piedTitre2: "Navigation",
     piedTitre3: "Legal information",
-    piedRattachement: "Under the authority of the competent Embassy: [TO BE CONFIRMED BY THE CONSULATE: city and address of the responsible Embassy].",
+    piedRattachement: "Under the authority of the competent Embassy: {par:ambassade}.",
     piedCopyright: "© 2026 Honorary Consulate of the Republic of Guinea-Bissau in Switzerland.",
     piedAvis: "This website is informative and does not constitute an administrative act.",
     legal: [
@@ -2316,25 +2330,25 @@ D.en = {
           fiches: [
             { icon: "ic-batiment", titre: "Address",
               lignes: [
-                { k: "Office", v: "[TO BE CONFIRMED BY THE CONSULATE: full address of the consular office]" },
-                { k: "City", v: "[TO BE CONFIRMED: city]" },
+                { k: "Office", v: "{par:adresse}" },
+                { k: "City", v: "{par:ville}" },
                 { k: "Access", v: "By appointment only" }
               ] },
             { icon: "ic-tel", titre: "Telephone & email",
               lignes: [
-                { k: "Telephone", v: "[TO BE CONFIRMED: +41 …]" },
-                { k: "Emergency line", v: "[TO BE CONFIRMED: emergency number, if different]" },
-                { k: "Email", v: "[TO BE CONFIRMED: contact@…]" }
+                { k: "Telephone", v: "{par:telephone}" },
+                { k: "Emergency line", v: "{par:permanence}" },
+                { k: "Email", v: "{par:courriel}" }
               ] },
             { icon: "ic-horloge", titre: "Hours",
               lignes: [
-                { k: "Reception", v: "By appointment" },
-                { k: "Days", v: "[TO BE CONFIRMED: opening days and hours]" },
-                { k: "Phone line", v: "[TO BE CONFIRMED: telephone availability hours]" }
+                { k: "Reception", v: "{par:horaires_reception}" },
+                { k: "Days", v: "{par:horaires_jours}" },
+                { k: "Phone line", v: "{par:horaires_permanence}" }
               ] },
             { icon: "ic-fleche", titre: "Responsible authority",
               lignes: [
-                { k: "Embassy", v: "[TO BE CONFIRMED: city and address of the competent Embassy]" },
+                { k: "Embassy", v: "{par:ambassade}" },
                 { k: "Official documents", v: "To be requested from the Embassy" }
               ] }
           ] },
@@ -2448,10 +2462,10 @@ D.en = {
           aside: {
             horairesTitre: "Hours & access",
             horairesLignes: [
-              { k: "Reception", v: "By appointment" },
-              { k: "Days", v: "[TO BE CONFIRMED: days and hours]" },
-              { k: "Address", v: "[TO BE CONFIRMED: office address]" },
-              { k: "Telephone", v: "[TO BE CONFIRMED: +41 …]" }
+              { k: "Reception", v: "{par:horaires_reception}" },
+              { k: "Days", v: "{par:horaires_jours}" },
+              { k: "Address", v: "{par:adresse}" },
+              { k: "Telephone", v: "{par:telephone}" }
             ],
             horairesLien: { t: "See the Contact page →", href: "#/contact" },
             apporterTitre: "What to bring",
@@ -2529,7 +2543,8 @@ function icone(id, classe){
    un texte en éléments <mark> repérables. On échappe d'abord le HTML pour la
    sécurité, puis on stylise le marqueur. Renvoie une chaîne HTML sûre. */
 function baliser(texte){
-  var s = String(texte)
+  /* On remplace d'abord les jetons {par:clé} par les coordonnées du consulat. */
+  var s = injecter(texte)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   /* Liste blanche de balises de mise en forme réautorisées après échappement :
      seules <strong>, <em> et <br> sont rétablies ; tout autre HTML reste neutralisé. */
@@ -2612,6 +2627,67 @@ function chargerPublications(){
       return null; // aucune publication : on garde les actualités statiques
     })
     .catch(function(){ return null; });
+}
+
+/* --------------------------------------------------------------------------
+   PARAMÈTRES DU CONSULAT (coordonnées, horaires) — pilotés depuis /admin.
+   Dans les textes du dictionnaire D, on écrit des jetons « {par:clé} » qui sont
+   remplacés par la valeur enregistrée, ou par un marqueur « [À VALIDER] » tant
+   qu'aucune valeur n'a été saisie.
+   -------------------------------------------------------------------------- */
+var PARAMS = {}; // paramètres chargés depuis le serveur
+
+/* Valeurs de repli (avant configuration) — volontairement visibles à l'écran. */
+var DEFAUTS_PARAM = {
+  adresse: "[À VALIDER : adresse complète du bureau consulaire]",
+  ville: "[À VALIDER : ville]",
+  telephone: "[À VALIDER : +41 …]",
+  permanence: "[À VALIDER : numéro d’urgence, si différent]",
+  courriel: "[À VALIDER : contact@…]",
+  ambassade: "[À VALIDER : ville et adresse de l’Ambassade de rattachement]",
+  horaires_reception: "Sur rendez-vous",
+  horaires_jours: "[À VALIDER : jours et heures d’ouverture]",
+  horaires_permanence: "[À VALIDER : plage de la permanence téléphonique]"
+};
+
+/* Remplace les jetons {par:clé} par la valeur du paramètre ou son repli. */
+function injecter(texte){
+  return String(texte).replace(/\{par:([a-z_]+)\}/g, function(m, cle){
+    var v = PARAMS[cle];
+    if (v !== undefined && v !== null && String(v).length) return v;
+    return DEFAUTS_PARAM[cle] || "[À VALIDER : " + cle + "]";
+  });
+}
+
+/* Charge une fois les paramètres depuis le serveur (repli : objet vide). */
+var PARAMS_CHARGES = false;
+function chargerParametres(){
+  if (modeDemo() || PARAMS_CHARGES) return Promise.resolve(PARAMS);
+  return fetch("/api/parametres")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (j && j.ok && j.parametres) PARAMS = j.parametres;
+      PARAMS_CHARGES = true;
+      return PARAMS;
+    })
+    .catch(function(){ return PARAMS; });
+}
+
+/* Affiche (ou masque) le bandeau d'information temporaire piloté par l'admin. */
+function afficherBandeau(){
+  var el = document.getElementById("bandeauInfo");
+  if (!el) return;
+  var actif = PARAMS.bandeau_actif === "1" || PARAMS.bandeau_actif === "true";
+  var texte = PARAMS.bandeau_texte || "";
+  if (!actif || !texte){ el.hidden = true; el.innerHTML = ""; return; }
+  var type = PARAMS.bandeau_type === "attention" ? "attention" : "info";
+  el.className = "bandeau-info bandeau-info--" + type;
+  el.innerHTML = "";
+  el.appendChild(creer("div",{class:"wrap"},[
+    icone(type === "attention" ? "ic-alerte" : "ic-info","ic--lg"),
+    creer("p",{html:baliser(texte)})
+  ]));
+  el.hidden = false;
 }
 
 /* Ajoute à une carte d'actualité ses pièces jointes (galerie d'images + PDF). */
@@ -3480,9 +3556,16 @@ function rendrePage(){
   majNavActive(id);
   activerReveal();
 
-  /* Accessibilité : on remonte en haut et on déplace le focus sur le contenu. */
-  window.scrollTo(0,0);
-  main.focus();
+  /* Accessibilité : on remonte en haut et on déplace le focus sur le contenu.
+     (Sauté lors d'un simple rafraîchissement, ex. après chargement des paramètres.) */
+  if (!SUPPRIMER_DEFILEMENT){ window.scrollTo(0,0); main.focus(); }
+}
+
+/* Rafraîchit la page courante sans remonter en haut ni déplacer le focus. */
+var SUPPRIMER_DEFILEMENT = false;
+function rendrePageSansDefilement(){
+  SUPPRIMER_DEFILEMENT = true;
+  try { rendrePage(); } finally { SUPPRIMER_DEFILEMENT = false; }
 }
 
 /* Met à jour aria-current="page" sur l'entrée de navigation active. */
@@ -3582,8 +3665,7 @@ function rendreChrome(){
   txt("pied-titre2", d.ui.piedTitre2);
   txt("pied-titre3", d.ui.piedTitre3);
   var adresse = document.querySelector('[data-ui="pied-adresse"]');
-  if (adresse) adresse.innerHTML = baliser("[À VALIDER PAR LE CONSULAT : adresse complète du bureau consulaire, "+
-    "téléphone, courriel]");
+  if (adresse) adresse.innerHTML = baliser("{par:adresse}<br>{par:ville}<br>Tél. {par:telephone}<br>{par:courriel}");
   var ratt = document.querySelector('[data-ui="pied-rattachement"]');
   if (ratt) ratt.innerHTML = baliser(d.ui.piedRattachement);
   txt("pied-copyright", d.ui.piedCopyright);
@@ -3681,6 +3763,14 @@ function activerReveal(){
   rendreChrome();
   if (!location.hash) location.replace("#/accueil");
   rendrePage();
+
+  /* Chargement des paramètres du consulat (coordonnées, horaires, bandeau) :
+     on rafraîchit ensuite l'en-tête/pied, la page courante et le bandeau. */
+  chargerParametres().then(function(){
+    rendreChrome();
+    rendrePageSansDefilement();
+    afficherBandeau();
+  });
 
   /* Bandeau cookies : affiché tant qu'il n'a pas été fermé dans la session. */
   var banniere = document.getElementById("cookiesBanniere");

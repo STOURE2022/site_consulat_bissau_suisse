@@ -110,9 +110,14 @@ base PostgreSQL :
 4. Définissez `ADMIN_USER` et `ADMIN_PASSWORD` (voir tableau ci-dessus) pour
    pouvoir vous connecter à l'espace de publication.
 
-**Utilisation** : rendez-vous sur `https://(votre-domaine)/admin`, connectez-vous,
-rédigez une information, joignez des photos ou des PDF, puis publiez. Elle
-apparaît aussitôt sur la page **Actualités** du site, avec ses pièces jointes.
+**Utilisation** : rendez-vous sur `https://(votre-domaine)/admin`, connectez-vous.
+Deux onglets :
+- **Publications** : rédiger une information, joindre des photos ou des PDF, publier
+  (apparaît aussitôt sur la page **Actualités**), et supprimer.
+- **Paramètres & bandeau** : saisir les **coordonnées et horaires** du consulat
+  (ils remplacent automatiquement les marqueurs « À valider » sur tout le site :
+  Contact, Rendez-vous, pied de page) et activer un **bandeau d'information
+  temporaire** (ex. fermeture exceptionnelle) affiché en haut de toutes les pages.
 
 > Les fichiers sont stockés dans PostgreSQL (colonne binaire) : ils sont donc
 > persistants et sauvegardés avec la base — pas de dépendance à un disque local.
