@@ -31,7 +31,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--texte);
-  font-size:clamp(15px,1vw,16px);line-height:1.6}
+  font-size:clamp(15px,1vw,16px);line-height:1.6;overflow-x:hidden}
 h1,h2,h3{font-family:var(--titre);line-height:1.2;color:var(--vert-nuit);margin:0 0 .4em}
 h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700}
 h2{font-size:1.2rem}
@@ -172,6 +172,20 @@ textarea{min-height:120px;resize:vertical}
 .bcta-non:hover{background:var(--non-fond)}
 .bcta-suppr{background:#fff;color:var(--gris);border-color:var(--ligne)}
 .bcta-suppr:hover{border-color:var(--rouge);color:var(--rouge)}
+
+/* ---- Responsive mobile (placé après les règles de base pour primer) ---- */
+@media (max-width:640px){
+  .ligne2{grid-template-columns:1fr}
+  .entete{flex-wrap:wrap;gap:.5em .7em}
+  .entete .marque{flex:1 1 auto}
+  .entete .droite{margin-left:auto}
+  .lien{font-size:.78rem;padding:.4em .6em}
+  .onglets{gap:.1em}
+  .onglet{padding:.6em .7em;font-size:.85rem}
+  .filtres-rdv .fbtn{flex:1 1 auto;text-align:center}
+  .demande .haut{gap:.4em}
+  .demande .quand{margin-left:0;width:100%}
+}
 </style>
 </head>
 <body>
