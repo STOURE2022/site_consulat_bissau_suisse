@@ -66,6 +66,12 @@ async function initBase() {
       "nom TEXT NOT NULL, courriel TEXT NOT NULL, tel TEXT, message TEXT, " +
       "statut TEXT NOT NULL DEFAULT 'en_attente', cree_le TIMESTAMPTZ DEFAULT now())"
   );
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS documents (" +
+      "id SERIAL PRIMARY KEY, titre TEXT NOT NULL, nom TEXT NOT NULL, " +
+      "type_mime TEXT NOT NULL, contenu BYTEA NOT NULL, taille INTEGER, " +
+      "cree_le TIMESTAMPTZ DEFAULT now())"
+  );
 }
 
 /* Statuts autorisés pour une demande de rendez-vous. */
@@ -596,6 +602,73 @@ app.delete("/api/hero/photo", adminAuth, async function (req, res) {
 /* Vérifie les identifiants d'administration (utilisé par l'écran de connexion). */
 app.get("/api/admin/verifier", adminAuth, function (req, res) {
   res.json({ ok: true });
+});
+
+/* ========================================================================== */
+/* DOCUMENTS UTILES (bibliothèque de PDF, page Services)                      */
+/* ========================================================================== */
+
+/* Liste publique des documents (sans le contenu binaire). */
+app.get("/api/documents", async function (req, res) {
+  if (!pool) return res.json({ ok: true, documents: [] });
+  try {
+    const r = await pool.query("SELECT id, titre, nom, type_mime FROM documents ORDER BY cree_le DESC, id DESC");
+    res.json({ ok: true, documents: r.rows });
+  } catch (e) {
+    console.error("GET /api/documents :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Erreur base de données." });
+  }
+});
+
+/* Sert le contenu d'un document (ouverture / téléchargement). */
+app.get("/api/document/:id", async function (req, res) {
+  if (!pool) return res.status(404).end();
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).end();
+  try {
+    const r = await pool.query("SELECT nom, type_mime, contenu FROM documents WHERE id = $1", [id]);
+    if (!r.rows.length) return res.status(404).end();
+    const f = r.rows[0];
+    res.setHeader("Content-Type", f.type_mime);
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.setHeader("Content-Disposition", 'inline; filename="' + encodeURIComponent(f.nom) + '"');
+    res.send(f.contenu);
+  } catch (e) {
+    console.error("GET /api/document :", e && e.message);
+    res.status(500).end();
+  }
+});
+
+/* Ajoute un document (réservé à l'administration). Multipart : titre + fichier. */
+app.post("/api/documents", adminAuth, upload.single("fichier"), async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  const titre = txt((req.body || {}).titre);
+  if (!titre) return res.status(400).json({ ok: false, erreur: "Le titre est requis." });
+  if (!req.file) return res.status(400).json({ ok: false, erreur: "Veuillez joindre un fichier." });
+  try {
+    const ins = await pool.query(
+      "INSERT INTO documents (titre, nom, type_mime, contenu, taille) VALUES ($1,$2,$3,$4,$5) RETURNING id",
+      [titre, req.file.originalname, req.file.mimetype, req.file.buffer, req.file.size]
+    );
+    res.json({ ok: true, id: ins.rows[0].id });
+  } catch (e) {
+    console.error("POST /api/documents :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Enregistrement impossible." });
+  }
+});
+
+/* Supprime un document (réservé à l'administration). */
+app.delete("/api/documents/:id", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ ok: false });
+  try {
+    await pool.query("DELETE FROM documents WHERE id = $1", [id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("DELETE /api/documents :", e && e.message);
+    res.status(500).json({ ok: false });
+  }
 });
 
 /* Page d'administration : l'écran de connexion est public, mais toutes les

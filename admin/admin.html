@@ -252,6 +252,7 @@ textarea{min-height:120px;resize:vertical}
         <button type="button" class="onglet" data-panneau="rdv" aria-selected="false">Rendez-vous <span id="badgeRdv" class="badge-compte" hidden></span></button>
         <button type="button" class="onglet" data-panneau="consul" aria-selected="false">Mot du Consul</button>
         <button type="button" class="onglet" data-panneau="contenu" aria-selected="false">Contenu &amp; textes</button>
+        <button type="button" class="onglet" data-panneau="documents" aria-selected="false">Documents</button>
         <button type="button" class="onglet" data-panneau="params" aria-selected="false">Paramètres &amp; bandeau</button>
       </nav>
 
@@ -421,6 +422,36 @@ textarea{min-height:120px;resize:vertical}
           <div class="actions"><button type="button" class="btn btn--primaire" id="btnContenu"><svg class="ic"><use href="#ic-check"></use></svg> Enregistrer les textes</button></div>
         </div>
       </div><!-- /panneau-contenu -->
+
+      <!-- ================= PANNEAU DOCUMENTS ================= -->
+      <div id="panneau-documents" hidden>
+        <div class="grille">
+          <div class="carte">
+            <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-doc"></use></svg> Ajouter un document</h2>
+            <hr class="tricolore--court">
+            <p class="aide" style="margin-bottom:1em">Ces documents apparaissent dans « Documents utiles » sur la page Services. Formats : PDF (ou image).</p>
+            <div id="msgDoc"></div>
+            <div class="champ">
+              <label class="etq" for="doc_titre">Titre affiché <span class="req">*</span></label>
+              <input type="text" id="doc_titre" maxlength="160" placeholder="Ex. : Liste des démarches et autorités compétentes">
+            </div>
+            <div class="champ">
+              <label class="etq" for="doc_fichier">Fichier <span class="req">*</span></label>
+              <input type="file" id="doc_fichier" accept="application/pdf,image/*">
+            </div>
+            <div class="actions"><button type="button" class="btn btn--primaire" id="btnDoc"><svg class="ic"><use href="#ic-upload"></use></svg> Ajouter le document</button></div>
+          </div>
+
+          <div>
+            <div class="carte" style="margin-bottom:14px">
+              <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-oeil"></use></svg> Documents en ligne</h2>
+              <hr class="tricolore--court">
+              <p class="aide" style="margin:0">Visibles sur la page « Services » du site.</p>
+            </div>
+            <div id="listeDoc"><p class="vide">Chargement…</p></div>
+          </div>
+        </div>
+      </div><!-- /panneau-documents -->
 
       <!-- ================= PANNEAU PARAMÈTRES ================= -->
       <div id="panneau-params" hidden>
@@ -633,11 +664,54 @@ textarea{min-height:120px;resize:vertical}
     $("panneau-rdv").hidden = cible!=="rdv";
     $("panneau-consul").hidden = cible!=="consul";
     $("panneau-contenu").hidden = cible!=="contenu";
+    $("panneau-documents").hidden = cible!=="documents";
     $("panneau-params").hidden = cible!=="params";
     if (cible==="rdv") chargerRdv();
     if (cible==="consul") chargerConsul();
     if (cible==="contenu") chargerContenu();
+    if (cible==="documents") chargerDoc();
   });
+
+  /* --- Documents utiles --- */
+  function chargerDoc(){
+    fetch("/api/documents").then(function(r){ return r.json(); }).then(function(j){
+      var liste=$("listeDoc"); var docs=(j&&j.documents)||[];
+      if(!docs.length){ liste.innerHTML='<p class="vide">Aucun document pour le moment.</p>'; return; }
+      liste.innerHTML="";
+      docs.forEach(function(d){
+        var art=document.createElement("article"); art.className="pub";
+        var estImg=/^image\//.test(d.type_mime||"");
+        art.innerHTML='<div class="meta"><span class="tag">'+(estImg?"IMAGE":"PDF")+'</span></div>'+
+          '<h3><a href="/api/document/'+d.id+'" target="_blank" rel="noopener">'+echap(d.titre)+'</a></h3>'+
+          '<p class="resume">'+echap(d.nom)+'</p>'+
+          '<div class="barre"><button class="mini" type="button">Supprimer</button></div>';
+        art.querySelector(".mini").addEventListener("click", function(){ supprimerDoc(d.id, d.titre); });
+        liste.appendChild(art);
+      });
+    }).catch(function(){ $("listeDoc").innerHTML='<p class="vide">Impossible de charger les documents.</p>'; });
+  }
+  $("btnDoc").addEventListener("click", function(){
+    var titre=$("doc_titre").value.trim(), f=$("doc_fichier").files[0];
+    if(!titre){ message($("msgDoc"),"erreur","Indiquez un titre."); return; }
+    if(!f){ message($("msgDoc"),"erreur","Choisissez un fichier."); return; }
+    var fd=new FormData(); fd.append("titre",titre); fd.append("fichier",f,f.name);
+    $("btnDoc").disabled=true;
+    fetch("/api/documents",{ method:"POST", headers:{ "Authorization":AUTH }, body:fd })
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
+      .then(function(res){
+        if(res.ok&&res.j.ok){ message($("msgDoc"),"succes","Document ajouté."); $("doc_titre").value=""; $("doc_fichier").value=""; chargerDoc(); }
+        else message($("msgDoc"),"erreur",(res.j&&res.j.erreur)||"Ajout impossible.");
+      })
+      .catch(function(){ message($("msgDoc"),"erreur","Envoi impossible."); })
+      .then(function(){ $("btnDoc").disabled=false; });
+  });
+  function supprimerDoc(id, titre){
+    if(!window.confirm("Supprimer le document « "+titre+" » ?")) return;
+    fetch("/api/documents/"+id,{ method:"DELETE", headers:{ "Authorization":AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.ok) chargerDoc(); else message($("msgDoc"),"erreur","Suppression impossible."); })
+      .catch(function(){ message($("msgDoc"),"erreur","Suppression impossible."); });
+  }
 
   /* --- Contenu & textes --- */
   var CHAMPS_CONTENU = {

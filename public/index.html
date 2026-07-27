@@ -2746,6 +2746,21 @@ function afficherBandeau(){
   el.hidden = false;
 }
 
+/* Charge (une fois) les documents utiles gérés par le consulat. Renvoie null en
+   mode local ou en cas d'échec (le bloc conserve alors ses éléments statiques). */
+var DOCUMENTS = null;
+function chargerDocuments(){
+  if (modeDemo()) return Promise.resolve(null);
+  if (DOCUMENTS) return Promise.resolve(DOCUMENTS);
+  return fetch("/api/documents")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (j && j.ok && j.documents && j.documents.length){ DOCUMENTS = j.documents; return DOCUMENTS; }
+      return null;
+    })
+    .catch(function(){ return null; });
+}
+
 /* Ajoute à une carte d'actualité ses pièces jointes (galerie d'images + PDF). */
 function ajouterPiecesJointes(article, n){
   if (!n.fichiers || !n.fichiers.length) return;
@@ -3115,14 +3130,27 @@ function blocDownloads(b){
   wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
 
   var liste = creer("ul",{class:"downloads"});
-  b.items.forEach(function(doc){
-    /* Tant qu'aucun fichier réel n'est fourni, l'élément est présenté comme
-       « à venir » (non cliquable) plutôt que de pointer vers un lien mort. */
+  wrap.appendChild(liste);
+
+  /* Rendu d'un document réel (téléversé par le consulat), cliquable. */
+  function rendreReel(doc){
+    var estImage = /^image\//.test(doc.type_mime || "");
+    return creer("a",{class:"telechargement", href:"/api/document/"+doc.id, target:"_blank", rel:"noopener"},[
+      icone("ic-doc","ic--lg"),
+      creer("span",{class:"infos"},[
+        creer("strong",{html:baliser(doc.titre)}),
+        creer("small",{text:doc.nom})
+      ]),
+      creer("span",{class:"format", text: estImage ? "IMAGE" : "PDF"})
+    ]);
+  }
+  /* Rendu d'un élément statique de repli (avant tout téléversement). */
+  function rendreStatique(doc){
     var dispo = !!doc.href;
     var attrs = {class:"telechargement"};
-    if (dispo){ attrs.href = doc.href; attrs.download = ""; }
+    if (dispo){ attrs.href = doc.href; attrs.target = "_blank"; attrs.rel = "noopener"; }
     else { attrs["aria-disabled"] = "true"; attrs.role = "note"; }
-    var el = creer(dispo ? "a" : "div", attrs, [
+    return creer(dispo ? "a" : "div", attrs, [
       icone("ic-doc","ic--lg"),
       creer("span",{class:"infos"},[
         creer("strong",{html:baliser(doc.t)}),
@@ -3131,9 +3159,18 @@ function blocDownloads(b){
       ]),
       creer("span",{class:"format", text: doc.format || "PDF"})
     ]);
-    liste.appendChild(creer("li",{}, el));
-  });
-  wrap.appendChild(liste);
+  }
+  function peupler(source, reel){
+    liste.innerHTML = "";
+    source.forEach(function(doc){
+      liste.appendChild(creer("li",{}, reel ? rendreReel(doc) : rendreStatique(doc)));
+    });
+  }
+
+  /* Éléments statiques par défaut, puis remplacés par les documents réels. */
+  peupler(b.items || [], false);
+  chargerDocuments().then(function(docs){ if (docs && docs.length) peupler(docs, true); });
+
   section.appendChild(wrap);
   return section;
 }
