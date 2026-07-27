@@ -219,6 +219,41 @@ textarea{min-height:120px;resize:vertical}
 .crx-lbl{display:block;font-weight:600;font-size:.78rem;margin:0 0 .5em;color:var(--gris)}
 @media (max-width:820px){.crx-duo{grid-template-columns:1fr}.crx-types{grid-template-columns:1fr}}
 
+/* ==== Créneaux publiés — liste compacte + filtres ==== */
+.crl-filtres{display:flex;flex-wrap:wrap;gap:16px 22px;align-items:center;margin-bottom:2px}
+.crl-grp{display:flex;align-items:center;gap:8px}
+.crl-lg{font-size:.68rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em}
+.crl-chips{display:flex;gap:6px;flex-wrap:wrap}
+.crl-chip{border:1.5px solid var(--ligne);background:#fff;border-radius:999px;padding:.4em .8em;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--encre);display:inline-flex;align-items:center;gap:.4em}
+.crl-chip:hover{border-color:#c9d3cc}
+.crl-chip.on{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff}
+.crl-n{font-size:.68rem;background:rgba(0,0,0,.08);border-radius:999px;padding:.05em .5em;font-weight:700}
+.crl-chip.on .crl-n{background:rgba(255,255,255,.22)}
+.crl-chip[data-t=visio].on{background:#0b5a86;border-color:#0b5a86}
+.crl-chip[data-t=tel].on{background:#a5730a;border-color:#a5730a}
+.crl-chip[data-t=pres].on{background:var(--vert-fonce);border-color:var(--vert-fonce)}
+.crl-resume{font-size:.8rem;color:var(--gris);margin:.9em 0 0}
+.crl-resume b{color:var(--vert-fonce)}
+.crl-jour{padding:1em 0 .4em;border-bottom:1px solid var(--ligne)}
+.crl-jour:last-child{border-bottom:none}
+.crl-jtete{display:flex;align-items:baseline;gap:.7em;margin-bottom:.7em;flex-wrap:wrap}
+.crl-jtete h3{font-size:.95rem;margin:0;color:var(--vert-nuit);text-transform:capitalize}
+.crl-jtete .crl-cpt{font-size:.75rem;color:var(--gris)}
+.crl-pills{display:flex;flex-wrap:wrap;gap:9px}
+.crl-pill{display:inline-flex;align-items:center;gap:.5em;border:1.5px solid var(--ligne);background:#fff;border-radius:9px;padding:.5em .6em .5em .7em;font-size:.88rem;font-weight:600;font-family:inherit;color:var(--encre)}
+.crl-b{font-size:.62rem;font-weight:800;padding:.15em .45em;border-radius:5px;text-transform:uppercase;letter-spacing:.02em}
+.crl-b.visio{background:#eaf4fa;color:#0b5a86}.crl-b.tel{background:#fbf3e2;color:#a5730a}.crl-b.pres{background:#e8f2ec;color:#0a5c3f}
+.crl-pill.libre .crl-x{border:none;background:#f0f2f0;color:var(--gris);width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:.85rem;line-height:1;display:grid;place-items:center}
+.crl-pill.libre .crl-x:hover{background:var(--rouge);color:#fff}
+.crl-pill.reserve{cursor:pointer;background:var(--oui-fond);border-color:#bfe3cd;color:var(--vert-nuit)}
+.crl-pill.reserve:hover{border-color:var(--vert)}
+.crl-pill.reserve .crl-who{color:var(--vert-fonce)}
+.crl-pill.reserve .crl-chev{color:var(--vert);font-size:.7rem}
+.crl-detail{margin:.7em 0 .3em;background:#fff;border:1px solid #bfe3cd;border-left:4px solid var(--vert);border-radius:9px;padding:.8em 1em;max-width:560px}
+.crl-detail dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.35em .9em;font-size:.86rem}
+.crl-detail dt{font-weight:700;color:var(--vert-nuit)}
+.crl-detail dd{margin:0;word-break:break-word}
+
 /* ---- Responsive mobile (placé après les règles de base pour primer) ---- */
 @media (max-width:640px){
   .ligne2{grid-template-columns:1fr}
@@ -456,6 +491,24 @@ textarea{min-height:120px;resize:vertical}
         <div class="carte" style="margin-bottom:14px">
           <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-cal"></use></svg> Créneaux publiés</h2>
           <hr class="tricolore tricolore--court">
+          <div class="crl-filtres">
+            <div class="crl-grp"><span class="crl-lg">Statut</span>
+              <div class="crl-chips" id="crlStatut" role="group" aria-label="Filtrer par statut">
+                <button class="crl-chip on" data-s="tous" type="button">Tous <span class="crl-n" id="crlNTous">0</span></button>
+                <button class="crl-chip" data-s="libre" type="button">Libres <span class="crl-n" id="crlNLibre">0</span></button>
+                <button class="crl-chip" data-s="reserve" type="button">Réservés <span class="crl-n" id="crlNRes">0</span></button>
+              </div>
+            </div>
+            <div class="crl-grp"><span class="crl-lg">Type</span>
+              <div class="crl-chips" id="crlType" role="group" aria-label="Filtrer par type">
+                <button class="crl-chip on" data-t="tous" type="button">Tous</button>
+                <button class="crl-chip" data-t="visio" type="button">Visio</button>
+                <button class="crl-chip" data-t="tel" type="button">Tél.</button>
+                <button class="crl-chip" data-t="pres" type="button">Présentiel</button>
+              </div>
+            </div>
+          </div>
+          <p class="crl-resume" id="crlResume"></p>
           <div id="listeCreneaux"><p class="vide">Chargement…</p></div>
         </div>
         <div class="carte" style="margin-bottom:14px">
@@ -1141,48 +1194,96 @@ textarea{min-height:120px;resize:vertical}
       .catch(function(){ bt.disabled = false; message($("msgCreneaux"),"erreur","Publication impossible."); });
   });
 
+  /* Liste compacte, groupée par jour, avec filtres statut/type. */
+  var CRENEAUX = [];
+  var crlFS = "tous", crlFT = "tous", crlOuvert = {};
+  var ABBR_TYPE = { visio:"Visio", tel:"Tél", pres:"Prés" };
+  var JOURS_SEM = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+
   function chargerCreneaux(){
     fetch("/api/creneaux/tous", { headers:{ "Authorization":AUTH } })
       .then(function(r){ return r.json(); })
-      .then(function(j){
-        var liste = $("listeCreneaux");
-        var d = (j && j.creneaux) || [];
-        if(!d.length){ liste.innerHTML = '<p class="vide">Aucun créneau publié. Utilisez le formulaire ci-dessus.</p>'; return; }
-        liste.innerHTML = "";
-        d.forEach(function(x){ liste.appendChild(carteCreneau(x)); });
-      })
+      .then(function(j){ CRENEAUX = (j && j.creneaux) || []; rendreCreneaux(); })
       .catch(function(){ $("listeCreneaux").innerHTML = '<p class="vide">Impossible de charger les créneaux.</p>'; });
   }
 
-  function carteCreneau(x){
-    var art = document.createElement("article");
-    art.className = "demande";
-    var reserve = x.statut === "reserve";
-    var detail = "";
-    if(reserve){
-      detail = '<dl>'+
-        '<dt>Réservé par</dt><dd>'+echap(x.nom||"—")+'</dd>'+
-        '<dt>Courriel</dt><dd><a href="mailto:'+echap(x.courriel||"")+'">'+echap(x.courriel||"—")+'</a></dd>'+
-        '<dt>Téléphone</dt><dd>'+echap(x.tel||"—")+'</dd>'+
-        (x.motif?('<dt>Motif</dt><dd>'+echap(x.motif)+'</dd>'):'')+
-        (x.lien_visio?('<dt>Lien visio</dt><dd><a href="'+echap(x.lien_visio)+'" target="_blank" rel="noopener">'+echap(x.lien_visio)+'</a></dd>'):'')+
-        '</dl>';
-    }
-    var actions = '<div class="barre">';
-    if(!reserve) actions += '<button class="bcta bcta-suppr" data-act="__suppr">Supprimer ce créneau</button>';
-    actions += '</div>';
-    art.innerHTML =
-      '<div class="haut">'+
-        '<span class="statut statut-'+(reserve?"confirme":"en_attente")+'">'+(reserve?"Réservé":"Libre")+'</span>'+
-        '<span class="creneau"><svg class="ic"><use href="#ic-cal"></use></svg> '+echap(dateLisible(x.jour))+' à '+echap(x.heure||"")+'</span>'+
-        '<span class="quand">'+echap(LIBELLE_TYPE[x.type]||x.type)+' · '+echap(String(x.duree||30))+' min</span>'+
-      '</div>'+ detail + actions;
-    art.addEventListener("click", function(e){
-      var b = e.target.closest("button[data-act]"); if(!b) return;
-      if(b.getAttribute("data-act")==="__suppr") supprimerCreneau(x.id);
-    });
-    return art;
+  function jourLisible(iso){
+    var p = (iso||"").split("-"); if(p.length!==3) return iso||"";
+    var jn = JOURS_SEM[new Date(p[0], p[1]-1, p[2]).getDay()];
+    return jn.charAt(0).toUpperCase()+jn.slice(1)+" "+dateLisible(iso);
   }
+
+  function rendreCreneaux(){
+    var tous = CRENEAUX.length,
+        libres = CRENEAUX.filter(function(x){ return x.statut!=="reserve"; }).length;
+    $("crlNTous").textContent = tous; $("crlNLibre").textContent = libres; $("crlNRes").textContent = tous-libres;
+    var f = CRENEAUX.filter(function(x){
+      var st = x.statut==="reserve" ? "reserve" : "libre";
+      return (crlFS==="tous"||st===crlFS) && (crlFT==="tous"||x.type===crlFT);
+    });
+    var nres = f.filter(function(x){ return x.statut==="reserve"; }).length;
+    $("crlResume").innerHTML = "<b>"+f.length+"</b> créneau"+(f.length>1?"x":"")+" affiché"+(f.length>1?"s":"")+" · "+nres+" réservé"+(nres>1?"s":"");
+    var liste = $("listeCreneaux");
+    if(!tous){ liste.innerHTML = '<p class="vide">Aucun créneau publié. Utilisez le formulaire ci-dessus.</p>'; return; }
+    if(!f.length){ liste.innerHTML = '<p class="vide">Aucun créneau pour ce filtre.</p>'; return; }
+    var jours = []; f.forEach(function(x){ if(jours.indexOf(x.jour)===-1) jours.push(x.jour); }); jours.sort();
+    liste.innerHTML = "";
+    jours.forEach(function(j){
+      var slots = f.filter(function(x){ return x.jour===j; }).sort(function(a,b){ return a.heure<b.heure?-1:1; });
+      var nr = slots.filter(function(x){ return x.statut==="reserve"; }).length;
+      var div = document.createElement("div"); div.className = "crl-jour";
+      div.innerHTML = '<div class="crl-jtete"><h3>'+echap(jourLisible(j))+'</h3><span class="crl-cpt">'+
+        slots.length+" créneau"+(slots.length>1?"x":"")+(nr?(" · "+nr+" réservé"+(nr>1?"s":"")):"")+'</span></div>';
+      var pills = document.createElement("div"); pills.className = "crl-pills";
+      slots.forEach(function(x){
+        var reserve = x.statut==="reserve";
+        var el = document.createElement(reserve?"button":"div");
+        el.className = "crl-pill "+(reserve?"reserve":"libre");
+        var badge = '<span class="crl-b '+x.type+'">'+echap(ABBR_TYPE[x.type]||x.type)+'</span> '+echap(x.heure);
+        if(reserve){
+          el.type = "button"; el.setAttribute("data-open", x.id);
+          el.innerHTML = badge+' — <span class="crl-who">'+echap(x.nom||"—")+'</span> <span class="crl-chev">'+(crlOuvert[x.id]?"▲":"▼")+'</span>';
+        }else{
+          el.innerHTML = badge+' <button class="crl-x" data-suppr="'+x.id+'" title="Supprimer" aria-label="Supprimer ce créneau">&times;</button>';
+        }
+        pills.appendChild(el);
+      });
+      div.appendChild(pills);
+      slots.forEach(function(x){
+        if(x.statut==="reserve" && crlOuvert[x.id]){
+          var dt = document.createElement("div"); dt.className = "crl-detail";
+          dt.innerHTML = '<dl>'+
+            '<dt>Créneau</dt><dd>'+echap(x.heure)+' · '+echap(LIBELLE_TYPE[x.type]||x.type)+'</dd>'+
+            '<dt>Réservé par</dt><dd>'+echap(x.nom||"—")+'</dd>'+
+            '<dt>Courriel</dt><dd><a href="mailto:'+echap(x.courriel||"")+'">'+echap(x.courriel||"—")+'</a></dd>'+
+            '<dt>Téléphone</dt><dd>'+echap(x.tel||"—")+'</dd>'+
+            (x.motif?('<dt>Motif</dt><dd>'+echap(x.motif)+'</dd>'):'')+
+            (x.lien_visio?('<dt>Lien visio</dt><dd><a href="'+echap(x.lien_visio)+'" target="_blank" rel="noopener">'+echap(x.lien_visio)+'</a></dd>'):'')+
+            '</dl>';
+          div.appendChild(dt);
+        }
+      });
+      liste.appendChild(div);
+    });
+  }
+
+  /* Interactions liste (suppression + dépliage) et filtres. */
+  $("listeCreneaux").addEventListener("click", function(e){
+    var sup = e.target.closest("[data-suppr]");
+    if(sup){ supprimerCreneau(parseInt(sup.getAttribute("data-suppr"),10)); return; }
+    var op = e.target.closest("[data-open]");
+    if(op){ var id = op.getAttribute("data-open"); crlOuvert[id] = !crlOuvert[id]; rendreCreneaux(); }
+  });
+  $("crlStatut").addEventListener("click", function(e){
+    var b = e.target.closest(".crl-chip"); if(!b) return;
+    var all = this.querySelectorAll(".crl-chip"); for(var i=0;i<all.length;i++) all[i].classList.remove("on");
+    b.classList.add("on"); crlFS = b.getAttribute("data-s"); rendreCreneaux();
+  });
+  $("crlType").addEventListener("click", function(e){
+    var b = e.target.closest(".crl-chip"); if(!b) return;
+    var all = this.querySelectorAll(".crl-chip"); for(var i=0;i<all.length;i++) all[i].classList.remove("on");
+    b.classList.add("on"); crlFT = b.getAttribute("data-t"); rendreCreneaux();
+  });
 
   function supprimerCreneau(id){
     if(!window.confirm("Supprimer ce créneau libre ?")) return;
