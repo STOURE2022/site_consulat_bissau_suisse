@@ -1113,7 +1113,7 @@ D.fr = {
           title: "Le Consul honoraire",
           rule: true,
           img: "Portrait du Consul — format 3:4, fond neutre", photoParam: "consul_portrait_id",
-          lead: "M. Riccardo Mortara, Consul honoraire de la République de Guinée-Bissau à Genève.",
+          lead: "<strong><u>M. Riccardo Mortara</u></strong>, Consul honoraire de la République de Guinée-Bissau à Genève.",
           paras: [
             "Le Consul honoraire est nommé par les autorités de la République de Guinée-Bissau et agréé par les autorités suisses. Son entrée en fonction est reconnue par un exequatur.",
             "Bénévole, M. Riccardo Mortara se met à la disposition des ressortissants bissau-guinéens résidant ou de passage à Genève. Fort de sa connaissance du terrain, il facilite le contact avec les autorités suisses et œuvre à leur protection et à leur assistance.",
@@ -1778,7 +1778,7 @@ D.pt = {
       blocks: [
         { type: "rich", title: "O Cônsul honorário", rule: true,
           img: "Retrato do Cônsul — formato 3:4, fundo neutro", photoParam: "consul_portrait_id",
-          lead: "Sr. Riccardo Mortara, Cônsul honorário da República da Guiné-Bissau em Genebra.",
+          lead: "<strong><u>Sr. Riccardo Mortara</u></strong>, Cônsul honorário da República da Guiné-Bissau em Genebra.",
           paras: [
             "O Cônsul honorário é nomeado pelas autoridades da República da Guiné-Bissau e reconhecido pelas autoridades suíças. A sua entrada em funções é reconhecida por um exequatur.",
             "Voluntário, o Sr. Riccardo Mortara coloca-se à disposição dos cidadãos guineenses residentes ou de passagem por Genebra. Graças ao seu conhecimento do terreno, facilita o contacto com as autoridades suíças e zela pela sua proteção e assistência.",
@@ -2282,7 +2282,7 @@ D.en = {
       blocks: [
         { type: "rich", title: "The Honorary Consul", rule: true,
           img: "Portrait of the Consul — 3:4 format, neutral background", photoParam: "consul_portrait_id",
-          lead: "Mr Riccardo Mortara, Honorary Consul of the Republic of Guinea-Bissau in Geneva.",
+          lead: "<strong><u>Mr Riccardo Mortara</u></strong>, Honorary Consul of the Republic of Guinea-Bissau in Geneva.",
           paras: [
             "The Honorary Consul is appointed by the authorities of the Republic of Guinea-Bissau and approved by the Swiss authorities. His taking of office is recognised by an exequatur.",
             "As a volunteer, Mr Riccardo Mortara makes himself available to Bissau-Guinean nationals living in or passing through Geneva. Drawing on his knowledge of the ground, he facilitates contact with the Swiss authorities and works for their protection and assistance.",
@@ -2684,7 +2684,7 @@ function baliser(texte){
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   /* Liste blanche de balises de mise en forme réautorisées après échappement :
      seules <strong>, <em> et <br> sont rétablies ; tout autre HTML reste neutralisé. */
-  s = s.replace(/&lt;(\/?)(strong|em)&gt;/g, "<$1$2>")
+  s = s.replace(/&lt;(\/?)(strong|em|u)&gt;/g, "<$1$2>")
        .replace(/&lt;br\s*\/?&gt;/g, "<br>");
   /* Marqueurs « à valider » dans les trois langues (FR / PT / EN). */
   s = s.replace(/\[(À VALIDER|A VALIDAR|TO BE CONFIRMED)[^\]]*\]/g, function(m){
