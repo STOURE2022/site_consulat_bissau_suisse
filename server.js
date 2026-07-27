@@ -72,6 +72,36 @@ async function initBase() {
       "type_mime TEXT NOT NULL, contenu BYTEA NOT NULL, taille INTEGER, " +
       "cree_le TIMESTAMPTZ DEFAULT now())"
   );
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS creneaux (" +
+      "id SERIAL PRIMARY KEY, jour DATE NOT NULL, heure TEXT NOT NULL, " +
+      "duree INTEGER DEFAULT 30, type TEXT NOT NULL, statut TEXT NOT NULL DEFAULT 'libre', " +
+      "nom TEXT, courriel TEXT, tel TEXT, motif TEXT, lien_visio TEXT, " +
+      "cree_le TIMESTAMPTZ DEFAULT now())"
+  );
+  await pool.query(
+    "CREATE UNIQUE INDEX IF NOT EXISTS creneaux_uniq ON creneaux (jour, heure, type)"
+  );
+}
+
+/* Types de rendez-vous autorisés. */
+const TYPES_RDV = ["visio", "tel", "pres"];
+
+/* Génère la liste des heures « HH:MM » entre début et fin, par pas de « duree ». */
+function genererHeures(debut, fin, duree) {
+  function toMin(s) { const p = String(s).split(":"); return (+p[0]) * 60 + (+p[1] || 0); }
+  function toStr(m) { return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); }
+  if (!/^\d{1,2}:\d{2}$/.test(debut)) return [];
+  const d = toMin(debut), f = /^\d{1,2}:\d{2}$/.test(fin) ? toMin(fin) : d, out = [];
+  if (f <= d) return [debut];
+  for (let m = d; m + duree <= f && out.length < 60; m += duree) out.push(toStr(m));
+  return out;
+}
+/* Ajoute n jours à une date ISO (YYYY-MM-DD). */
+function ajouterJours(iso, n) {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
 }
 
 /* Statuts autorisés pour une demande de rendez-vous. */
@@ -682,6 +712,128 @@ app.delete("/api/documents/:id", adminAuth, async function (req, res) {
   } catch (e) {
     console.error("DELETE /api/documents :", e && e.message);
     res.status(500).json({ ok: false });
+  }
+});
+
+/* ========================================================================== */
+/* CRÉNEAUX DE RENDEZ-VOUS (visio / téléphonique / présentiel)                */
+/* ========================================================================== */
+
+/* Créneaux LIBRES à venir (public). Filtre optionnel ?type=visio|tel|pres */
+app.get("/api/creneaux", async function (req, res) {
+  if (!pool) return res.json({ ok: true, creneaux: [] });
+  const type = txt(req.query.type);
+  try {
+    let q = "SELECT id, to_char(jour,'YYYY-MM-DD') AS jour, heure, duree, type FROM creneaux " +
+            "WHERE statut='libre' AND jour >= current_date";
+    const params = [];
+    if (type && TYPES_RDV.indexOf(type) !== -1) { params.push(type); q += " AND type = $1"; }
+    q += " ORDER BY jour, heure";
+    const r = await pool.query(q, params);
+    res.json({ ok: true, creneaux: r.rows });
+  } catch (e) { console.error("GET /api/creneaux :", e && e.message); res.status(500).json({ ok: false }); }
+});
+
+/* Tous les créneaux à venir (admin) — pour la gestion. */
+app.get("/api/creneaux/tous", adminAuth, async function (req, res) {
+  if (!pool) return res.json({ ok: true, creneaux: [] });
+  try {
+    const r = await pool.query(
+      "SELECT id, to_char(jour,'YYYY-MM-DD') AS jour, heure, duree, type, statut, nom, courriel, tel, motif, lien_visio " +
+      "FROM creneaux WHERE jour >= current_date ORDER BY jour, heure");
+    res.json({ ok: true, creneaux: r.rows });
+  } catch (e) { console.error("GET /api/creneaux/tous :", e && e.message); res.status(500).json({ ok: false }); }
+});
+
+/* Ouvre des créneaux (admin) — avec récurrence hebdomadaire. */
+app.post("/api/creneaux", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  const b = req.body || {};
+  const type = txt(b.type), jour = txt(b.jour);
+  const debut = txt(b.heure_debut), fin = txt(b.heure_fin);
+  const duree = Math.min(240, Math.max(10, parseInt(b.duree, 10) || 30));
+  const semaines = Math.min(26, Math.max(1, parseInt(b.repeter, 10) || 1));
+  if (TYPES_RDV.indexOf(type) === -1) return res.status(400).json({ ok: false, erreur: "Type invalide." });
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(jour)) return res.status(400).json({ ok: false, erreur: "Date invalide." });
+  const heures = genererHeures(debut, fin, duree);
+  if (!heures.length) return res.status(400).json({ ok: false, erreur: "Horaires invalides." });
+  const client = await pool.connect();
+  let crees = 0;
+  try {
+    await client.query("BEGIN");
+    for (let w = 0; w < semaines; w++) {
+      const j = ajouterJours(jour, w * 7);
+      for (let k = 0; k < heures.length; k++) {
+        const r = await client.query(
+          "INSERT INTO creneaux (jour, heure, duree, type) VALUES ($1,$2,$3,$4) " +
+          "ON CONFLICT (jour, heure, type) DO NOTHING", [j, heures[k], duree, type]);
+        crees += r.rowCount;
+      }
+    }
+    await client.query("COMMIT");
+    res.json({ ok: true, crees: crees });
+  } catch (e) {
+    await client.query("ROLLBACK");
+    console.error("POST /api/creneaux :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Création impossible." });
+  } finally { client.release(); }
+});
+
+/* Supprime un créneau (admin). */
+app.delete("/api/creneaux/:id", adminAuth, async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false });
+  const id = parseInt(req.params.id, 10); if (!id) return res.status(400).json({ ok: false });
+  try { await pool.query("DELETE FROM creneaux WHERE id = $1", [id]); res.json({ ok: true }); }
+  catch (e) { console.error("DELETE /api/creneaux :", e && e.message); res.status(500).json({ ok: false }); }
+});
+
+/* Réserve un créneau libre (public) — confirmation automatique + lien visio. */
+app.post("/api/creneaux/:id/reserver", async function (req, res) {
+  if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
+  const id = parseInt(req.params.id, 10);
+  const b = req.body || {};
+  const nom = txt(b.nom), courriel = txt(b.courriel), tel = txt(b.tel), motif = txt(b.motif);
+  if (!id || !nom || !estCourriel(courriel)) return res.status(400).json({ ok: false, erreur: "Champs manquants ou invalides." });
+  try {
+    const lien = "https://meet.jit.si/ConsulatGuineeBissau-" + crypto.randomUUID();
+    const r = await pool.query(
+      "UPDATE creneaux SET statut='reserve', nom=$1, courriel=$2, tel=$3, motif=$4, " +
+      "lien_visio = CASE WHEN type='visio' THEN $5 ELSE NULL END " +
+      "WHERE id=$6 AND statut='libre' " +
+      "RETURNING type, to_char(jour,'YYYY-MM-DD') AS jour, heure, lien_visio",
+      [nom, courriel, tel, motif, lien, id]);
+    if (!r.rows.length) return res.status(409).json({ ok: false, erreur: "Ce créneau vient d'être réservé. Choisissez-en un autre." });
+    const c = r.rows[0];
+    const typeNom = { visio: "Visioconférence", tel: "Téléphonique", pres: "Présentiel" }[c.type] || c.type;
+    let adressePres = "";
+    if (c.type === "pres") {
+      try {
+        const a = await lireParam("adresse"), v = await lireParam("ville");
+        adressePres = [a, v].filter(Boolean).join(", ");
+      } catch (e) { /* repli silencieux */ }
+    }
+    const details = c.type === "visio"
+      ? "Lien de connexion (visio) : " + c.lien_visio
+      : c.type === "tel"
+        ? "Le consulat vous appellera au numéro indiqué, à l'heure convenue."
+        : "Adresse : " + (adressePres || "voir la page Contact du site") + ".";
+    const corpsDem = "Bonjour " + nom + ",\n\nVotre rendez-vous est confirmé.\n\n" +
+      "Type : " + typeNom + "\nDate : " + c.jour + "\nHeure : " + c.heure + "\n\n" + details +
+      "\n\nConsulat honoraire de la République de Guinée-Bissau à Genève.";
+    if (transport) {
+      transport.sendMail({ from: process.env.MAIL_FROM || process.env.SMTP_USER, to: courriel,
+        replyTo: process.env.MAIL_TO || undefined, subject: "Confirmation de votre rendez-vous", text: corpsDem })
+        .catch(function (e) { console.error("mail demandeur", e && e.message); });
+    }
+    envoyer("[Site] Rendez-vous réservé — " + c.jour + " " + c.heure + " (" + typeNom + ")",
+      "Nouveau rendez-vous réservé\n\nType : " + typeNom + "\nDate : " + c.jour + "\nHeure : " + c.heure +
+      "\nNom : " + nom + "\nCourriel : " + courriel + "\nTéléphone : " + (tel || "—") +
+      "\nMotif : " + (motif || "—") + (c.type === "visio" ? "\nLien visio : " + c.lien_visio : ""), courriel)
+      .catch(function (e) { console.error("mail consulat", e && e.message); });
+    res.json({ ok: true, type: c.type, jour: c.jour, heure: c.heure, lien_visio: c.lien_visio });
+  } catch (e) {
+    console.error("POST reserver :", e && e.message);
+    res.status(500).json({ ok: false, erreur: "Réservation impossible." });
   }
 });
 

@@ -551,6 +551,24 @@ a.telechargement:hover{border-color:var(--vert)}
 .form__erreur,.rdv-erreur{background:var(--non-fond);border-color:#f0c9cf;border-left-color:var(--rouge)}
 .form__erreur .ic,.rdv-erreur .ic{color:var(--rouge)}
 
+/* --- Bloc « rdv-creneaux » : réservation par créneaux publiés --- */
+.rdvc-etape{font-size:1.1rem;margin:1.5em 0 .5em}
+.rdvc-types{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:.2em 0 0}
+.rdvc-type{cursor:pointer;background:#fff;border:1px solid var(--ligne);border-radius:var(--r);
+  padding:14px 16px;text-align:left;font:inherit;color:inherit}
+.rdvc-type h4{display:flex;align-items:center;gap:.5em;font-size:1rem;margin:0}
+.rdvc-type p{margin:.35em 0 0;font-size:.88rem;color:var(--gris)}
+.rdvc-type[aria-pressed="true"]{border-width:2px}
+.rdvc-visio[aria-pressed="true"]{border-color:#0b5a86;background:#e9f2f7}
+.rdvc-visio h4 .ic{color:#0b5a86}
+.rdvc-tel[aria-pressed="true"]{border-color:#a5730a;background:var(--alerte-fond)}
+.rdvc-tel h4 .ic{color:#a5730a}
+.rdvc-pres[aria-pressed="true"]{border-color:var(--vert-fonce);background:var(--oui-fond)}
+.rdvc-pres h4 .ic{color:var(--vert-fonce)}
+.rdvc-jour{font-family:var(--titre);font-weight:700;color:var(--vert-nuit);margin:1em 0 .4em;font-size:.95rem}
+.rdvc-recap{background:var(--oui-fond);border:1px solid #bfe3cd;border-radius:var(--r);padding:.6em .8em;font-size:.92rem;margin:.4em 0 0}
+@media (max-width:640px){.rdvc-types{grid-template-columns:1fr}}
+
 /* ==========================================================================
    6. PIED DE PAGE
    ========================================================================== */
@@ -665,6 +683,7 @@ footer.site li{margin:.35em 0}
   <symbol id="ic-tel" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></symbol>
   <symbol id="ic-drapeau" viewBox="0 0 24 24"><path d="M5 3v18H3V3h2zm2 1h13l-3 4 3 4H7V4z"/></symbol>
   <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
+  <symbol id="ic-cam" viewBox="0 0 24 24"><path d="M4 6h10a2 2 0 012 2v2.5l4-2.5v12l-4-2.5V16a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></symbol>
 </svg>
 
 <!--
@@ -1533,39 +1552,26 @@ D.fr = {
             { t: "Le consulat confirme", x: "Vous recevez une confirmation ou la proposition d’un autre créneau sous {par:rdv_delai}." },
             { t: "Vous êtes reçu", x: "Présentez-vous à l’heure convenue, muni de vos documents. La réception est individuelle et confidentielle." }
           ] },
-        { type: "rdv", title: "Votre demande de rendez-vous", rule: true,
-          motifLabel: "Motif du rendez-vous", motifDefaut: "— Choisir un motif —",
-          motifOptions: ["Information et orientation", "Assistance à un ressortissant", "Question économique / entreprise", "Affaire culturelle ou associative", "Autre"],
-          motifAide: "Pour un passeport, un visa ou un acte d’état civil, le rendez-vous n’est pas nécessaire : ces démarches relèvent de l’Ambassade.",
-          jourLabel: "Jour souhaité", jourIndic: "Créneaux indicatifs — le consulat confirmera la disponibilité",
-          heureLabel: "Créneau horaire",
-          heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
-          recapModele: "Créneau souhaité : <strong>{jour} à {heure}</strong>. Sous réserve de confirmation par le consulat.",
+        { type: "rdv-creneaux", title: "Votre rendez-vous", rule: true,
+          intro: "Choisissez le type de rendez-vous, puis un créneau disponible. La réservation est confirmée immédiatement.",
+          etape1: "1. Type de rendez-vous", etape2: "2. Créneau disponible", etape3: "3. Vos coordonnées",
+          types: {
+            visio: { label: "Visio", desc: "Entretien en visioconférence. Un lien de connexion vous est envoyé par courriel." },
+            tel:   { label: "Téléphonique", desc: "Le consulat vous appelle au numéro indiqué, à l’heure convenue." },
+            pres:  { label: "Présentiel", desc: "Au bureau : {par:adresse}, {par:ville}. Sur rendez-vous uniquement." }
+          },
+          vide: "Aucun créneau disponible pour ce type pour le moment. Revenez bientôt ou contactez le consulat.",
+          demoTexte: "L’agenda des rendez-vous est disponible sur le site en ligne.",
+          recapModele: "Créneau choisi : <strong>{q}</strong>.",
           champs: [
             { name: "nom", label: "Nom et prénom", type: "text", requis: true, autocomplete: "name" },
             { name: "courriel", label: "Adresse électronique", type: "email", requis: true, autocomplete: "email" },
-            { name: "tel", label: "Téléphone", type: "tel", requis: true, autocomplete: "tel", aide: "Nécessaire pour vous joindre en cas de changement de créneau." },
-            { name: "message", label: "Précisions (facultatif)", type: "textarea", aide: "N’indiquez pas de données sensibles ni de numéro de document d’identité." }
+            { name: "tel", label: "Téléphone", type: "tel", autocomplete: "tel", aide: "Pour être joint ou rappelé selon le type de rendez-vous." },
+            { name: "motif", label: "Motif (facultatif)", type: "text" }
           ],
-          consentement: "J’accepte que ces informations soient utilisées pour traiter ma demande de rendez-vous. Elles ne servent qu’à traiter votre demande ; durée de conservation : {par:conservation}..",
-          envoyer: "Envoyer la demande", envoye: "Demande envoyée",
-          alerteChoix: "Merci de choisir un jour et un créneau horaire.",
-          confTitre: "Votre demande de rendez-vous a été prise en compte.",
-          confModele: "Créneau demandé : {jour} à {heure}. Le consulat vous confirmera par courriel ; ce créneau reste provisoire tant qu’il n’est pas confirmé.",
-          aside: {
-            horairesTitre: "Horaires & accès",
-            horairesLignes: [
-              { k: "Réception", v: "{par:horaires_reception}" },
-              { k: "Jours", v: "{par:horaires_jours}" },
-              { k: "Adresse", v: "{par:adresse}" },
-              { k: "Téléphone", v: "{par:telephone}" }
-            ],
-            horairesLien: { t: "Voir la page Contact →", href: "#/contact" },
-            apporterTitre: "À apporter le jour J",
-            apporterTexte: "Une pièce d’identité et tout document utile à votre demande. La réception est strictement individuelle et confidentielle.",
-            securiteTitre: "Sécurité :",
-            securite: "ne transmettez jamais de copie de pièce d’identité par ce formulaire ni par courriel. Ces documents ne sont présentés qu’en personne, sur rendez-vous."
-          }
+          reserver: "Confirmer la réservation", reserve: "Rendez-vous confirmé",
+          confTitre: "Votre rendez-vous est confirmé.", lienVisioLabel: "Lien de connexion : ",
+          erreur: "La réservation a échoué. Réessayez ou contactez le consulat."
         }
       ]
     }
@@ -2049,39 +2055,26 @@ D.pt = {
             { t: "O consulado confirma", x: "Recebe uma confirmação ou a proposta de outro horário no prazo de {par:rdv_delai}." },
             { t: "É atendido", x: "Compareça à hora combinada, munido dos seus documentos. O atendimento é individual e confidencial." }
           ] },
-        { type: "rdv", title: "O seu pedido de marcação", rule: true,
-          motifLabel: "Motivo da marcação", motifDefaut: "— Escolher um motivo —",
-          motifOptions: ["Informação e orientação", "Assistência a um cidadão", "Questão económica / empresa", "Assunto cultural ou associativo", "Outro"],
-          motifAide: "Para um passaporte, um visto ou um ato de registo civil, a marcação não é necessária: essas diligências são da competência da Embaixada.",
-          jourLabel: "Dia pretendido", jourIndic: "Horários indicativos — o consulado confirmará a disponibilidade",
-          heureLabel: "Horário",
-          heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
-          recapModele: "Horário pretendido: <strong>{jour} às {heure}</strong>. Sujeito a confirmação pelo consulado.",
+        { type: "rdv-creneaux", title: "A sua marcação", rule: true,
+          intro: "Escolha o tipo de atendimento e, em seguida, um horário disponível. A reserva é confirmada imediatamente.",
+          etape1: "1. Tipo de atendimento", etape2: "2. Horário disponível", etape3: "3. Os seus dados",
+          types: {
+            visio: { label: "Vídeo", desc: "Atendimento por videoconferência. Uma ligação é-lhe enviada por correio eletrónico." },
+            tel:   { label: "Telefónico", desc: "O consulado liga-lhe para o número indicado, à hora combinada." },
+            pres:  { label: "Presencial", desc: "No escritório: {par:adresse}, {par:ville}. Apenas mediante marcação." }
+          },
+          vide: "Nenhum horário disponível para este tipo de momento. Volte em breve ou contacte o consulado.",
+          demoTexte: "A agenda de marcações está disponível no sítio em linha.",
+          recapModele: "Horário escolhido: <strong>{q}</strong>.",
           champs: [
             { name: "nom", label: "Nome completo", type: "text", requis: true, autocomplete: "name" },
             { name: "courriel", label: "Correio eletrónico", type: "email", requis: true, autocomplete: "email" },
-            { name: "tel", label: "Telefone", type: "tel", requis: true, autocomplete: "tel", aide: "Necessário para o contactar em caso de alteração de horário." },
-            { name: "message", label: "Observações (facultativo)", type: "textarea", aide: "Não indique dados sensíveis nem números de documentos de identidade." }
+            { name: "tel", label: "Telefone", type: "tel", autocomplete: "tel", aide: "Para o contactar consoante o tipo de atendimento." },
+            { name: "motif", label: "Motivo (facultativo)", type: "text" }
           ],
-          consentement: "Aceito que estas informações sejam utilizadas para tratar o meu pedido de marcação. São utilizadas apenas para tratar o seu pedido; prazo de conservação: {par:conservation}..",
-          envoyer: "Enviar o pedido", envoye: "Pedido enviado",
-          alerteChoix: "Escolha um dia e um horário.",
-          confTitre: "O seu pedido de marcação foi registado.",
-          confModele: "Horário pedido: {jour} às {heure}. O consulado confirmá-lo-á por correio eletrónico; este horário é provisório enquanto não for confirmado.",
-          aside: {
-            horairesTitre: "Horário e acesso",
-            horairesLignes: [
-              { k: "Atendimento", v: "{par:horaires_reception}" },
-              { k: "Dias", v: "{par:horaires_jours}" },
-              { k: "Endereço", v: "{par:adresse}" },
-              { k: "Telefone", v: "{par:telephone}" }
-            ],
-            horairesLien: { t: "Ver a página Contacto →", href: "#/contact" },
-            apporterTitre: "A trazer no dia",
-            apporterTexte: "Um documento de identidade e qualquer documento útil ao seu pedido. O atendimento é estritamente individual e confidencial.",
-            securiteTitre: "Segurança:",
-            securite: "nunca transmita cópias do bilhete de identidade através deste formulário nem por correio eletrónico. Esses documentos são apresentados apenas presencialmente, mediante marcação."
-          }
+          reserver: "Confirmar a reserva", reserve: "Marcação confirmada",
+          confTitre: "A sua marcação está confirmada.", lienVisioLabel: "Ligação de acesso: ",
+          erreur: "A reserva falhou. Tente novamente ou contacte o consulado."
         }
       ]
     }
@@ -2564,39 +2557,26 @@ D.en = {
             { t: "The consulate confirms", x: "You receive a confirmation or a proposal for another slot within {par:rdv_delai}." },
             { t: "You are received", x: "Come at the agreed time, with your documents. Reception is individual and confidential." }
           ] },
-        { type: "rdv", title: "Your appointment request", rule: true,
-          motifLabel: "Reason for the appointment", motifDefaut: "— Choose a reason —",
-          motifOptions: ["Information and guidance", "Assistance to a national", "Economic / business matter", "Cultural or community matter", "Other"],
-          motifAide: "For a passport, a visa or a civil-status document, an appointment is not necessary: those matters fall to the Embassy.",
-          jourLabel: "Preferred day", jourIndic: "Indicative slots — the consulate will confirm availability",
-          heureLabel: "Time slot",
-          heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
-          recapModele: "Preferred slot: <strong>{jour} at {heure}</strong>. Subject to confirmation by the consulate.",
+        { type: "rdv-creneaux", title: "Your appointment", rule: true,
+          intro: "Choose the type of appointment, then an available slot. The booking is confirmed immediately.",
+          etape1: "1. Type of appointment", etape2: "2. Available slot", etape3: "3. Your details",
+          types: {
+            visio: { label: "Video", desc: "A video-call meeting. A connection link is sent to you by email." },
+            tel:   { label: "Phone", desc: "The consulate calls you on the number provided, at the agreed time." },
+            pres:  { label: "In person", desc: "At the office: {par:adresse}, {par:ville}. By appointment only." }
+          },
+          vide: "No slot available for this type at the moment. Please check back soon or contact the consulate.",
+          demoTexte: "The appointment calendar is available on the live website.",
+          recapModele: "Chosen slot: <strong>{q}</strong>.",
           champs: [
             { name: "nom", label: "Full name", type: "text", requis: true, autocomplete: "name" },
             { name: "courriel", label: "Email address", type: "email", requis: true, autocomplete: "email" },
-            { name: "tel", label: "Telephone", type: "tel", requis: true, autocomplete: "tel", aide: "Needed to reach you in case of a change of slot." },
-            { name: "message", label: "Details (optional)", type: "textarea", aide: "Do not include sensitive data or any identity-document number." }
+            { name: "tel", label: "Telephone", type: "tel", autocomplete: "tel", aide: "So we can reach you depending on the appointment type." },
+            { name: "motif", label: "Reason (optional)", type: "text" }
           ],
-          consentement: "I agree that this information may be used to process my appointment request. It is used only to handle your request; retention period: {par:conservation}..",
-          envoyer: "Send the request", envoye: "Request sent",
-          alerteChoix: "Please choose a day and a time slot.",
-          confTitre: "Your appointment request has been received.",
-          confModele: "Requested slot: {jour} at {heure}. The consulate will confirm by email; this slot remains provisional until confirmed.",
-          aside: {
-            horairesTitre: "Hours & access",
-            horairesLignes: [
-              { k: "Reception", v: "{par:horaires_reception}" },
-              { k: "Days", v: "{par:horaires_jours}" },
-              { k: "Address", v: "{par:adresse}" },
-              { k: "Telephone", v: "{par:telephone}" }
-            ],
-            horairesLien: { t: "See the Contact page →", href: "#/contact" },
-            apporterTitre: "What to bring",
-            apporterTexte: "An identity document and any document relevant to your request. Reception is strictly individual and confidential.",
-            securiteTitre: "Security:",
-            securite: "never send a copy of an identity document through this form or by email. These documents are shown only in person, by appointment."
-          }
+          reserver: "Confirm booking", reserve: "Appointment confirmed",
+          confTitre: "Your appointment is confirmed.", lienVisioLabel: "Connection link: ",
+          erreur: "The booking failed. Please try again or contact the consulate."
         }
       ]
     }
@@ -2895,6 +2875,7 @@ function rendreBloc(b){
     case "map":               return blocMap(b);
     case "contact-form":      return blocContactForm(b);
     case "rdv":               return blocRdv(b);
+    case "rdv-creneaux":      return blocRdvCreneaux(b);
 
     default:
       return creer("div",{class:"wrap"},
@@ -3713,6 +3694,160 @@ function blocRdv(b){
   grille.appendChild(form);
   grille.appendChild(aside);
   wrap.appendChild(grille);
+  section.appendChild(wrap);
+  return section;
+}
+
+/* --- Bloc RDV-CRENEAUX (réservation d'un créneau publié par le consulat).
+   Étapes : choix du type -> choix d'un créneau libre -> coordonnées -> confirmé.
+   Réservation immédiate (auto-confirmée) ; lien de visio pour les visios. --- */
+var TYPES_ORDRE = ["visio", "tel", "pres"];
+var TYPE_ICONE = { visio:"ic-cam", tel:"ic-tel", pres:"ic-batiment" };
+function blocRdvCreneaux(b){
+  var section = creer("section",{class:"section"});
+  var wrap = creer("div",{class:"wrap"});
+  wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
+
+  var etat = { type:"visio", creneau:null, creneauTexte:null };
+
+  /* Étape 1 — cartes de type. */
+  wrap.appendChild(creer("h3",{class:"rdvc-etape", html:baliser(b.etape1)}));
+  var cartes = creer("div",{class:"rdvc-types"});
+  TYPES_ORDRE.forEach(function(t){
+    var info = (b.types && b.types[t]) || {label:t};
+    var carte = creer("button",{type:"button", class:"rdvc-type rdvc-"+t, "data-type":t,
+      "aria-pressed": t===etat.type ? "true" : "false"},[
+      creer("h4",{},[ icone(TYPE_ICONE[t]), creer("span",{html:baliser(info.label)}) ]),
+      creer("p",{html:baliser(info.desc||"")})
+    ]);
+    cartes.appendChild(carte);
+  });
+  wrap.appendChild(cartes);
+
+  /* Étape 2 — créneaux libres. */
+  wrap.appendChild(creer("h3",{class:"rdvc-etape", html:baliser(b.etape2)}));
+  var zone = creer("div",{class:"rdvc-slots"});
+  wrap.appendChild(zone);
+
+  /* Étape 3 — coordonnées (masqué tant qu'aucun créneau choisi). */
+  var etape3 = creer("div",{hidden:"hidden"});
+  etape3.appendChild(creer("h3",{class:"rdvc-etape", html:baliser(b.etape3)}));
+  var recap = creer("p",{class:"rdvc-recap"});
+  etape3.appendChild(recap);
+  var form = creer("form",{class:"rdv-form", novalidate:"novalidate", style:"max-width:640px;margin-top:.6em"});
+  (b.champs||[]).forEach(function(c){
+    var id = "rdvc-"+c.name, ctrl = creer("input",{type:c.type||"text", id:id, name:c.name});
+    if (c.requis) ctrl.setAttribute("required","required");
+    if (c.autocomplete) ctrl.setAttribute("autocomplete", c.autocomplete);
+    form.appendChild(creer("div",{class:"champ"},[
+      creer("label",{class:"etq", for:id},[ c.label, c.requis?creer("span",{class:"req"}," *"):null ]),
+      ctrl, c.aide?creer("p",{class:"aide", html:baliser(c.aide)}):null
+    ]));
+  });
+  var bouton = creer("button",{type:"submit", class:"btn btn--primaire"}, b.reserver||"Confirmer");
+  form.appendChild(bouton);
+  var conf = creer("div",{class:"rdv-confirmation", role:"status", "aria-live":"polite", hidden:"hidden", tabindex:"-1"});
+  form.appendChild(conf);
+  etape3.appendChild(form);
+  wrap.appendChild(etape3);
+
+  /* Rendu des créneaux pour le type courant. */
+  function afficherSlots(liste){
+    zone.innerHTML = "";
+    if (!liste || !liste.length){
+      zone.appendChild(creer("p",{class:"actus-vide", html:baliser(b.vide||"Aucun créneau disponible.")}));
+      return;
+    }
+    var jours = [];
+    liste.forEach(function(c){ if (jours.indexOf(c.jour)===-1) jours.push(c.jour); });
+    jours.forEach(function(j){
+      zone.appendChild(creer("div",{class:"rdvc-jour", text:dateLisible(j)}));
+      var row = creer("div",{class:"puces"});
+      liste.filter(function(c){ return c.jour===j; }).forEach(function(c){
+        row.appendChild(creer("button",{type:"button", class:"puce", "aria-pressed":"false",
+          "data-id":c.id, "data-texte":dateLisible(c.jour)+" à "+c.heure}, c.heure));
+      });
+      zone.appendChild(row);
+    });
+  }
+
+  /* Charge les créneaux du type sélectionné. */
+  function chargerSlots(){
+    etat.creneau = null; etape3.hidden = true;
+    if (modeDemo()){ zone.innerHTML=""; zone.appendChild(creer("p",{class:"actus-vide", html:baliser(b.demoTexte||"Agenda disponible en ligne.")})); return; }
+    zone.innerHTML=""; zone.appendChild(creer("p",{class:"actus-vide", text:"…"}));
+    fetch("/api/creneaux?type="+encodeURIComponent(etat.type))
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ afficherSlots(j && j.ok ? j.creneaux : []); })
+      .catch(function(){ afficherSlots([]); });
+  }
+
+  /* Sélection du type (délégation). */
+  cartes.addEventListener("click", function(e){
+    var c = e.target.closest(".rdvc-type"); if (!c) return;
+    var all = cartes.querySelectorAll(".rdvc-type");
+    for (var i=0;i<all.length;i++) all[i].setAttribute("aria-pressed","false");
+    c.setAttribute("aria-pressed","true");
+    etat.type = c.getAttribute("data-type");
+    chargerSlots();
+  });
+
+  /* Sélection d'un créneau. */
+  zone.addEventListener("click", function(e){
+    var p = e.target.closest(".puce"); if (!p) return;
+    var ps = zone.querySelectorAll(".puce");
+    for (var i=0;i<ps.length;i++) ps[i].setAttribute("aria-pressed","false");
+    p.setAttribute("aria-pressed","true");
+    etat.creneau = p.getAttribute("data-id");
+    etat.creneauTexte = p.getAttribute("data-texte");
+    recap.innerHTML = baliser((b.recapModele||"Créneau choisi : <strong>{q}</strong>.").replace("{q}", etat.creneauTexte));
+    etape3.hidden = false;
+    conf.hidden = true;
+  });
+
+  /* Réservation. */
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!etat.creneau) return;
+    if (!form.checkValidity()){ form.reportValidity(); return; }
+    var donnees = {
+      nom: form.nom.value, courriel: form.courriel.value,
+      tel: form.tel ? form.tel.value : "", motif: form.motif ? form.motif.value : ""
+    };
+    bouton.disabled = true;
+    posterJSON("/api/creneaux/"+etat.creneau+"/reserver", donnees)
+      .then(function(rep){
+        if (rep && rep.ok){
+          conf.className = "rdv-confirmation"; conf.innerHTML = "";
+          conf.appendChild(icone("ic-check","ic--lg"));
+          var d = creer("div");
+          d.appendChild(creer("p",{style:"margin:0", html:"<strong>"+baliser(b.confTitre||"Rendez-vous confirmé.")+"</strong>"}));
+          d.appendChild(creer("p",{style:"margin:.3em 0 0", html:baliser(etat.creneauTexte)}));
+          if (rep.type==="visio" && rep.lien_visio){
+            d.appendChild(creer("p",{style:"margin:.4em 0 0"},[
+              (b.lienVisioLabel||"Lien de connexion : "),
+              creer("a",{href:rep.lien_visio, target:"_blank", rel:"noopener"}, rep.lien_visio)
+            ]));
+          }
+          conf.appendChild(d); conf.hidden = false;
+          bouton.textContent = b.reserve || "Réservé";
+          etape3.querySelectorAll(".champ").forEach(function(x){ x.style.display="none"; });
+          conf.focus();
+          chargerSlots(); /* le créneau réservé disparaît */
+        } else { erreur(rep && rep.erreur); }
+      })
+      .catch(function(){ erreur(); });
+    function erreur(msg){
+      bouton.disabled = false;
+      conf.className = "rdv-confirmation rdv-erreur"; conf.innerHTML = "";
+      conf.appendChild(icone("ic-alerte","ic--lg"));
+      conf.appendChild(creer("div",{}, creer("p",{style:"margin:0", html:baliser(msg||b.erreur||"La réservation a échoué.")})));
+      conf.hidden = false; conf.focus();
+      chargerSlots();
+    }
+  });
+
+  chargerSlots();
   section.appendChild(wrap);
   return section;
 }

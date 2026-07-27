@@ -327,6 +327,60 @@ textarea{min-height:120px;resize:vertical}
       <!-- ================= PANNEAU RENDEZ-VOUS ================= -->
       <div id="panneau-rdv" hidden>
         <div class="carte" style="margin-bottom:14px">
+          <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-cal"></use></svg> Ouvrir des créneaux</h2>
+          <hr class="tricolore tricolore--court">
+          <p class="aide" style="margin-bottom:1em">Publiez des plages horaires que les visiteurs pourront réserver en ligne. La réservation est <strong>confirmée automatiquement</strong>. Pour la visio, un lien de connexion est généré et envoyé par courriel.</p>
+          <form id="formCreneaux" autocomplete="off">
+            <div class="ligne2">
+              <label>Type de rendez-vous
+                <select id="cr_type" required>
+                  <option value="visio">Visioconférence</option>
+                  <option value="tel">Téléphonique</option>
+                  <option value="pres">Présentiel</option>
+                </select>
+              </label>
+              <label>Date
+                <input type="date" id="cr_jour" required>
+              </label>
+            </div>
+            <div class="ligne2">
+              <label>Heure de début
+                <input type="time" id="cr_debut" value="15:00" required>
+              </label>
+              <label>Heure de fin
+                <input type="time" id="cr_fin" value="17:00" required>
+              </label>
+            </div>
+            <div class="ligne2">
+              <label>Durée d'un créneau
+                <select id="cr_duree">
+                  <option value="20">20 minutes</option>
+                  <option value="30" selected>30 minutes</option>
+                  <option value="45">45 minutes</option>
+                  <option value="60">60 minutes</option>
+                </select>
+              </label>
+              <label>Répéter chaque semaine
+                <select id="cr_repeter">
+                  <option value="1">Cette semaine seulement</option>
+                  <option value="2">2 semaines</option>
+                  <option value="4">4 semaines</option>
+                  <option value="8">8 semaines</option>
+                  <option value="12">12 semaines</option>
+                </select>
+              </label>
+            </div>
+            <p class="aide">Un créneau distinct sera créé pour chaque tranche entre le début et la fin (ex. 15:00, 15:30, 16:00…). « Répéter » ouvre les mêmes plages le même jour de la semaine.</p>
+            <div id="msgCreneaux"></div>
+            <button type="submit" class="bcta bcta-ok"><svg class="ic"><use href="#ic-check"></use></svg> Publier les créneaux</button>
+          </form>
+        </div>
+        <div class="carte" style="margin-bottom:14px">
+          <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-cal"></use></svg> Créneaux publiés</h2>
+          <hr class="tricolore tricolore--court">
+          <div id="listeCreneaux"><p class="vide">Chargement…</p></div>
+        </div>
+        <div class="carte" style="margin-bottom:14px">
           <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-cal"></use></svg> Demandes de rendez-vous</h2>
           <hr class="tricolore tricolore--court">
           <div class="filtres-rdv" id="filtresRdv" role="group" aria-label="Filtrer par statut">
@@ -666,7 +720,7 @@ textarea{min-height:120px;resize:vertical}
     $("panneau-contenu").hidden = cible!=="contenu";
     $("panneau-documents").hidden = cible!=="documents";
     $("panneau-params").hidden = cible!=="params";
-    if (cible==="rdv") chargerRdv();
+    if (cible==="rdv"){ chargerRdv(); chargerCreneaux(); }
     if (cible==="consul") chargerConsul();
     if (cible==="contenu") chargerContenu();
     if (cible==="documents") chargerDoc();
@@ -895,6 +949,92 @@ textarea{min-height:120px;resize:vertical}
         var b = $("badgeRdv");
         if(n>0){ b.textContent = n; b.hidden = false; } else { b.hidden = true; }
       }).catch(function(){});
+  }
+
+  /* --- Créneaux : publication et liste --- */
+  var LIBELLE_TYPE = { visio:"Visioconférence", tel:"Téléphonique", pres:"Présentiel" };
+
+  $("formCreneaux").addEventListener("submit", function(e){
+    e.preventDefault();
+    var corps = {
+      type: $("cr_type").value,
+      jour: $("cr_jour").value,
+      heure_debut: $("cr_debut").value,
+      heure_fin: $("cr_fin").value,
+      duree: parseInt($("cr_duree").value, 10),
+      repeter: parseInt($("cr_repeter").value, 10)
+    };
+    if(!corps.jour || !corps.heure_debut || !corps.heure_fin){
+      message($("msgCreneaux"),"erreur","Renseignez la date et les heures."); return;
+    }
+    if(corps.heure_fin <= corps.heure_debut){
+      message($("msgCreneaux"),"erreur","L'heure de fin doit être après l'heure de début."); return;
+    }
+    var bt = this.querySelector("button[type=submit]"); bt.disabled = true;
+    fetch("/api/creneaux", { method:"POST",
+      headers:{ "Authorization":AUTH, "Content-Type":"application/json" }, body: JSON.stringify(corps) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        bt.disabled = false;
+        if(j && j.ok){
+          message($("msgCreneaux"),"ok", j.crees + " créneau(x) publié(s).");
+          chargerCreneaux();
+        } else {
+          message($("msgCreneaux"),"erreur", (j && j.erreur) || "Publication impossible.");
+        }
+      })
+      .catch(function(){ bt.disabled = false; message($("msgCreneaux"),"erreur","Publication impossible."); });
+  });
+
+  function chargerCreneaux(){
+    fetch("/api/creneaux/tous", { headers:{ "Authorization":AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var liste = $("listeCreneaux");
+        var d = (j && j.creneaux) || [];
+        if(!d.length){ liste.innerHTML = '<p class="vide">Aucun créneau publié. Utilisez le formulaire ci-dessus.</p>'; return; }
+        liste.innerHTML = "";
+        d.forEach(function(x){ liste.appendChild(carteCreneau(x)); });
+      })
+      .catch(function(){ $("listeCreneaux").innerHTML = '<p class="vide">Impossible de charger les créneaux.</p>'; });
+  }
+
+  function carteCreneau(x){
+    var art = document.createElement("article");
+    art.className = "demande";
+    var reserve = x.statut === "reserve";
+    var detail = "";
+    if(reserve){
+      detail = '<dl>'+
+        '<dt>Réservé par</dt><dd>'+echap(x.nom||"—")+'</dd>'+
+        '<dt>Courriel</dt><dd><a href="mailto:'+echap(x.courriel||"")+'">'+echap(x.courriel||"—")+'</a></dd>'+
+        '<dt>Téléphone</dt><dd>'+echap(x.tel||"—")+'</dd>'+
+        (x.motif?('<dt>Motif</dt><dd>'+echap(x.motif)+'</dd>'):'')+
+        (x.lien_visio?('<dt>Lien visio</dt><dd><a href="'+echap(x.lien_visio)+'" target="_blank" rel="noopener">'+echap(x.lien_visio)+'</a></dd>'):'')+
+        '</dl>';
+    }
+    var actions = '<div class="barre">';
+    if(!reserve) actions += '<button class="bcta bcta-suppr" data-act="__suppr">Supprimer ce créneau</button>';
+    actions += '</div>';
+    art.innerHTML =
+      '<div class="haut">'+
+        '<span class="statut statut-'+(reserve?"confirme":"en_attente")+'">'+(reserve?"Réservé":"Libre")+'</span>'+
+        '<span class="creneau"><svg class="ic"><use href="#ic-cal"></use></svg> '+echap(dateLisible(x.jour))+' à '+echap(x.heure||"")+'</span>'+
+        '<span class="quand">'+echap(LIBELLE_TYPE[x.type]||x.type)+' · '+echap(String(x.duree||30))+' min</span>'+
+      '</div>'+ detail + actions;
+    art.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-act]"); if(!b) return;
+      if(b.getAttribute("data-act")==="__suppr") supprimerCreneau(x.id);
+    });
+    return art;
+  }
+
+  function supprimerCreneau(id){
+    if(!window.confirm("Supprimer ce créneau libre ?")) return;
+    fetch("/api/creneaux/"+id, { method:"DELETE", headers:{ "Authorization":AUTH } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.ok){ chargerCreneaux(); } else message($("msgCreneaux"),"erreur","Suppression impossible."); })
+      .catch(function(){ message($("msgCreneaux"),"erreur","Suppression impossible."); });
   }
 
   /* --- Paramètres : chargement --- */
