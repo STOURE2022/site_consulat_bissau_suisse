@@ -105,7 +105,7 @@ async function lireParam(cle) {
 /* Réception des pièces jointes en mémoire (max 10 Mo/fichier, 8 fichiers). */
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024, files: 8 },
+  limits: { fileSize: 15 * 1024 * 1024, files: 8 },
   fileFilter: function (req, file, cb) {
     cb(null, /^image\//.test(file.mimetype) || file.mimetype === "application/pdf");
   },
@@ -685,6 +685,20 @@ app.get("/api/sante", function (req, res) {
 /* Toute autre route GET renvoie le site (la navigation se fait par ancre #/). */
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+/* Gestionnaire d'erreurs : renvoie un JSON propre pour les routes /api
+   (notamment les erreurs d'upload multer : fichier trop volumineux, etc.). */
+app.use(function (err, req, res, next) {
+  console.error("Erreur non gérée :", err && err.message);
+  var estApi = req.path && req.path.indexOf("/api/") === 0;
+  if (estApi) {
+    var msg = (err && err.code === "LIMIT_FILE_SIZE")
+      ? "Fichier trop volumineux (15 Mo maximum)."
+      : "Erreur lors du traitement de la requête.";
+    return res.status(400).json({ ok: false, erreur: msg });
+  }
+  res.status(500).send("Erreur serveur.");
 });
 
 app.listen(PORT, function () {
