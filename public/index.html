@@ -62,23 +62,26 @@
 {
   "@context": "https://schema.org",
   "@type": "GovernmentOrganization",
-  "name": "Consulat honoraire de la République de Guinée-Bissau en Suisse",
-  "alternateName": "Consulado honorário da Guiné-Bissau na Suíça",
+  "name": "Consulat honoraire de la République de Guinée-Bissau à Genève",
+  "alternateName": "Consulado honorário da Guiné-Bissau em Genebra",
   "url": "https://www.consulat-guineebissau.ch/",
   "areaServed": "CH",
   "knowsLanguage": ["fr", "pt", "en"],
   "parentOrganization": {
     "@type": "GovernmentOrganization",
-    "name": "Ambassade de la République de Guinée-Bissau compétente pour la Suisse [À VALIDER PAR LE CONSULAT : nom et ville de l’Ambassade]"
+    "name": "Ambassade de la République de Guinée-Bissau à Bruxelles",
+    "telephone": "+32 2 733 22 06",
+    "email": "ambagbissaubrux@gmail.com"
   },
   "address": {
     "@type": "PostalAddress",
     "addressCountry": "CH",
-    "addressLocality": "[À VALIDER : ville]",
-    "streetAddress": "[À VALIDER : adresse complète du bureau consulaire]"
+    "postalCode": "1201",
+    "addressLocality": "Genève",
+    "streetAddress": "14, Quai du Seujet"
   },
-  "telephone": "[À VALIDER : +41 …]",
-  "email": "[À VALIDER : contact@…]"
+  "telephone": "+41 22 908 15 99",
+  "email": "secretariat@consulatgb.ch"
 }
 </script>
 
@@ -880,7 +883,7 @@ D.fr = {
     {
       cat: "Économie", r: 0, d: "2026-06-05",
       t: "Accompagnement des entreprises intéressées par la Guinée-Bissau",
-      x: "Le consulat honoraire peut orienter les entreprises suisses vers les interlocuteurs institutionnels compétents pour leurs projets en Guinée-Bissau. [À VALIDER PAR LE CONSULAT : périmètre exact de l’accompagnement]."
+      x: "Le consulat honoraire peut orienter les entreprises suisses vers les interlocuteurs institutionnels compétents pour leurs projets en Guinée-Bissau."
     }
   ],
 
@@ -898,7 +901,7 @@ D.fr = {
           type: "hero",
           title: "Consulat honoraire de Guinée-Bissau en Suisse",
           lead: "Le consulat honoraire informe, oriente et assiste les ressortissants bissau-guinéens et représente la Guinée-Bissau en Suisse. Pour toute délivrance de document, contactez le consulat, qui vous indiquera la marche à suivre ; les passeports, visas et actes d’état civil relèvent de l’Ambassade compétente.",
-          img: "Photographie officielle — 1600 × 1200 px minimum (bâtiment, ville de [À VALIDER : ville] ou vue institutionnelle neutre)",
+          img: "Photographie officielle — 1600 × 1200 px minimum (bâtiment ou vue institutionnelle neutre)",
           actions: [
             { t: "Ce que nous faisons", href: "#/services", style: "primaire" },
             { t: "Horaires & contact", href: "#/contact", style: "clair" }
@@ -1188,12 +1191,12 @@ D.fr = {
             {
               q: "Pouvez-vous légaliser un document ou certifier une copie conforme ?",
               a: "Non. Le consulat honoraire ne procède à aucune légalisation ni certification. Selon le document, adressez-vous à l’autorité suisse compétente ou à l’Ambassade.",
-              redirection: "[À VALIDER PAR LE CONSULAT : autorité compétente / Ambassade]"
+              redirection: "{par:ambassade}"
             },
             {
               q: "Pouvez-vous établir un acte de naissance, de mariage ou de décès ?",
               a: "Non. L’établissement des actes d’état civil ne relève pas du consulat honoraire. Ces actes sont établis par les autorités compétentes.",
-              redirection: "[À VALIDER PAR LE CONSULAT : Ambassade / état civil compétent]"
+              redirection: "{par:ambassade}"
             },
             {
               q: "J’ai perdu mes papiers. Que dois-je faire ?",
@@ -1408,7 +1411,7 @@ D.fr = {
         },
         {
           type: "map",
-          legende: "[À VALIDER PAR LE CONSULAT : plan d’accès ou lien vers un itinéraire]. Aucun service de cartographie tiers n’est chargé afin de préserver la vie privée des visiteurs."
+          legende: "Adresse : {par:adresse}, {par:ville}. Aucun service de cartographie tiers n’est chargé afin de préserver la vie privée des visiteurs."
         },
         {
           type: "note",
@@ -1424,7 +1427,7 @@ D.fr = {
             envoyer: "Envoyer le message",
             envoye: "Message envoyé",
             confirmation: "Votre message a bien été pris en compte. Nous vous répondrons dans les meilleurs délais, aux coordonnées que vous avez indiquées.",
-            consentement: "J’accepte que les informations transmises soient utilisées pour traiter ma demande. [À VALIDER PAR LE CONSULAT : mention de la finalité et de la durée de conservation].",
+            consentement: "J’accepte que les informations transmises soient utilisées pour traiter ma demande. Elles ne servent qu’à traiter votre demande ; durée de conservation : {par:conservation}..",
             champs: [
               { name: "nom", label: "Nom et prénom", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Adresse électronique", type: "email", requis: true, autocomplete: "email" },
@@ -1449,7 +1452,7 @@ D.fr = {
           rule: true,
           paras: [
             "<strong>Éditeur du site :</strong> Consulat honoraire de la République de Guinée-Bissau en Suisse — {par:editeur}.",
-            "<strong>Représentant responsable :</strong> [À VALIDER : nom du Consul honoraire].",
+            "<strong>Représentant responsable :</strong> {par:consul_nom}.",
             "<strong>Hébergement :</strong> {par:hebergeur}.",
             "<strong>Nature du site :</strong> ce site est purement informatif. Il ne permet aucune démarche administrative en ligne et ne constitue pas un acte officiel.",
             "<strong>Propriété intellectuelle :</strong> les armoiries et emblèmes officiels de la République de Guinée-Bissau sont protégés ; leur reproduction est soumise à autorisation. Les textes de ce site peuvent être cités avec mention de la source."
@@ -1474,7 +1477,7 @@ D.fr = {
           rule: true,
           lead: "La protection de vos données est traitée conformément à la loi fédérale suisse sur la protection des données (nLPD, en vigueur depuis le 1er septembre 2023) et, lorsque des résidents de l’Union européenne sont concernés, au Règlement général sur la protection des données (RGPD).",
           paras: [
-            "<strong>Responsable du traitement :</strong> [À VALIDER PAR LE CONSULAT : identité et coordonnées du responsable du traitement].",
+            "<strong>Responsable du traitement :</strong> {par:editeur}.",
             "<strong>Données collectées :</strong> ce site ne collecte des données que lorsque vous remplissez volontairement le formulaire de contact (nom, adresse électronique, objet et contenu de votre message).",
             "<strong>Finalité :</strong> ces données servent uniquement à répondre à votre demande. Elles ne sont ni vendues, ni cédées à des tiers à des fins commerciales.",
             "<strong>Base légale :</strong> votre consentement et l’intérêt légitime à traiter votre demande.",
@@ -1534,7 +1537,7 @@ D.fr = {
           motifLabel: "Motif du rendez-vous", motifDefaut: "— Choisir un motif —",
           motifOptions: ["Information et orientation", "Assistance à un ressortissant", "Question économique / entreprise", "Affaire culturelle ou associative", "Autre"],
           motifAide: "Pour un passeport, un visa ou un acte d’état civil, le rendez-vous n’est pas nécessaire : ces démarches relèvent de l’Ambassade.",
-          jourLabel: "Jour souhaité", jourIndic: "Créneaux indicatifs — [À VALIDER : disponibilités réelles]",
+          jourLabel: "Jour souhaité", jourIndic: "Créneaux indicatifs — le consulat confirmera la disponibilité",
           heureLabel: "Créneau horaire",
           heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
           recapModele: "Créneau souhaité : <strong>{jour} à {heure}</strong>. Sous réserve de confirmation par le consulat.",
@@ -1544,7 +1547,7 @@ D.fr = {
             { name: "tel", label: "Téléphone", type: "tel", requis: true, autocomplete: "tel", aide: "Nécessaire pour vous joindre en cas de changement de créneau." },
             { name: "message", label: "Précisions (facultatif)", type: "textarea", aide: "N’indiquez pas de données sensibles ni de numéro de document d’identité." }
           ],
-          consentement: "J’accepte que ces informations soient utilisées pour traiter ma demande de rendez-vous. [À VALIDER : finalité et durée de conservation].",
+          consentement: "J’accepte que ces informations soient utilisées pour traiter ma demande de rendez-vous. Elles ne servent qu’à traiter votre demande ; durée de conservation : {par:conservation}..",
           envoyer: "Envoyer la demande", envoye: "Demande envoyée",
           alerteChoix: "Merci de choisir un jour et un créneau horaire.",
           confTitre: "Votre demande de rendez-vous a été prise en compte.",
@@ -1633,7 +1636,7 @@ D.pt = {
       x: "É assegurado um atendimento de informação mediante marcação, a fim de orientar os cidadãos nas suas diligências junto da Embaixada e das autoridades suíças." },
     { cat: "Economia", r: 0, d: "2026-06-05",
       t: "Acompanhamento das empresas interessadas na Guiné-Bissau",
-      x: "O consulado honorário pode orientar as empresas suíças para os interlocutores institucionais competentes para os seus projetos na Guiné-Bissau. [A VALIDAR PELO CONSULADO: âmbito exato do acompanhamento]." }
+      x: "O consulado honorário pode orientar as empresas suíças para os interlocutores institucionais competentes para os seus projetos na Guiné-Bissau." }
   ],
   pages: {
     accueil: {
@@ -1643,7 +1646,7 @@ D.pt = {
         { type: "hero",
           title: "Consulado honorário da Guiné-Bissau na Suíça",
           lead: "O consulado honorário informa, orienta e presta assistência aos cidadãos guineenses e representa a Guiné-Bissau na Suíça. Para qualquer emissão de documento, contacte o consulado, que lhe indicará os passos a seguir; os passaportes, vistos e atos de registo civil são da competência da Embaixada competente.",
-          img: "Fotografia oficial — 1600 × 1200 px no mínimo (edifício, cidade de [A VALIDAR: cidade] ou vista institucional neutra)",
+          img: "Fotografia oficial — 1600 × 1200 px no mínimo (edifício ou vista institucional neutra)",
           actions: [
             { t: "O que fazemos", href: "#/services", style: "primaire" },
             { t: "Horário e contacto", href: "#/contact", style: "clair" }
@@ -1820,10 +1823,10 @@ D.pt = {
               redirection: "{par:ambassade}" },
             { q: "Podem legalizar um documento ou autenticar uma cópia?",
               a: "Não. O consulado honorário não efetua qualquer legalização ou autenticação. Consoante o documento, dirija-se à autoridade suíça competente ou à Embaixada.",
-              redirection: "[A VALIDAR PELO CONSULADO: autoridade competente / Embaixada]" },
+              redirection: "{par:ambassade}" },
             { q: "Podem lavrar um ato de nascimento, de casamento ou de óbito?",
               a: "Não. A lavratura dos atos de registo civil não é da competência do consulado honorário. Estes atos são lavrados pelas autoridades competentes.",
-              redirection: "[A VALIDAR PELO CONSULADO: Embaixada / registo civil competente]" },
+              redirection: "{par:ambassade}" },
             { q: "Perdi os meus documentos. O que devo fazer?",
               a: ["Declare primeiro a perda ou o furto à polícia suíça e, em seguida, contacte o consulado honorário, que lhe indicará os passos a seguir.",
                   "A emissão de um novo documento é da competência da Embaixada."],
@@ -1959,7 +1962,7 @@ D.pt = {
               ] }
           ] },
         { type: "map",
-          legende: "[A VALIDAR PELO CONSULADO: plano de acesso ou ligação para um itinerário]. Nenhum serviço de cartografia de terceiros é carregado, a fim de preservar a privacidade dos visitantes." },
+          legende: "Endereço: {par:adresse}, {par:ville}. Nenhum serviço de cartografia de terceiros é carregado, a fim de preservar a privacidade dos visitantes." },
         { type: "note", variant: "attention",
           text: "Nunca transmita cópias do bilhete de identidade, do passaporte ou de qualquer documento pessoal através deste formulário nem por correio eletrónico. Esses documentos são apresentados apenas presencialmente, mediante marcação." },
         { type: "contact-form", title: "Formulário de contacto", rule: true,
@@ -1968,7 +1971,7 @@ D.pt = {
             envoyer: "Enviar a mensagem",
             envoye: "Mensagem enviada",
             confirmation: "A sua mensagem foi devidamente registada. Responder-lhe-emos com a maior brevidade, para os contactos que indicou.",
-            consentement: "Aceito que as informações transmitidas sejam utilizadas para tratar o meu pedido. [A VALIDAR PELO CONSULADO: menção da finalidade e do prazo de conservação].",
+            consentement: "Aceito que as informações transmitidas sejam utilizadas para tratar o meu pedido. São utilizadas apenas para tratar o seu pedido; prazo de conservação: {par:conservation}..",
             champs: [
               { name: "nom", label: "Nome completo", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Correio eletrónico", type: "email", requis: true, autocomplete: "email" },
@@ -1987,7 +1990,7 @@ D.pt = {
         { type: "rich", title: "Menções legais", rule: true,
           paras: [
             "<strong>Editor do sítio:</strong> Consulado honorário da República da Guiné-Bissau na Suíça — {par:editeur}.",
-            "<strong>Representante responsável:</strong> [A VALIDAR: nome do Cônsul honorário].",
+            "<strong>Representante responsável:</strong> {par:consul_nom}.",
             "<strong>Alojamento:</strong> {par:hebergeur}.",
             "<strong>Natureza do sítio:</strong> este sítio é puramente informativo. Não permite qualquer diligência administrativa em linha e não constitui um ato oficial.",
             "<strong>Propriedade intelectual:</strong> as armas e emblemas oficiais da República da Guiné-Bissau são protegidos; a sua reprodução está sujeita a autorização. Os textos deste sítio podem ser citados com menção da fonte."
@@ -2003,7 +2006,7 @@ D.pt = {
         { type: "rich", title: "Política de privacidade", rule: true,
           lead: "A proteção dos seus dados é tratada em conformidade com a lei federal suíça de proteção de dados (nLPD, em vigor desde 1 de setembro de 2023) e, quando estejam envolvidos residentes da União Europeia, com o Regulamento Geral sobre a Proteção de Dados (RGPD).",
           paras: [
-            "<strong>Responsável pelo tratamento:</strong> [A VALIDAR PELO CONSULADO: identidade e contactos do responsável pelo tratamento].",
+            "<strong>Responsável pelo tratamento:</strong> {par:editeur}.",
             "<strong>Dados recolhidos:</strong> este sítio só recolhe dados quando preenche voluntariamente o formulário de contacto (nome, correio eletrónico, assunto e conteúdo da sua mensagem).",
             "<strong>Finalidade:</strong> estes dados servem exclusivamente para responder ao seu pedido. Não são vendidos nem cedidos a terceiros para fins comerciais.",
             "<strong>Base legal:</strong> o seu consentimento e o interesse legítimo em tratar o seu pedido.",
@@ -2050,7 +2053,7 @@ D.pt = {
           motifLabel: "Motivo da marcação", motifDefaut: "— Escolher um motivo —",
           motifOptions: ["Informação e orientação", "Assistência a um cidadão", "Questão económica / empresa", "Assunto cultural ou associativo", "Outro"],
           motifAide: "Para um passaporte, um visto ou um ato de registo civil, a marcação não é necessária: essas diligências são da competência da Embaixada.",
-          jourLabel: "Dia pretendido", jourIndic: "Horários indicativos — [A VALIDAR: disponibilidades reais]",
+          jourLabel: "Dia pretendido", jourIndic: "Horários indicativos — o consulado confirmará a disponibilidade",
           heureLabel: "Horário",
           heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
           recapModele: "Horário pretendido: <strong>{jour} às {heure}</strong>. Sujeito a confirmação pelo consulado.",
@@ -2060,7 +2063,7 @@ D.pt = {
             { name: "tel", label: "Telefone", type: "tel", requis: true, autocomplete: "tel", aide: "Necessário para o contactar em caso de alteração de horário." },
             { name: "message", label: "Observações (facultativo)", type: "textarea", aide: "Não indique dados sensíveis nem números de documentos de identidade." }
           ],
-          consentement: "Aceito que estas informações sejam utilizadas para tratar o meu pedido de marcação. [A VALIDAR: finalidade e prazo de conservação].",
+          consentement: "Aceito que estas informações sejam utilizadas para tratar o meu pedido de marcação. São utilizadas apenas para tratar o seu pedido; prazo de conservação: {par:conservation}..",
           envoyer: "Enviar o pedido", envoye: "Pedido enviado",
           alerteChoix: "Escolha um dia e um horário.",
           confTitre: "O seu pedido de marcação foi registado.",
@@ -2148,7 +2151,7 @@ D.en = {
       x: "An information desk is available by appointment in order to guide nationals in their dealings with the Embassy and the Swiss authorities." },
     { cat: "Economy", r: 0, d: "2026-06-05",
       t: "Support for businesses interested in Guinea-Bissau",
-      x: "The honorary consulate can direct Swiss businesses to the relevant institutional contacts for their projects in Guinea-Bissau. [TO BE CONFIRMED BY THE CONSULATE: exact scope of support]." }
+      x: "The honorary consulate can direct Swiss businesses to the relevant institutional contacts for their projects in Guinea-Bissau." }
   ],
   pages: {
     accueil: {
@@ -2158,7 +2161,7 @@ D.en = {
         { type: "hero",
           title: "Honorary Consulate of Guinea-Bissau in Switzerland",
           lead: "The honorary consulate informs, guides and assists Bissau-Guinean nationals and represents Guinea-Bissau in Switzerland. For any document, please contact the consulate, which will tell you how to proceed; passports, visas and civil-status documents fall to the competent Embassy.",
-          img: "Official photograph — 1600 × 1200 px minimum (building, city of [TO BE CONFIRMED: city] or neutral institutional view)",
+          img: "Official photograph — 1600 × 1200 px minimum (building or neutral institutional view)",
           actions: [
             { t: "What we do", href: "#/services", style: "primaire" },
             { t: "Hours & contact", href: "#/contact", style: "clair" }
@@ -2335,10 +2338,10 @@ D.en = {
               redirection: "{par:ambassade}" },
             { q: "Can you legalise a document or certify a copy?",
               a: "No. The honorary consulate carries out no legalisation or certification. Depending on the document, contact the competent Swiss authority or the Embassy.",
-              redirection: "[TO BE CONFIRMED BY THE CONSULATE: competent authority / Embassy]" },
+              redirection: "{par:ambassade}" },
             { q: "Can you draw up a birth, marriage or death certificate?",
               a: "No. Drawing up civil-status documents does not fall to the honorary consulate. These documents are drawn up by the competent authorities.",
-              redirection: "[TO BE CONFIRMED BY THE CONSULATE: Embassy / competent civil registry]" },
+              redirection: "{par:ambassade}" },
             { q: "I have lost my documents. What should I do?",
               a: ["First report the loss or theft to the Swiss police, then contact the honorary consulate, which will tell you how to proceed.",
                   "The issuance of a new document falls to the Embassy."],
@@ -2474,7 +2477,7 @@ D.en = {
               ] }
           ] },
         { type: "map",
-          legende: "[TO BE CONFIRMED BY THE CONSULATE: access map or link to directions]. No third-party mapping service is loaded, in order to protect visitors' privacy." },
+          legende: "Address: {par:adresse}, {par:ville}. No third-party mapping service is loaded, in order to protect visitors' privacy." },
         { type: "note", variant: "attention",
           text: "Never send a copy of an identity document, passport or any personal document through this form or by email. These documents are shown only in person, by appointment." },
         { type: "contact-form", title: "Contact form", rule: true,
@@ -2483,7 +2486,7 @@ D.en = {
             envoyer: "Send the message",
             envoye: "Message sent",
             confirmation: "Your message has been received. We will reply as soon as possible, using the contact details you provided.",
-            consentement: "I agree that the information provided may be used to process my request. [TO BE CONFIRMED BY THE CONSULATE: statement of purpose and retention period].",
+            consentement: "I agree that the information provided may be used to process my request. It is used only to handle your request; retention period: {par:conservation}..",
             champs: [
               { name: "nom", label: "Full name", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Email address", type: "email", requis: true, autocomplete: "email" },
@@ -2502,7 +2505,7 @@ D.en = {
         { type: "rich", title: "Legal notice", rule: true,
           paras: [
             "<strong>Website publisher:</strong> Honorary Consulate of the Republic of Guinea-Bissau in Switzerland — {par:editeur}.",
-            "<strong>Responsible representative:</strong> [TO BE CONFIRMED: name of the Honorary Consul].",
+            "<strong>Responsible representative:</strong> {par:consul_nom}.",
             "<strong>Hosting:</strong> {par:hebergeur}.",
             "<strong>Nature of the website:</strong> this website is purely informative. It allows no online administrative procedure and does not constitute an official act.",
             "<strong>Intellectual property:</strong> the official arms and emblems of the Republic of Guinea-Bissau are protected; their reproduction is subject to authorisation. The texts of this website may be quoted with attribution."
@@ -2518,7 +2521,7 @@ D.en = {
         { type: "rich", title: "Privacy policy", rule: true,
           lead: "The protection of your data is handled in accordance with the Swiss Federal Act on Data Protection (nFADP, in force since 1 September 2023) and, where residents of the European Union are concerned, the General Data Protection Regulation (GDPR).",
           paras: [
-            "<strong>Data controller:</strong> [TO BE CONFIRMED BY THE CONSULATE: identity and contact details of the data controller].",
+            "<strong>Data controller:</strong> {par:editeur}.",
             "<strong>Data collected:</strong> this website only collects data when you voluntarily complete the contact form (name, email address, subject and content of your message).",
             "<strong>Purpose:</strong> this data is used solely to respond to your request. It is neither sold nor passed on to third parties for commercial purposes.",
             "<strong>Legal basis:</strong> your consent and the legitimate interest in processing your request.",
@@ -2565,7 +2568,7 @@ D.en = {
           motifLabel: "Reason for the appointment", motifDefaut: "— Choose a reason —",
           motifOptions: ["Information and guidance", "Assistance to a national", "Economic / business matter", "Cultural or community matter", "Other"],
           motifAide: "For a passport, a visa or a civil-status document, an appointment is not necessary: those matters fall to the Embassy.",
-          jourLabel: "Preferred day", jourIndic: "Indicative slots — [TO BE CONFIRMED: actual availability]",
+          jourLabel: "Preferred day", jourIndic: "Indicative slots — the consulate will confirm availability",
           heureLabel: "Time slot",
           heures: ["09:00","10:00","11:00","14:00","15:00","16:00"],
           recapModele: "Preferred slot: <strong>{jour} at {heure}</strong>. Subject to confirmation by the consulate.",
@@ -2575,7 +2578,7 @@ D.en = {
             { name: "tel", label: "Telephone", type: "tel", requis: true, autocomplete: "tel", aide: "Needed to reach you in case of a change of slot." },
             { name: "message", label: "Details (optional)", type: "textarea", aide: "Do not include sensitive data or any identity-document number." }
           ],
-          consentement: "I agree that this information may be used to process my appointment request. [TO BE CONFIRMED: purpose and retention period].",
+          consentement: "I agree that this information may be used to process my appointment request. It is used only to handle your request; retention period: {par:conservation}..",
           envoyer: "Send the request", envoye: "Request sent",
           alerteChoix: "Please choose a day and a time slot.",
           confTitre: "Your appointment request has been received.",
