@@ -543,7 +543,6 @@ textarea{min-height:120px;resize:vertical}
           <div class="champ"><label class="etq" for="ct_zone_fr">Zone de compétence (FR)</label><input type="text" id="ct_zone_fr" placeholder="Ex. : l'ensemble du territoire suisse"></div>
           <div class="champ"><label class="etq" for="ct_zone_pt">Zone de compétence (PT)</label><input type="text" id="ct_zone_pt"></div>
           <div class="champ"><label class="etq" for="ct_zone_en">Zone de compétence (EN)</label><input type="text" id="ct_zone_en"></div>
-          <div class="champ"><label class="etq" for="ct_delai">Délai de réponse aux demandes de rendez-vous</label><input type="text" id="ct_delai" placeholder="Ex. : 3 jours ouvrés"></div>
 
           <h3 style="margin:1.6em 0 .2em">Mentions légales</h3>
           <hr class="tricolore--court">
@@ -848,7 +847,7 @@ textarea{min-height:120px;resize:vertical}
   /* --- Contenu & textes --- */
   var CHAMPS_CONTENU = {
     zone_competence_fr:"ct_zone_fr", zone_competence_pt:"ct_zone_pt", zone_competence_en:"ct_zone_en",
-    rdv_delai:"ct_delai", editeur:"ct_editeur", hebergeur:"ct_hebergeur", conservation:"ct_conservation"
+    editeur:"ct_editeur", hebergeur:"ct_hebergeur", conservation:"ct_conservation"
   };
   function chargerContenu(){
     fetch("/api/parametres").then(function(r){ return r.json(); }).then(function(j){
