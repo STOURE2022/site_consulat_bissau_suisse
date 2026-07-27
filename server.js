@@ -77,6 +77,18 @@ async function initBase() {
 /* Statuts autorisés pour une demande de rendez-vous. */
 const STATUTS_RDV = ["en_attente", "confirme", "refuse", "annule"];
 
+/* Garantit l'existence de la table documents (auto-réparation si initBase n'a
+   pas pu la créer). Idempotent. */
+async function assurerTableDocuments() {
+  if (!pool) return;
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS documents (" +
+      "id SERIAL PRIMARY KEY, titre TEXT NOT NULL, nom TEXT NOT NULL, " +
+      "type_mime TEXT NOT NULL, contenu BYTEA NOT NULL, taille INTEGER, " +
+      "cree_le TIMESTAMPTZ DEFAULT now())"
+  );
+}
+
 /* Clés de paramètres autorisées (coordonnées, horaires, bandeau d'information). */
 const CLES_PARAM = [
   "adresse", "ville", "telephone", "permanence", "courriel", "ambassade",
@@ -612,6 +624,7 @@ app.get("/api/admin/verifier", adminAuth, function (req, res) {
 app.get("/api/documents", async function (req, res) {
   if (!pool) return res.json({ ok: true, documents: [] });
   try {
+    await assurerTableDocuments();
     const r = await pool.query("SELECT id, titre, nom, type_mime FROM documents ORDER BY cree_le DESC, id DESC");
     res.json({ ok: true, documents: r.rows });
   } catch (e) {
@@ -646,6 +659,7 @@ app.post("/api/documents", adminAuth, upload.single("fichier"), async function (
   if (!titre) return res.status(400).json({ ok: false, erreur: "Le titre est requis." });
   if (!req.file) return res.status(400).json({ ok: false, erreur: "Veuillez joindre un fichier." });
   try {
+    await assurerTableDocuments();
     const ins = await pool.query(
       "INSERT INTO documents (titre, nom, type_mime, contenu, taille) VALUES ($1,$2,$3,$4,$5) RETURNING id",
       [titre, req.file.originalname, req.file.mimetype, req.file.buffer, req.file.size]
@@ -678,8 +692,20 @@ app.get("/admin", function (req, res) {
 });
 
 /* Point de santé (utilisé par le healthcheck de Railway). */
-app.get("/api/sante", function (req, res) {
-  res.json({ ok: true });
+app.get("/api/sante", async function (req, res) {
+  const info = { ok: true, version: "documents-v2", db: !!pool, tables: [] };
+  if (pool) {
+    try {
+      const r = await pool.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name"
+      );
+      info.tables = r.rows.map(function (x) { return x.table_name; });
+      info.documentsTable = info.tables.indexOf("documents") !== -1;
+    } catch (e) {
+      info.dbError = e && e.message;
+    }
+  }
+  res.json(info);
 });
 
 /* Toute autre route GET renvoie le site (la navigation se fait par ancre #/). */
