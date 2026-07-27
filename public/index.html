@@ -124,6 +124,7 @@
      domine, le rouge et le jaune ne servent que d'accents. */
   --rouge:#CE1126; --jaune:#FCD116; --vert:#009E49;
   --vert-fonce:#04452A; --vert-nuit:#032B1B;
+  --or:#E9C46A; --or-sombre:#C9A227;
   --encre:#16201A; --gris:#5B6960; --ligne:#E3E7E3; --fond:#F7F9F7; --blanc:#fff;
   --alerte-fond:#FFF7E6; --alerte-bord:#E7B008;
   --oui-fond:#EAF6EF; --non-fond:#FBECEE;
@@ -303,6 +304,56 @@ main{display:block}
 .hero .hero-photo{border-radius:var(--r);overflow:hidden;align-self:stretch}
 .hero .hero-img{width:100%;height:100%;min-height:300px;object-fit:cover;display:block}
 @media (max-width:560px){.hero .hero-img{min-height:200px}}
+
+/* --- Diaporama « Le Consul » --- */
+.consul-diapo{position:relative;background:linear-gradient(135deg,var(--vert-fonce) 0%,var(--vert-nuit) 100%);color:#fff;overflow:hidden}
+.consul-diapo::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 18%,rgba(233,196,106,.12),transparent 46%);pointer-events:none}
+.cd-anneau{position:absolute;border:1px solid rgba(233,196,106,.16);border-radius:50%;pointer-events:none}
+.cd-anneau.a1{width:620px;height:620px;right:-190px;top:-230px}
+.cd-anneau.a2{width:420px;height:420px;right:-90px;top:-120px;border-color:rgba(255,255,255,.06)}
+.cd-scene{max-width:var(--max);margin:0 auto;padding:clamp(56px,8vw,88px) clamp(24px,6vw,72px);position:relative;min-height:400px;display:flex;align-items:center}
+.cd-slide{position:absolute;left:clamp(24px,6vw,72px);right:clamp(24px,6vw,72px);opacity:0;visibility:hidden;transition:opacity .7s ease;pointer-events:none}
+.cd-slide.actif{opacity:1;visibility:visible;pointer-events:auto;position:relative;left:0;right:0}
+.cd-kicker{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.cd-barres{display:flex;width:44px;height:4px;border-radius:2px;overflow:hidden;flex:none}
+.cd-barres i{flex:1}
+.cd-barres i:nth-child(1){background:var(--rouge)}
+.cd-barres i:nth-child(2){background:var(--jaune)}
+.cd-barres i:nth-child(3){background:var(--vert)}
+.cd-kicker span{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--or);font-weight:700}
+.cd-titre{font-family:var(--titre);font-size:clamp(2.1rem,6vw,4.1rem);font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.cd-mot{display:inline-block;opacity:0;transform:translateY(26px)}
+.cd-slide.actif .cd-mot{animation:cdMonter .8s cubic-bezier(.22,.9,.3,1) forwards}
+.cd-slide.actif .cd-mot:nth-child(2){animation-delay:.1s}
+.cd-slide.actif .cd-mot:nth-child(3){animation-delay:.2s}
+.cd-or{color:var(--or)}
+@keyframes cdMonter{to{opacity:1;transform:none}}
+.cd-filet{width:64px;height:2px;background:var(--or);margin:22px 0;transform-origin:left;transform:scaleX(0)}
+.cd-slide.actif .cd-filet{animation:cdEtendre .7s .35s ease forwards}
+@keyframes cdEtendre{to{transform:scaleX(1)}}
+.cd-sous{font-size:clamp(1rem,2vw,1.18rem);color:rgba(255,255,255,.86);max-width:52ch;opacity:0}
+.cd-slide.actif .cd-sous{animation:cdFondu .8s .45s ease forwards}
+@keyframes cdFondu{to{opacity:1}}
+.cd-cta{display:inline-block;margin-top:24px;background:var(--or);color:#20301c;padding:13px 28px;font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;border-radius:3px;opacity:0;transition:background .2s,transform .2s}
+.cd-slide.actif .cd-cta{animation:cdFondu .8s .6s ease forwards}
+.cd-cta:hover{background:#f0d488;transform:translateY(-2px)}
+.cd-fleche{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.04);color:#fff;border-radius:50%;cursor:pointer;font-size:1.05rem;display:grid;place-items:center;z-index:4;transition:background .2s,border-color .2s}
+.cd-fleche:hover{background:rgba(255,255,255,.16);border-color:var(--or)}
+.cd-fleche.prec{left:14px}.cd-fleche.suiv{right:14px}
+.cd-puces{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:4}
+.cd-puce{width:46px;height:4px;border:none;border-radius:2px;background:rgba(255,255,255,.26);cursor:pointer;padding:0;overflow:hidden;position:relative}
+.cd-puce i{position:absolute;inset:0;background:var(--or);transform:scaleX(0);transform-origin:left;display:block}
+.cd-puce[aria-selected="true"] i{animation:cdProg 5s linear forwards}
+.consul-diapo.pause .cd-puce[aria-selected="true"] i{animation-play-state:paused}
+@keyframes cdProg{to{transform:scaleX(1)}}
+@media (max-width:640px){.cd-fleche{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .consul-diapo *{transition:none!important}
+  .cd-mot,.cd-sous,.cd-cta{opacity:1!important;transform:none!important;animation:none!important}
+  .cd-filet{transform:none!important;animation:none!important}
+  .cd-puce i{animation:none!important}
+  .cd-puce[aria-selected="true"]{background:var(--or)}
+}
 
 /* Boutons */
 .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--titre);
@@ -1109,11 +1160,31 @@ D.fr = {
       desc: "Nomination, exequatur, parcours et engagements du Consul honoraire de la République de Guinée-Bissau en Suisse.",
       blocks: [
         {
+          type: "consul-diapo",
+          label: "Le Consul honoraire",
+          prec: "Diapositive précédente", suiv: "Diapositive suivante",
+          choix: "Choisir une diapositive", diapo: "Diapositive",
+          slides: [
+            { kicker: "Représentation consulaire",
+              titre: [ { t: "Riccardo", or: true }, { t: "Mortara" } ],
+              sous: "Consul honoraire de la République de Guinée-Bissau à Genève." },
+            { kicker: "Nomination",
+              titre: [ { t: "Nommé par la République," }, { t: "agréé par la Suisse", or: true } ],
+              sous: "Son entrée en fonction est reconnue par un exequatur des autorités suisses." },
+            { kicker: "Mission",
+              titre: [ { t: "Une fonction" }, { t: "bénévole", or: true } ],
+              sous: "À la disposition des ressortissants bissau-guinéens résidant ou de passage à Genève : protection, assistance et contact avec les autorités suisses." },
+            { kicker: "Accueil",
+              titre: [ { t: "Sur" }, { t: "rendez-vous", or: true } ],
+              sous: "{par:adresse}, {par:ville}. Précisez l’objet de votre demande afin que le secrétariat prépare votre dossier.",
+              cta: { t: "Prendre rendez-vous", href: "#/rendezvous" } }
+          ]
+        },
+        {
           type: "rich",
           title: "Le Consul honoraire",
           rule: true,
           img: "Portrait du Consul — format 3:4, fond neutre", photoParam: "consul_portrait_id",
-          lead: "<strong><u>M. Riccardo Mortara</u></strong>, Consul honoraire de la République de Guinée-Bissau à Genève.",
           paras: [
             "Le Consul honoraire est nommé par les autorités de la République de Guinée-Bissau et agréé par les autorités suisses. Son entrée en fonction est reconnue par un exequatur.",
             "Bénévole, M. Riccardo Mortara se met à la disposition des ressortissants bissau-guinéens résidant ou de passage à Genève. Fort de sa connaissance du terrain, il facilite le contact avec les autorités suisses et œuvre à leur protection et à leur assistance.",
@@ -1776,9 +1847,27 @@ D.pt = {
       title: "O Cônsul honorário — Guiné-Bissau na Suíça",
       desc: "Nomeação, exequatur, percurso e compromissos do Cônsul honorário da República da Guiné-Bissau na Suíça.",
       blocks: [
+        { type: "consul-diapo", label: "O Cônsul honorário",
+          prec: "Diapositivo anterior", suiv: "Diapositivo seguinte",
+          choix: "Escolher um diapositivo", diapo: "Diapositivo",
+          slides: [
+            { kicker: "Representação consular",
+              titre: [ { t: "Riccardo", or: true }, { t: "Mortara" } ],
+              sous: "Cônsul honorário da República da Guiné-Bissau em Genebra." },
+            { kicker: "Nomeação",
+              titre: [ { t: "Nomeado pela República," }, { t: "reconhecido pela Suíça", or: true } ],
+              sous: "A sua entrada em funções é reconhecida por um exequatur das autoridades suíças." },
+            { kicker: "Missão",
+              titre: [ { t: "Uma função" }, { t: "voluntária", or: true } ],
+              sous: "À disposição dos cidadãos guineenses residentes ou de passagem por Genebra: proteção, assistência e contacto com as autoridades suíças." },
+            { kicker: "Atendimento",
+              titre: [ { t: "Mediante" }, { t: "marcação", or: true } ],
+              sous: "{par:adresse}, {par:ville}. Indique o objeto do seu pedido para que a secretaria prepare o seu processo.",
+              cta: { t: "Marcar atendimento", href: "#/rendezvous" } }
+          ]
+        },
         { type: "rich", title: "O Cônsul honorário", rule: true,
           img: "Retrato do Cônsul — formato 3:4, fundo neutro", photoParam: "consul_portrait_id",
-          lead: "<strong><u>Sr. Riccardo Mortara</u></strong>, Cônsul honorário da República da Guiné-Bissau em Genebra.",
           paras: [
             "O Cônsul honorário é nomeado pelas autoridades da República da Guiné-Bissau e reconhecido pelas autoridades suíças. A sua entrada em funções é reconhecida por um exequatur.",
             "Voluntário, o Sr. Riccardo Mortara coloca-se à disposição dos cidadãos guineenses residentes ou de passagem por Genebra. Graças ao seu conhecimento do terreno, facilita o contacto com as autoridades suíças e zela pela sua proteção e assistência.",
@@ -2280,9 +2369,27 @@ D.en = {
       title: "The Honorary Consul — Guinea-Bissau in Switzerland",
       desc: "Appointment, exequatur, background and commitments of the Honorary Consul of the Republic of Guinea-Bissau in Switzerland.",
       blocks: [
+        { type: "consul-diapo", label: "The Honorary Consul",
+          prec: "Previous slide", suiv: "Next slide",
+          choix: "Choose a slide", diapo: "Slide",
+          slides: [
+            { kicker: "Consular representation",
+              titre: [ { t: "Riccardo", or: true }, { t: "Mortara" } ],
+              sous: "Honorary Consul of the Republic of Guinea-Bissau in Geneva." },
+            { kicker: "Appointment",
+              titre: [ { t: "Appointed by the Republic," }, { t: "approved by Switzerland", or: true } ],
+              sous: "His taking of office is recognised by an exequatur of the Swiss authorities." },
+            { kicker: "Mission",
+              titre: [ { t: "A" }, { t: "voluntary role", or: true } ],
+              sous: "Available to Bissau-Guinean nationals living in or passing through Geneva: protection, assistance and contact with the Swiss authorities." },
+            { kicker: "Reception",
+              titre: [ { t: "By" }, { t: "appointment", or: true } ],
+              sous: "{par:adresse}, {par:ville}. Please state the purpose of your request so the secretariat can prepare your file.",
+              cta: { t: "Book an appointment", href: "#/rendezvous" } }
+          ]
+        },
         { type: "rich", title: "The Honorary Consul", rule: true,
           img: "Portrait of the Consul — 3:4 format, neutral background", photoParam: "consul_portrait_id",
-          lead: "<strong><u>Mr Riccardo Mortara</u></strong>, Honorary Consul of the Republic of Guinea-Bissau in Geneva.",
           paras: [
             "The Honorary Consul is appointed by the authorities of the Republic of Guinea-Bissau and approved by the Swiss authorities. His taking of office is recognised by an exequatur.",
             "As a volunteer, Mr Riccardo Mortara makes himself available to Bissau-Guinean nationals living in or passing through Geneva. Drawing on his knowledge of the ground, he facilitates contact with the Swiss authorities and works for their protection and assistance.",
@@ -2913,6 +3020,7 @@ function rendreBloc(b){
     case "contact-form":      return blocContactForm(b);
     case "rdv":               return blocRdv(b);
     case "rdv-creneaux":      return blocRdvCreneaux(b);
+    case "consul-diapo":      return blocConsulDiapo(b);
 
     default:
       return creer("div",{class:"wrap"},
@@ -2975,6 +3083,90 @@ function blocHero(b){
   grille.appendChild(col);
   grille.appendChild(media);
   section.appendChild(creer("div",{class:"wrap"}, grille));
+  return section;
+}
+
+/* --- Bloc DIAPORAMA « Le Consul » : bannière défilante en tête de page --- */
+function blocConsulDiapo(b){
+  var section = creer("section",{class:"consul-diapo", "aria-roledescription":"diaporama",
+    "aria-label": b.label || "Diaporama"});
+  section.appendChild(creer("span",{class:"cd-anneau a1", "aria-hidden":"true"}));
+  section.appendChild(creer("span",{class:"cd-anneau a2", "aria-hidden":"true"}));
+  var scene = creer("div",{class:"cd-scene"});
+  var slides = b.slides || [];
+
+  slides.forEach(function(s, i){
+    var art = creer("article",{class:"cd-slide"+(i===0?" actif":""), role:"group",
+      "aria-roledescription":"diapositive", "aria-label":(i+1)+" / "+slides.length});
+    var kick = creer("p",{class:"cd-kicker"});
+    kick.appendChild(creer("span",{class:"cd-barres", "aria-hidden":"true", html:"<i></i><i></i><i></i>"}));
+    kick.appendChild(creer("span",{text:s.kicker||""}));
+    art.appendChild(kick);
+    var titre = creer("p",{class:"cd-titre"});
+    (s.titre||[]).forEach(function(mot, k){
+      if (k) titre.appendChild(document.createTextNode(" "));
+      titre.appendChild(creer("span",{class:"cd-mot"+(mot.or?" cd-or":""), html:baliser(mot.t)}));
+    });
+    art.appendChild(titre);
+    art.appendChild(creer("div",{class:"cd-filet", "aria-hidden":"true"}));
+    if (s.sous) art.appendChild(creer("p",{class:"cd-sous", html:baliser(s.sous)}));
+    if (s.cta) art.appendChild(creer("a",{class:"cd-cta", href:s.cta.href||"#"}, s.cta.t));
+    scene.appendChild(art);
+  });
+  section.appendChild(scene);
+
+  var prec = creer("button",{class:"cd-fleche prec", type:"button", "aria-label":b.prec||"Diapositive précédente", html:"&#10094;"});
+  var suiv = creer("button",{class:"cd-fleche suiv", type:"button", "aria-label":b.suiv||"Diapositive suivante", html:"&#10095;"});
+  section.appendChild(prec); section.appendChild(suiv);
+
+  var puces = creer("div",{class:"cd-puces", role:"tablist", "aria-label":b.choix||"Choisir une diapositive"});
+  slides.forEach(function(s, i){
+    puces.appendChild(creer("button",{class:"cd-puce", type:"button", role:"tab",
+      "aria-selected": i===0?"true":"false", "aria-label":(b.diapo||"Diapositive")+" "+(i+1), "data-i":i, html:"<i></i>"}));
+  });
+  section.appendChild(puces);
+
+  /* --- Comportement --- */
+  var els = scene.querySelectorAll(".cd-slide");
+  var pts = puces.querySelectorAll(".cd-puce");
+  var index = 0, minuteur = null;
+  var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function afficher(i){
+    index = (i + els.length) % els.length;
+    for (var n=0;n<els.length;n++) els[n].classList.toggle("actif", n===index);
+    for (var m=0;m<pts.length;m++){
+      pts[m].setAttribute("aria-selected", m===index ? "true" : "false");
+      var barre = pts[m].querySelector("i");
+      barre.style.animation = "none"; void barre.offsetWidth; barre.style.animation = "";
+    }
+  }
+  function lancer(){
+    if (reduit) return;
+    clearInterval(minuteur);
+    minuteur = setInterval(function(){
+      if (!document.body.contains(section)){ clearInterval(minuteur); return; } /* page changée : on arrête */
+      afficher(index + 1);
+    }, 5000);
+  }
+  function suspendre(){ clearInterval(minuteur); section.classList.add("pause"); }
+  function reprendre(){ section.classList.remove("pause"); lancer(); }
+
+  suiv.addEventListener("click", function(){ afficher(index+1); lancer(); });
+  prec.addEventListener("click", function(){ afficher(index-1); lancer(); });
+  puces.addEventListener("click", function(e){
+    var p = e.target.closest(".cd-puce"); if (!p) return;
+    afficher(parseInt(p.getAttribute("data-i"),10)); lancer();
+  });
+  section.addEventListener("mouseenter", suspendre);
+  section.addEventListener("mouseleave", reprendre);
+  section.addEventListener("focusin", suspendre);
+  section.addEventListener("focusout", reprendre);
+  section.addEventListener("keydown", function(e){
+    if (e.key==="ArrowRight"){ afficher(index+1); lancer(); }
+    if (e.key==="ArrowLeft"){ afficher(index-1); lancer(); }
+  });
+  lancer();
   return section;
 }
 
