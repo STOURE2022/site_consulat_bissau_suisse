@@ -565,8 +565,34 @@ a.telechargement:hover{border-color:var(--vert)}
 .rdvc-tel h4 .ic{color:#a5730a}
 .rdvc-pres[aria-pressed="true"]{border-color:var(--vert-fonce);background:var(--oui-fond)}
 .rdvc-pres h4 .ic{color:var(--vert-fonce)}
-.rdvc-jour{font-family:var(--titre);font-weight:700;color:var(--vert-nuit);margin:1em 0 .4em;font-size:.95rem}
 .rdvc-recap{background:var(--oui-fond);border:1px solid #bfe3cd;border-radius:var(--r);padding:.6em .8em;font-size:.92rem;margin:.4em 0 0}
+/* Sélecteur jour + horaire (calendrier) */
+.rdvc-picker{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start;margin:.2em 0 0}
+.rdvc-cal{background:#fff;border:1px solid var(--ligne);border-radius:var(--r);padding:16px}
+.rdvc-cal[hidden],.rdvc-hor[hidden]{display:none}
+.rdvc-caltete{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rdvc-mois{font-family:var(--titre);font-weight:700;font-size:1rem;text-transform:capitalize}
+.rdvc-navb{border:1px solid var(--ligne);background:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;
+  display:grid;place-items:center;color:var(--encre)}
+.rdvc-navb:hover:not(:disabled){background:var(--oui-fond);border-color:var(--vert)}
+.rdvc-navb:disabled{opacity:.35;cursor:default}
+.rdvc-navb svg{width:15px;height:15px}
+.rdvc-jt,.rdvc-grille{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.rdvc-jt span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.03em;padding:3px 0}
+.rdvc-jour{aspect-ratio:1;border:1.5px solid transparent;background:transparent;border-radius:9px;cursor:default;
+  font:inherit;font-size:.9rem;color:#c4ccc6;position:relative}
+.rdvc-jour.dispo{color:var(--vert-nuit);font-weight:700;cursor:pointer;background:var(--oui-fond);border-color:#cfe3d7}
+.rdvc-jour.dispo:hover{border-color:var(--vert);box-shadow:0 2px 8px rgba(4,69,42,.18)}
+.rdvc-jour.dispo::after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--vert)}
+.rdvc-jour.sel{background:var(--vert-fonce);color:#fff;border-color:var(--vert-fonce);box-shadow:0 3px 10px rgba(4,69,42,.3)}
+.rdvc-jour.sel::after{background:#fff}
+.rdvc-legende{display:flex;align-items:center;gap:.5em;font-size:.78rem;color:var(--gris);margin:.9em 0 0}
+.rdvc-pt{width:8px;height:8px;border-radius:50%;background:var(--vert);display:inline-block;flex:0 0 auto}
+.rdvc-hor{background:#fff;border:1px solid var(--ligne);border-radius:var(--r);padding:18px 20px;min-height:170px}
+.rdvc-hor-titre{font-family:var(--titre);font-weight:700;font-size:1rem;margin:0 0 .8em;text-transform:capitalize}
+.rdvc-hor-vide{color:var(--gris);font-size:.92rem;margin:0}
+.rdvc-hor .puce{min-width:74px}
+@media (max-width:720px){.rdvc-picker{grid-template-columns:1fr}}
 @media (max-width:640px){.rdvc-types{grid-template-columns:1fr}}
 
 /* ==========================================================================
@@ -1554,12 +1580,14 @@ D.fr = {
           ] },
         { type: "rdv-creneaux", title: "Votre rendez-vous", rule: true,
           intro: "Choisissez le type de rendez-vous, puis un créneau disponible. La réservation est confirmée immédiatement.",
-          etape1: "1. Type de rendez-vous", etape2: "2. Créneau disponible", etape3: "3. Vos coordonnées",
+          etape1: "1. Type de rendez-vous", etape2: "2. Choisissez un jour, puis un horaire", etape3: "3. Vos coordonnées",
           types: {
             visio: { label: "Visio", desc: "Entretien en visioconférence. Un lien de connexion vous est envoyé par courriel." },
             tel:   { label: "Téléphonique", desc: "Le consulat vous appelle au numéro indiqué, à l’heure convenue." },
             pres:  { label: "Présentiel", desc: "Au bureau : {par:adresse}, {par:ville}. Sur rendez-vous uniquement." }
           },
+          calLegende: "Jours avec créneaux disponibles", calChoisir: "Sélectionnez un jour en surbrillance pour afficher les horaires.",
+          moisPrec: "Mois précédent", moisSuiv: "Mois suivant",
           vide: "Aucun créneau disponible pour ce type pour le moment. Revenez bientôt ou contactez le consulat.",
           demoTexte: "L’agenda des rendez-vous est disponible sur le site en ligne.",
           recapModele: "Créneau choisi : <strong>{q}</strong>.",
@@ -2057,12 +2085,14 @@ D.pt = {
           ] },
         { type: "rdv-creneaux", title: "A sua marcação", rule: true,
           intro: "Escolha o tipo de atendimento e, em seguida, um horário disponível. A reserva é confirmada imediatamente.",
-          etape1: "1. Tipo de atendimento", etape2: "2. Horário disponível", etape3: "3. Os seus dados",
+          etape1: "1. Tipo de atendimento", etape2: "2. Escolha um dia e, em seguida, um horário", etape3: "3. Os seus dados",
           types: {
             visio: { label: "Vídeo", desc: "Atendimento por videoconferência. Uma ligação é-lhe enviada por correio eletrónico." },
             tel:   { label: "Telefónico", desc: "O consulado liga-lhe para o número indicado, à hora combinada." },
             pres:  { label: "Presencial", desc: "No escritório: {par:adresse}, {par:ville}. Apenas mediante marcação." }
           },
+          calLegende: "Dias com horários disponíveis", calChoisir: "Selecione um dia realçado para ver os horários.",
+          moisPrec: "Mês anterior", moisSuiv: "Mês seguinte",
           vide: "Nenhum horário disponível para este tipo de momento. Volte em breve ou contacte o consulado.",
           demoTexte: "A agenda de marcações está disponível no sítio em linha.",
           recapModele: "Horário escolhido: <strong>{q}</strong>.",
@@ -2559,12 +2589,14 @@ D.en = {
           ] },
         { type: "rdv-creneaux", title: "Your appointment", rule: true,
           intro: "Choose the type of appointment, then an available slot. The booking is confirmed immediately.",
-          etape1: "1. Type of appointment", etape2: "2. Available slot", etape3: "3. Your details",
+          etape1: "1. Type of appointment", etape2: "2. Choose a day, then a time", etape3: "3. Your details",
           types: {
             visio: { label: "Video", desc: "A video-call meeting. A connection link is sent to you by email." },
             tel:   { label: "Phone", desc: "The consulate calls you on the number provided, at the agreed time." },
             pres:  { label: "In person", desc: "At the office: {par:adresse}, {par:ville}. By appointment only." }
           },
+          calLegende: "Days with available slots", calChoisir: "Select a highlighted day to see the times.",
+          moisPrec: "Previous month", moisSuiv: "Next month",
           vide: "No slot available for this type at the moment. Please check back soon or contact the consulate.",
           demoTexte: "The appointment calendar is available on the live website.",
           recapModele: "Chosen slot: <strong>{q}</strong>.",
@@ -2687,6 +2719,12 @@ var MOIS_ABBR = {
   fr: ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."],
   pt: ["jan.","fev.","mar.","abr.","mai.","jun.","jul.","ago.","set.","out.","nov.","dez."],
   en: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+};
+/* En-têtes courts de colonnes du calendrier, du lundi au dimanche. */
+var JOURS_MIN = {
+  fr: ["Lu","Ma","Me","Je","Ve","Sa","Di"],
+  pt: ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],
+  en: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 };
 
 
@@ -3724,9 +3762,12 @@ function blocRdvCreneaux(b){
   });
   wrap.appendChild(cartes);
 
-  /* Étape 2 — créneaux libres. */
+  /* Étape 2 — choix du jour (calendrier) puis de l'horaire. */
   wrap.appendChild(creer("h3",{class:"rdvc-etape", html:baliser(b.etape2)}));
-  var zone = creer("div",{class:"rdvc-slots"});
+  var zone = creer("div",{class:"rdvc-picker"});
+  var cal  = creer("div",{class:"rdvc-cal"});
+  var hor  = creer("div",{class:"rdvc-hor"});
+  zone.appendChild(cal); zone.appendChild(hor);
   wrap.appendChild(zone);
 
   /* Étape 3 — coordonnées (masqué tant qu'aucun créneau choisi). */
@@ -3751,31 +3792,96 @@ function blocRdvCreneaux(b){
   etape3.appendChild(form);
   wrap.appendChild(etape3);
 
-  /* Rendu des créneaux pour le type courant. */
-  function afficherSlots(liste){
-    zone.innerHTML = "";
-    if (!liste || !liste.length){
-      zone.appendChild(creer("p",{class:"actus-vide", html:baliser(b.vide||"Aucun créneau disponible.")}));
+  /* ---- Calendrier de disponibilités : le visiteur choisit un jour, puis un
+     horaire de ce jour. Compact quel que soit le nombre de dates ouvertes. ---- */
+  var dispo = {};                                   // "YYYY-MM-DD" -> [{id,heure}]
+  var jourSel = null;                               // jour retenu
+  var vueMois = debutMois(new Date());              // mois affiché
+  var CHEVRON_G = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  var CHEVRON_D = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+
+  function deux(n){ return (n<10?"0":"")+n; }
+  function debutMois(d){ var x=new Date(d.getFullYear(),d.getMonth(),1); x.setHours(0,0,0,0); return x; }
+  function cleDate(d){ return d.getFullYear()+"-"+deux(d.getMonth()+1)+"-"+deux(d.getDate()); }
+
+  /* Premier mois (>= mois courant) contenant au moins un créneau. */
+  function premierMoisDispo(){
+    var courant = debutMois(new Date()), ks = Object.keys(dispo).sort();
+    for (var i=0;i<ks.length;i++){ var p = ks[i].split("-"); var m = new Date(p[0], p[1]-1, 1);
+      if (m >= courant) return m; }
+    return courant;
+  }
+
+  function rendreCal(){
+    cal.innerHTML = "";
+    var lang = Etat.langue, moisNoms = MOIS[lang]||MOIS.fr, joursMin = JOURS_MIN[lang]||JOURS_MIN.fr;
+    var courant = debutMois(new Date()), today = new Date(); today.setHours(0,0,0,0);
+    var tete = creer("div",{class:"rdvc-caltete"});
+    var bp = creer("button",{type:"button", class:"rdvc-navb", html:CHEVRON_G, "aria-label":b.moisPrec||"Mois précédent"});
+    if (vueMois <= courant) bp.setAttribute("disabled","disabled");
+    var bn = creer("button",{type:"button", class:"rdvc-navb", html:CHEVRON_D, "aria-label":b.moisSuiv||"Mois suivant"});
+    tete.appendChild(bp);
+    tete.appendChild(creer("span",{class:"rdvc-mois", text: moisNoms[vueMois.getMonth()]+" "+vueMois.getFullYear()}));
+    tete.appendChild(bn);
+    cal.appendChild(tete);
+    bp.addEventListener("click", function(){ vueMois = new Date(vueMois.getFullYear(), vueMois.getMonth()-1, 1); rendreCal(); });
+    bn.addEventListener("click", function(){ vueMois = new Date(vueMois.getFullYear(), vueMois.getMonth()+1, 1); rendreCal(); });
+    var jt = creer("div",{class:"rdvc-jt"});
+    joursMin.forEach(function(n){ jt.appendChild(creer("span",{text:n})); });
+    cal.appendChild(jt);
+    var g = creer("div",{class:"rdvc-grille"});
+    var dec = (new Date(vueMois.getFullYear(), vueMois.getMonth(), 1).getDay()+6)%7;   // lundi = 0
+    var nb = new Date(vueMois.getFullYear(), vueMois.getMonth()+1, 0).getDate();
+    for (var i=0;i<dec;i++) g.appendChild(creer("span",{}));
+    for (var j=1;j<=nb;j++){
+      var d = new Date(vueMois.getFullYear(), vueMois.getMonth(), j), k = cleDate(d);
+      var a = {type:"button", class:"rdvc-jour", text:String(j)};
+      if (dispo[k] && d >= today){ a.class += " dispo"; a["data-k"] = k; if (k===jourSel) a.class += " sel"; }
+      else a.disabled = "disabled";
+      g.appendChild(creer("button", a));
+    }
+    cal.appendChild(g);
+    cal.appendChild(creer("p",{class:"rdvc-legende", html:'<span class="rdvc-pt"></span> '+baliser(b.calLegende||"Jours avec créneaux disponibles")}));
+  }
+
+  function rendreHoraires(){
+    hor.innerHTML = "";
+    if (!jourSel){
+      hor.appendChild(creer("p",{class:"rdvc-hor-vide", html:baliser(b.calChoisir||"Sélectionnez un jour en surbrillance pour voir les horaires.")}));
       return;
     }
-    var jours = [];
-    liste.forEach(function(c){ if (jours.indexOf(c.jour)===-1) jours.push(c.jour); });
-    jours.forEach(function(j){
-      zone.appendChild(creer("div",{class:"rdvc-jour", text:dateLisible(j)}));
-      var row = creer("div",{class:"puces"});
-      liste.filter(function(c){ return c.jour===j; }).forEach(function(c){
-        row.appendChild(creer("button",{type:"button", class:"puce", "aria-pressed":"false",
-          "data-id":c.id, "data-texte":dateLisible(c.jour)+" à "+c.heure}, c.heure));
-      });
-      zone.appendChild(row);
+    var slots = dispo[jourSel] || [];
+    hor.appendChild(creer("p",{class:"rdvc-hor-titre", text:dateLisible(jourSel)}));
+    var row = creer("div",{class:"puces"});
+    slots.forEach(function(c){
+      row.appendChild(creer("button",{type:"button", class:"puce"+(etat.creneau===String(c.id)?" sel":""), "aria-pressed":"false",
+        "data-id":c.id, "data-texte":dateLisible(jourSel)+" — "+c.heure}, c.heure));
     });
+    hor.appendChild(row);
+  }
+
+  /* Regroupe les créneaux reçus par jour, puis affiche calendrier + horaires. */
+  function afficherSlots(liste){
+    dispo = {}; jourSel = null;
+    (liste||[]).forEach(function(c){ (dispo[c.jour] = dispo[c.jour] || []).push({id:c.id, heure:c.heure}); });
+    for (var k in dispo) dispo[k].sort(function(a,b2){ return a.heure < b2.heure ? -1 : 1; });
+    if (!Object.keys(dispo).length){
+      cal.hidden = true; hor.hidden = false;
+      hor.innerHTML = ""; hor.appendChild(creer("p",{class:"rdvc-hor-vide", html:baliser(b.vide||"Aucun créneau disponible.")}));
+      return;
+    }
+    cal.hidden = false; hor.hidden = false;
+    vueMois = premierMoisDispo();
+    rendreCal(); rendreHoraires();
   }
 
   /* Charge les créneaux du type sélectionné. */
   function chargerSlots(){
     etat.creneau = null; etape3.hidden = true;
-    if (modeDemo()){ zone.innerHTML=""; zone.appendChild(creer("p",{class:"actus-vide", html:baliser(b.demoTexte||"Agenda disponible en ligne.")})); return; }
-    zone.innerHTML=""; zone.appendChild(creer("p",{class:"actus-vide", text:"…"}));
+    if (modeDemo()){ cal.hidden = true; hor.hidden = false; hor.innerHTML = "";
+      hor.appendChild(creer("p",{class:"rdvc-hor-vide", html:baliser(b.demoTexte||"Agenda disponible en ligne.")})); return; }
+    cal.hidden = false; hor.hidden = false; cal.innerHTML = ""; hor.innerHTML = "";
+    hor.appendChild(creer("p",{class:"rdvc-hor-vide", text:"…"}));
     fetch("/api/creneaux?type="+encodeURIComponent(etat.type))
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){ afficherSlots(j && j.ok ? j.creneaux : []); })
@@ -3792,12 +3898,20 @@ function blocRdvCreneaux(b){
     chargerSlots();
   });
 
-  /* Sélection d'un créneau. */
-  zone.addEventListener("click", function(e){
+  /* Sélection d'un jour dans le calendrier. */
+  cal.addEventListener("click", function(e){
+    var d = e.target.closest(".rdvc-jour.dispo"); if (!d) return;
+    jourSel = d.getAttribute("data-k");
+    etat.creneau = null; etape3.hidden = true; conf.hidden = true;
+    rendreCal(); rendreHoraires();
+  });
+
+  /* Sélection d'un horaire du jour. */
+  hor.addEventListener("click", function(e){
     var p = e.target.closest(".puce"); if (!p) return;
-    var ps = zone.querySelectorAll(".puce");
-    for (var i=0;i<ps.length;i++) ps[i].setAttribute("aria-pressed","false");
-    p.setAttribute("aria-pressed","true");
+    var ps = hor.querySelectorAll(".puce");
+    for (var i=0;i<ps.length;i++){ ps[i].classList.remove("sel"); ps[i].setAttribute("aria-pressed","false"); }
+    p.classList.add("sel"); p.setAttribute("aria-pressed","true");
     etat.creneau = p.getAttribute("data-id");
     etat.creneauTexte = p.getAttribute("data-texte");
     recap.innerHTML = baliser((b.recapModele||"Créneau choisi : <strong>{q}</strong>.").replace("{q}", etat.creneauTexte));
