@@ -247,6 +247,10 @@ header.site .wrap, .bandeau-etat .wrap{max-width:min(95vw, 1300px)}
 .burger{display:none;background:var(--fond);border:1px solid var(--ligne);
   border-radius:var(--r);padding:.5em;cursor:pointer;color:var(--vert-nuit)}
 
+/* Bouton « fermer » du menu mobile (masqué en navigation bureau). */
+.nav-fermer{display:none;background:var(--fond);border:1px solid var(--ligne);
+  border-radius:var(--r);padding:.4em;cursor:pointer;color:var(--vert-nuit)}
+
 /* Icônes via sprite. */
 .ic{width:1.15em;height:1.15em;fill:currentColor;flex:0 0 auto;vertical-align:-.15em}
 .ic--lg{width:1.7em;height:1.7em}
@@ -589,6 +593,9 @@ footer.site li{margin:.35em 0}
   .nav-principale a{padding:.9em .6em;border-bottom:1px solid var(--ligne);border-radius:0;
     white-space:normal;font-size:1rem}
   .nav-principale a[aria-current="page"]{border-bottom-color:var(--ligne);color:var(--vert-fonce)}
+  /* Bouton fermer visible en haut à droite du menu coulissant. */
+  .nav-principale{padding-top:1em}
+  .nav-fermer{display:inline-flex;align-items:center;justify-content:center;align-self:flex-end;margin-bottom:.4em}
   /* Dans le menu coulissant, l'action « Rendez-vous » reste un bloc mis en avant. */
   .nav-principale a.nav-cta{color:#fff;border-radius:var(--r);text-align:center;margin-top:.7em;border-bottom:0}
   .nav-principale a.nav-cta[aria-current="page"]{color:#fff}
@@ -615,7 +622,6 @@ footer.site li{margin:.35em 0}
   .embleme{width:40px;height:40px}
   .marque{gap:.6em;max-width:none}
   .marque .lignes strong{font-size:.9rem}
-  .marque .lignes span{display:none}          /* sous-titre masqué (répété dans le bandeau d'État) */
   .langue>button{padding:.5em .55em;gap:.25em}
   .hero .imgslot{min-height:200px}
   .pied-bas .wrap{gap:.5em}
@@ -3733,6 +3739,10 @@ function rendreChrome(){
   var nav = document.getElementById("navPrincipale");
   nav.setAttribute("aria-label", d.ui.aria.naviguer);
   nav.innerHTML = "";
+  /* Bouton « fermer » en tête du menu mobile (masqué en navigation bureau). */
+  nav.appendChild(creer("button",{type:"button", class:"nav-fermer",
+    "aria-label": (d.ui.aria && d.ui.aria.fermerMenu) || "Fermer le menu"},
+    [ icone("ic-fermer","ic--lg") ]));
   d.nav.forEach(function(item){
     /* L'entrée « rendezvous » est mise en avant comme un bouton d'action. */
     var attrs = {href:"#/"+item.id};
@@ -3905,7 +3915,8 @@ function activerReveal(){
   /* Fermeture du menu par le voile ou par un clic sur un lien de navigation. */
   document.getElementById("voile").addEventListener("click", function(){ ouvrirMenu(false); });
   document.getElementById("navPrincipale").addEventListener("click", function(e){
-    if (e.target.closest("a")) ouvrirMenu(false);
+    /* Ferme le menu sur un lien de navigation ou sur le bouton « fermer ». */
+    if (e.target.closest("a") || e.target.closest(".nav-fermer")) ouvrirMenu(false);
   });
 
   /* Fermetures globales : clic hors zone + touche Échap. */
