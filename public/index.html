@@ -897,7 +897,7 @@ D.fr = {
         {
           type: "hero",
           title: "Consulat honoraire de Guinée-Bissau en Suisse",
-          lead: "Le consulat honoraire informe, oriente et assiste les ressortissants bissau-guinéens et représente la Guinée-Bissau en Suisse. Il ne délivre aucun document officiel : ces démarches relèvent de l’Ambassade compétente.",
+          lead: "Le consulat honoraire informe, oriente et assiste les ressortissants bissau-guinéens et représente la Guinée-Bissau en Suisse. Pour toute délivrance de document, contactez le consulat, qui vous indiquera la marche à suivre ; les passeports, visas et actes d’état civil relèvent de l’Ambassade compétente.",
           img: "Photographie officielle — 1600 × 1200 px minimum (bâtiment, ville de [À VALIDER : ville] ou vue institutionnelle neutre)",
           actions: [
             { t: "Ce que nous faisons", href: "#/services", style: "primaire" },
@@ -1038,9 +1038,19 @@ D.fr = {
           ]
         },
         {
+          type: "rich",
+          title: "Le Registre consulaire",
+          rule: true,
+          variant: "teinte",
+          paras: [
+            "Le consulat honoraire tient un Registre consulaire à l’intention des ressortissants bissau-guinéens établis en Suisse. L’inscription est <strong>volontaire et gratuite</strong>.",
+            "Ce recensement permet au consulat de mieux assurer la protection des ressortissants de sa circonscription et d’informer la communauté des principaux événements la concernant. Pour vous inscrire, prenez rendez-vous ou écrivez au consulat via la page Contact."
+          ]
+        },
+        {
           type: "note",
           variant: "attention",
-          text: "Articulation avec l’Ambassade : toute démarche impliquant la délivrance d’un document officiel doit être adressée à {par:ambassade}. Le consulat honoraire peut vous indiquer la marche à suivre."
+          text: "Les passeports, visas et actes d’état civil s’obtiennent auprès de {par:ambassade}. Pour toute autre délivrance de document, contactez le consulat honoraire, qui vous indiquera la marche à suivre."
         }
       ]
     },
@@ -1055,11 +1065,11 @@ D.fr = {
           title: "Le Consul honoraire",
           rule: true,
           img: "Portrait du Consul — format 3:4, fond neutre", photoParam: "consul_portrait_id",
-          lead: "[À VALIDER PAR LE CONSULAT : nom et titre du Consul honoraire].",
+          lead: "M. Riccardo Mortara, Consul honoraire de la République de Guinée-Bissau à Genève.",
           paras: [
             "Le Consul honoraire est nommé par les autorités de la République de Guinée-Bissau et agréé par les autorités suisses. Son entrée en fonction est reconnue par un exequatur.",
-            "Il exerce ses fonctions à titre bénévole et met son expérience au service de la communauté bissau-guinéenne et des relations entre la Guinée-Bissau et la Suisse.",
-            "[À VALIDER PAR LE CONSULAT : parcours professionnel et éléments biographiques du Consul honoraire]."
+            "Bénévole, M. Riccardo Mortara se met à la disposition des ressortissants bissau-guinéens résidant ou de passage à Genève. Fort de sa connaissance du terrain, il facilite le contact avec les autorités suisses et œuvre à leur protection et à leur assistance.",
+            "Il poursuit par ailleurs son activité professionnelle en tant que président-fondateur du groupe Sonnig International Private Jet."
           ]
         },
         {
@@ -1097,7 +1107,7 @@ D.fr = {
           rule: true,
           lead: "Le premier service de ce consulat est de vous éviter un déplacement inutile. Vérifiez ci-dessous que votre démarche relève bien du consulat honoraire.",
           paras: [
-            "Le consulat honoraire ne délivre aucun document officiel. Il vous informe sur vos démarches, vous oriente vers l’autorité compétente et peut vous assister dans les situations difficiles."
+            "Le consulat honoraire informe sur les démarches, oriente vers l’autorité compétente et peut vous assister dans les situations difficiles. Pour toute délivrance de document, contactez-le : il vous indiquera la marche à suivre."
           ]
         },
         {
@@ -1203,6 +1213,29 @@ D.fr = {
           ]
         },
         {
+          type: "rich",
+          title: "Démarches administratives",
+          rule: true,
+          paras: [
+            "Les demandes de <strong>passeport</strong>, de <strong>carte d’identité</strong> et d’<strong>actes d’état civil</strong> (naissance, mariage, divorce, décès) s’adressent directement à l’Ambassade de la République de Guinée-Bissau à Bruxelles, compétente pour la Suisse.",
+            "Pour toute autre délivrance de document, contactez le consulat honoraire, qui vous indiquera la marche à suivre."
+          ]
+        },
+        {
+          type: "contactcard",
+          fiches: [
+            {
+              icon: "ic-batiment", titre: "Ambassade de rattachement",
+              lignes: [
+                { k: "Ambassade", v: "République de Guinée-Bissau — Bruxelles" },
+                { k: "Adresse", v: "Bd Brand Whitlock 114, 1200 Bruxelles, Belgique" },
+                { k: "Téléphone", v: "+32 2 733 22 06" },
+                { k: "Courriel", v: "ambagbissaubrux@gmail.com" }
+              ]
+            }
+          ]
+        },
+        {
           type: "downloads",
           title: "Documents utiles",
           rule: true,
@@ -1230,10 +1263,11 @@ D.fr = {
           type: "rich",
           title: "La République de Guinée-Bissau",
           rule: true,
-          lead: "État d’Afrique de l’Ouest bordé par l’océan Atlantique, la Guinée-Bissau est frontalière du Sénégal au nord et de la Guinée au sud et à l’est.",
+          lead: "État lusophone d’Afrique de l’Ouest bordé par l’océan Atlantique, la Guinée-Bissau est frontalière du Sénégal au nord et de la Guinée à l’est et au sud-est.",
           paras: [
-            "Le pays comprend une partie continentale et l’archipel des Bijagós, ensemble d’îles réputé pour sa biodiversité. Le portugais est la langue officielle ; le créole de Guinée-Bissau (kriol) est largement parlé au quotidien.",
-            "Ancienne colonie portugaise, la Guinée-Bissau a proclamé son indépendance le 24 septembre 1973."
+            "Sa capitale est Bissau. Le pays comprend une partie continentale et l’archipel des Bijagós, qui réunit environ 80 îles et îlots réputés pour leur biodiversité. Le portugais est la langue officielle ; le créole de Guinée-Bissau (kriol) est largement parlé au quotidien.",
+            "Ancienne colonie portugaise, la Guinée-Bissau a proclamé son indépendance le 24 septembre 1973.",
+            "Le pays est membre de nombreuses organisations : Communauté économique des États de l’Afrique de l’Ouest (CEDEAO), Organisation des Nations unies (ONU), Union africaine (UA), Communauté des pays de langue portugaise (CPLP), Organisation de la coopération islamique et Organisation internationale de la francophonie (OIF)."
           ]
         },
         {
@@ -1608,7 +1642,7 @@ D.pt = {
       blocks: [
         { type: "hero",
           title: "Consulado honorário da Guiné-Bissau na Suíça",
-          lead: "O consulado honorário informa, orienta e presta assistência aos cidadãos guineenses e representa a Guiné-Bissau na Suíça. Não emite qualquer documento oficial: essas diligências são da competência da Embaixada competente.",
+          lead: "O consulado honorário informa, orienta e presta assistência aos cidadãos guineenses e representa a Guiné-Bissau na Suíça. Para qualquer emissão de documento, contacte o consulado, que lhe indicará os passos a seguir; os passaportes, vistos e atos de registo civil são da competência da Embaixada competente.",
           img: "Fotografia oficial — 1600 × 1200 px no mínimo (edifício, cidade de [A VALIDAR: cidade] ou vista institucional neutra)",
           actions: [
             { t: "O que fazemos", href: "#/services", style: "primaire" },
@@ -1692,8 +1726,13 @@ D.pt = {
             "A área de competência do consulado honorário abrange: {par:zone_competence_pt}.",
             "Para as diligências fora deste âmbito ou da competência da Embaixada, os cidadãos são convidados a dirigir-se à representação competente."
           ] },
+        { type: "rich", title: "O Registo consular", rule: true, variant: "teinte",
+          paras: [
+            "O consulado honorário mantém um Registo consular destinado aos cidadãos guineenses estabelecidos na Suíça. A inscrição é <strong>voluntária e gratuita</strong>.",
+            "Este recenseamento permite ao consulado assegurar melhor a proteção dos cidadãos da sua área e informar a comunidade dos principais acontecimentos que lhe dizem respeito. Para se inscrever, marque um atendimento ou escreva ao consulado através da página Contacto."
+          ] },
         { type: "note", variant: "attention",
-          text: "Articulação com a Embaixada: qualquer diligência que implique a emissão de um documento oficial deve ser dirigida a {par:ambassade}. O consulado honorário pode indicar-lhe os passos a seguir." }
+          text: "Os passaportes, vistos e atos de registo civil obtêm-se junto de {par:ambassade}. Para qualquer outra emissão de documento, contacte o consulado honorário, que lhe indicará os passos a seguir." }
       ]
     },
     consul: {
@@ -1702,11 +1741,11 @@ D.pt = {
       blocks: [
         { type: "rich", title: "O Cônsul honorário", rule: true,
           img: "Retrato do Cônsul — formato 3:4, fundo neutro", photoParam: "consul_portrait_id",
-          lead: "[A VALIDAR PELO CONSULADO: nome e título do Cônsul honorário].",
+          lead: "Sr. Riccardo Mortara, Cônsul honorário da República da Guiné-Bissau em Genebra.",
           paras: [
             "O Cônsul honorário é nomeado pelas autoridades da República da Guiné-Bissau e reconhecido pelas autoridades suíças. A sua entrada em funções é reconhecida por um exequatur.",
-            "Exerce as suas funções a título voluntário e coloca a sua experiência ao serviço da comunidade guineense e das relações entre a Guiné-Bissau e a Suíça.",
-            "[A VALIDAR PELO CONSULADO: percurso profissional e elementos biográficos do Cônsul honorário]."
+            "Voluntário, o Sr. Riccardo Mortara coloca-se à disposição dos cidadãos guineenses residentes ou de passagem por Genebra. Graças ao seu conhecimento do terreno, facilita o contacto com as autoridades suíças e zela pela sua proteção e assistência.",
+            "Prossegue igualmente a sua atividade profissional como presidente-fundador do grupo Sonnig International Private Jet."
           ] },
         { type: "rich", title: "Nomeação e exequatur", rule: true, variant: "teinte",
           paras: [
@@ -1729,7 +1768,7 @@ D.pt = {
         { type: "rich", title: "A nossa função: informar, orientar, assistir, representar", rule: true,
           lead: "O primeiro serviço deste consulado é evitar-lhe uma deslocação inútil. Verifique abaixo se a sua diligência é da competência do consulado honorário.",
           paras: [
-            "O consulado honorário não emite qualquer documento oficial. Informa-o sobre as suas diligências, orienta-o para a autoridade competente e pode assisti-lo nas situações difíceis."
+            "O consulado honorário informa sobre as diligências, orienta para a autoridade competente e pode prestar-lhe assistência nas situações difíceis. Para qualquer emissão de documento, contacte-o: indicar-lhe-á os passos a seguir."
           ] },
         { type: "can", title: "O que fazemos / o que não fazemos", rule: true,
           intro: "Em caso de dúvida, contacte-nos antes de se deslocar: indicar-lhe-emos o interlocutor adequado.",
@@ -1795,6 +1834,21 @@ D.pt = {
             { q: "O consulado cobra taxas?",
               a: "O consulado honorário não cobra qualquer taxa consular oficial. Qualquer pedido de pagamento a esse título deve deixá-lo alerta." }
           ] },
+        { type: "rich", title: "Diligências administrativas", rule: true,
+          paras: [
+            "Os pedidos de <strong>passaporte</strong>, de <strong>bilhete de identidade</strong> e de <strong>atos de registo civil</strong> (nascimento, casamento, divórcio, óbito) dirigem-se diretamente à Embaixada da República da Guiné-Bissau em Bruxelas, competente para a Suíça.",
+            "Para qualquer outra emissão de documento, contacte o consulado honorário, que lhe indicará os passos a seguir."
+          ] },
+        { type: "contactcard",
+          fiches: [
+            { icon: "ic-batiment", titre: "Embaixada de referência",
+              lignes: [
+                { k: "Embaixada", v: "República da Guiné-Bissau — Bruxelas" },
+                { k: "Endereço", v: "Bd Brand Whitlock 114, 1200 Bruxelas, Bélgica" },
+                { k: "Telefone", v: "+32 2 733 22 06" },
+                { k: "Correio eletrónico", v: "ambagbissaubrux@gmail.com" }
+              ] }
+          ] },
         { type: "downloads", title: "Documentos úteis", rule: true,
           intro: "Os documentos abaixo serão disponibilizados após validação pelo consulado.",
           items: [
@@ -1811,10 +1865,11 @@ D.pt = {
       desc: "Dados, cultura, economia, turismo e relações com a Suíça da República da Guiné-Bissau.",
       blocks: [
         { type: "rich", title: "A República da Guiné-Bissau", rule: true,
-          lead: "Estado da África Ocidental banhado pelo oceano Atlântico, a Guiné-Bissau faz fronteira com o Senegal a norte e com a Guiné a sul e a leste.",
+          lead: "Estado lusófono da África Ocidental banhado pelo oceano Atlântico, a Guiné-Bissau faz fronteira com o Senegal a norte e com a Guiné a leste e a sudeste.",
           paras: [
-            "O país inclui uma parte continental e o arquipélago dos Bijagós, conjunto de ilhas conhecido pela sua biodiversidade. O português é a língua oficial; o crioulo da Guiné-Bissau (kriol) é amplamente falado no quotidiano.",
-            "Antiga colónia portuguesa, a Guiné-Bissau proclamou a sua independência em 24 de setembro de 1973."
+            "A sua capital é Bissau. O país inclui uma parte continental e o arquipélago dos Bijagós, que reúne cerca de 80 ilhas e ilhéus conhecidos pela sua biodiversidade. O português é a língua oficial; o crioulo da Guiné-Bissau (kriol) é amplamente falado no quotidiano.",
+            "Antiga colónia portuguesa, a Guiné-Bissau proclamou a sua independência em 24 de setembro de 1973.",
+            "O país é membro de numerosas organizações: Comunidade Económica dos Estados da África Ocidental (CEDEAO), Organização das Nações Unidas (ONU), União Africana (UA), Comunidade dos Países de Língua Portuguesa (CPLP), Organização da Cooperação Islâmica e Organização Internacional da Francofonia (OIF)."
           ] },
         { type: "facts", title: "Dados", rule: true,
           items: [
@@ -2102,7 +2157,7 @@ D.en = {
       blocks: [
         { type: "hero",
           title: "Honorary Consulate of Guinea-Bissau in Switzerland",
-          lead: "The honorary consulate informs, guides and assists Bissau-Guinean nationals and represents Guinea-Bissau in Switzerland. It issues no official documents: those matters fall to the competent Embassy.",
+          lead: "The honorary consulate informs, guides and assists Bissau-Guinean nationals and represents Guinea-Bissau in Switzerland. For any document, please contact the consulate, which will tell you how to proceed; passports, visas and civil-status documents fall to the competent Embassy.",
           img: "Official photograph — 1600 × 1200 px minimum (building, city of [TO BE CONFIRMED: city] or neutral institutional view)",
           actions: [
             { t: "What we do", href: "#/services", style: "primaire" },
@@ -2186,8 +2241,13 @@ D.en = {
             "The area of competence of the honorary consulate covers: {par:zone_competence_en}.",
             "For matters outside this scope or falling to the Embassy, nationals are invited to contact the competent representation."
           ] },
+        { type: "rich", title: "The consular register", rule: true, variant: "teinte",
+          paras: [
+            "The honorary consulate keeps a consular register for Bissau-Guinean nationals living in Switzerland. Registration is <strong>voluntary and free</strong>.",
+            "This record enables the consulate to better protect the nationals in its area and to keep the community informed of the main events concerning it. To register, make an appointment or write to the consulate via the Contact page."
+          ] },
         { type: "note", variant: "attention",
-          text: "Relationship with the Embassy: any matter involving the issuance of an official document must be addressed to {par:ambassade}. The honorary consulate can tell you how to proceed." }
+          text: "Passports, visas and civil-status documents are obtained from {par:ambassade}. For any other document, please contact the honorary consulate, which will tell you how to proceed." }
       ]
     },
     consul: {
@@ -2196,11 +2256,11 @@ D.en = {
       blocks: [
         { type: "rich", title: "The Honorary Consul", rule: true,
           img: "Portrait of the Consul — 3:4 format, neutral background", photoParam: "consul_portrait_id",
-          lead: "[TO BE CONFIRMED BY THE CONSULATE: name and title of the Honorary Consul].",
+          lead: "Mr Riccardo Mortara, Honorary Consul of the Republic of Guinea-Bissau in Geneva.",
           paras: [
             "The Honorary Consul is appointed by the authorities of the Republic of Guinea-Bissau and approved by the Swiss authorities. His taking of office is recognised by an exequatur.",
-            "He carries out his functions on a voluntary basis and places his experience at the service of the Bissau-Guinean community and of relations between Guinea-Bissau and Switzerland.",
-            "[TO BE CONFIRMED BY THE CONSULATE: professional background and biographical details of the Honorary Consul]."
+            "As a volunteer, Mr Riccardo Mortara makes himself available to Bissau-Guinean nationals living in or passing through Geneva. Drawing on his knowledge of the ground, he facilitates contact with the Swiss authorities and works for their protection and assistance.",
+            "He also continues his professional activity as founder and president of the Sonnig International Private Jet group."
           ] },
         { type: "rich", title: "Appointment and exequatur", rule: true, variant: "teinte",
           paras: [
@@ -2223,7 +2283,7 @@ D.en = {
         { type: "rich", title: "Our role: inform, guide, assist, represent", rule: true,
           lead: "The first service of this consulate is to spare you an unnecessary trip. Check below that your request falls within the honorary consulate's remit.",
           paras: [
-            "The honorary consulate issues no official documents. It informs you about your procedures, refers you to the competent authority and can assist you in difficult situations."
+            "The honorary consulate provides information on procedures, refers you to the competent authority and can assist you in difficult situations. For any document, please contact it: it will tell you how to proceed."
           ] },
         { type: "can", title: "What we do / what we do not do", rule: true,
           intro: "If in doubt, contact us before travelling: we will tell you the right point of contact.",
@@ -2289,6 +2349,21 @@ D.en = {
             { q: "Does the consulate charge fees?",
               a: "The honorary consulate collects no official consular fees. Any request for payment on that basis should alert you." }
           ] },
+        { type: "rich", title: "Administrative procedures", rule: true,
+          paras: [
+            "Applications for a <strong>passport</strong>, an <strong>identity card</strong> and <strong>civil-status documents</strong> (birth, marriage, divorce, death) are made directly to the Embassy of the Republic of Guinea-Bissau in Brussels, which is competent for Switzerland.",
+            "For any other document, please contact the honorary consulate, which will tell you how to proceed."
+          ] },
+        { type: "contactcard",
+          fiches: [
+            { icon: "ic-batiment", titre: "Responsible Embassy",
+              lignes: [
+                { k: "Embassy", v: "Republic of Guinea-Bissau — Brussels" },
+                { k: "Address", v: "Bd Brand Whitlock 114, 1200 Brussels, Belgium" },
+                { k: "Telephone", v: "+32 2 733 22 06" },
+                { k: "Email", v: "ambagbissaubrux@gmail.com" }
+              ] }
+          ] },
         { type: "downloads", title: "Useful documents", rule: true,
           intro: "The documents below will be made available once validated by the consulate.",
           items: [
@@ -2305,10 +2380,11 @@ D.en = {
       desc: "Key facts, culture, economy, tourism and relations with Switzerland of the Republic of Guinea-Bissau.",
       blocks: [
         { type: "rich", title: "The Republic of Guinea-Bissau", rule: true,
-          lead: "A West African state bordered by the Atlantic Ocean, Guinea-Bissau shares borders with Senegal to the north and Guinea to the south and east.",
+          lead: "A Portuguese-speaking West African state bordered by the Atlantic Ocean, Guinea-Bissau shares borders with Senegal to the north and Guinea to the east and south-east.",
           paras: [
-            "The country comprises a mainland part and the Bijagós archipelago, a group of islands renowned for its biodiversity. Portuguese is the official language; Guinea-Bissau Creole (kriol) is widely spoken in daily life.",
-            "A former Portuguese colony, Guinea-Bissau proclaimed its independence on 24 September 1973."
+            "Its capital is Bissau. The country comprises a mainland part and the Bijagós archipelago, which brings together around 80 islands and islets renowned for their biodiversity. Portuguese is the official language; Guinea-Bissau Creole (kriol) is widely spoken in daily life.",
+            "A former Portuguese colony, Guinea-Bissau proclaimed its independence on 24 September 1973.",
+            "The country is a member of many organisations: the Economic Community of West African States (ECOWAS), the United Nations (UN), the African Union (AU), the Community of Portuguese Language Countries (CPLP), the Organisation of Islamic Cooperation and the International Organisation of La Francophonie (OIF)."
           ] },
         { type: "facts", title: "Key facts", rule: true,
           items: [
