@@ -749,25 +749,33 @@ app.get("/api/creneaux/tous", adminAuth, async function (req, res) {
 app.post("/api/creneaux", adminAuth, async function (req, res) {
   if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
   const b = req.body || {};
-  const type = txt(b.type), jour = txt(b.jour);
+  const type = txt(b.type);
   const debut = txt(b.heure_debut), fin = txt(b.heure_fin);
   const duree = Math.min(240, Math.max(10, parseInt(b.duree, 10) || 30));
   const semaines = Math.min(26, Math.max(1, parseInt(b.repeter, 10) || 1));
   if (TYPES_RDV.indexOf(type) === -1) return res.status(400).json({ ok: false, erreur: "Type invalide." });
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(jour)) return res.status(400).json({ ok: false, erreur: "Date invalide." });
+  // Accepte un tableau `jours` (multi-dates) ou un `jour` unique (rétrocompatibilité).
+  let jours = Array.isArray(b.jours) ? b.jours.map(txt) : (b.jour ? [txt(b.jour)] : []);
+  jours = jours.filter(function (j) { return /^\d{4}-\d{2}-\d{2}$/.test(j); });
+  // Dédoublonne en conservant l'ordre.
+  jours = jours.filter(function (j, i) { return jours.indexOf(j) === i; });
+  if (!jours.length) return res.status(400).json({ ok: false, erreur: "Aucune date valide." });
+  if (jours.length > 60) return res.status(400).json({ ok: false, erreur: "Trop de dates sélectionnées (60 maximum)." });
   const heures = genererHeures(debut, fin, duree);
   if (!heures.length) return res.status(400).json({ ok: false, erreur: "Horaires invalides." });
   const client = await pool.connect();
   let crees = 0;
   try {
     await client.query("BEGIN");
-    for (let w = 0; w < semaines; w++) {
-      const j = ajouterJours(jour, w * 7);
-      for (let k = 0; k < heures.length; k++) {
-        const r = await client.query(
-          "INSERT INTO creneaux (jour, heure, duree, type) VALUES ($1,$2,$3,$4) " +
-          "ON CONFLICT (jour, heure, type) DO NOTHING", [j, heures[k], duree, type]);
-        crees += r.rowCount;
+    for (let d = 0; d < jours.length; d++) {
+      for (let w = 0; w < semaines; w++) {
+        const j = ajouterJours(jours[d], w * 7);
+        for (let k = 0; k < heures.length; k++) {
+          const r = await client.query(
+            "INSERT INTO creneaux (jour, heure, duree, type) VALUES ($1,$2,$3,$4) " +
+            "ON CONFLICT (jour, heure, type) DO NOTHING", [j, heures[k], duree, type]);
+          crees += r.rowCount;
+        }
       }
     }
     await client.query("COMMIT");
