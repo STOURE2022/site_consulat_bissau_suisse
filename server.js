@@ -121,7 +121,7 @@ async function assurerTableDocuments() {
 
 /* Clés de paramètres autorisées (coordonnées, horaires, bandeau d'information). */
 const CLES_PARAM = [
-  "adresse", "ville", "telephone", "permanence", "courriel", "ambassade",
+  "adresse", "ville", "telephone", "permanence", "courriel", "ambassade", "assistante",
   "horaires_reception", "horaires_jours", "horaires_permanence",
   "bandeau_actif", "bandeau_type", "bandeau_texte",
   "consul_nom", "consul_fonction_fr", "consul_fonction_pt", "consul_fonction_en",

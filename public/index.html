@@ -1284,13 +1284,17 @@ D.fr = {
         },
         {
           type: "cards", cols: 3,
-          title: "Autres situations d’urgence",
+          title: "Assistance aux ressortissants",
+          intro: "En cas de difficulté à Genève, le consulat honoraire peut vous aider et vous orienter. Certaines dépenses restent toutefois à votre charge, comme précisé ci-dessous.",
           rule: true,
           variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Hospitalisation", text: "Nous pouvons prévenir vos proches et faire le lien avec l’Ambassade et les services de santé." },
-            { icon: "ic-batiment", title: "Détention", text: "Vous avez le droit de demander à ce que le consulat soit informé ; nous pouvons vous orienter." },
-            { icon: "ic-doc", title: "Décès d’un proche", text: "Nous vous orientons dans les démarches et vers l’Ambassade pour les formalités officielles." }
+            { icon: "ic-info", title: "Difficultés financières", text: "Le consulat vous indique le moyen le plus efficace pour que vos proches vous fassent parvenir rapidement l’argent dont vous avez besoin." },
+            { icon: "ic-batiment", title: "Arrestation ou détention", text: "Vous pouvez demander que le consulat soit informé. Il s’assure de vos conditions de détention et peut vous remettre une liste d’avocats — leurs honoraires restent à votre charge." },
+            { icon: "ic-info", title: "Maladie", text: "Le consulat peut vous mettre en relation avec un médecin agréé et vous fournir une liste de médecins — les frais médicaux restent à votre charge." },
+            { icon: "ic-alerte", title: "Accident grave", text: "Le consulat peut prévenir votre famille et envisager avec elle les mesures à prendre : hospitalisation ou rapatriement. Une assurance rapatriement est vivement conseillée." },
+            { icon: "ic-doc", title: "Décès", text: "Le consulat accomplit, avec le Consulat compétent, les formalités liées au décès. Les frais sont pris en charge par l’assurance du défunt ou, à défaut, par la famille." },
+            { icon: "ic-doc", title: "Perte ou vol de titres", text: "Le consulat vous renseigne sur les procédures pour obtenir de nouveaux titres d’identité ou de voyage." }
           ]
         },
         {
@@ -1503,6 +1507,7 @@ D.fr = {
             {
               icon: "ic-tel", titre: "Téléphone & courriel",
               lignes: [
+                { k: "Contact", v: "{par:assistante}" },
                 { k: "Téléphone", v: "{par:telephone}" },
                 { k: "Permanence", v: "{par:permanence}" },
                 { k: "Courriel", v: "{par:courriel}" }
@@ -1933,11 +1938,16 @@ D.pt = {
             { t: "Contactar o consulado honorário", x: "Indicamos-lhe os passos a seguir e fazemos a ligação com a Embaixada competente." },
             { t: "Dirigir o seu pedido à Embaixada", x: "A emissão de um novo passaporte ou salvo-conduto é da competência de {par:ambassade}." }
           ] },
-        { type: "cards", cols: 3, title: "Outras situações de emergência", rule: true, variant: "sombre",
+        { type: "cards", cols: 3, title: "Assistência aos cidadãos",
+          intro: "Em caso de dificuldade em Genebra, o consulado honorário pode ajudá-lo e orientá-lo. Algumas despesas ficam, contudo, a seu cargo, conforme indicado a seguir.",
+          rule: true, variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Hospitalização", text: "Podemos avisar os seus familiares e fazer a ligação com a Embaixada e os serviços de saúde." },
-            { icon: "ic-batiment", title: "Detenção", text: "Tem o direito de pedir que o consulado seja informado; podemos orientá-lo." },
-            { icon: "ic-doc", title: "Óbito de um familiar", text: "Orientamo-lo nas diligências e junto da Embaixada para as formalidades oficiais." }
+            { icon: "ic-info", title: "Dificuldades financeiras", text: "O consulado indica-lhe a forma mais eficaz de os seus familiares lhe fazerem chegar rapidamente o dinheiro de que necessita." },
+            { icon: "ic-batiment", title: "Detenção ou prisão", text: "Pode pedir que o consulado seja informado. Este assegura-se das suas condições de detenção e pode entregar-lhe uma lista de advogados — os honorários ficam a seu cargo." },
+            { icon: "ic-info", title: "Doença", text: "O consulado pode pô-lo em contacto com um médico credenciado e fornecer-lhe uma lista de médicos — as despesas médicas ficam a seu cargo." },
+            { icon: "ic-alerte", title: "Acidente grave", text: "O consulado pode avisar a sua família e ponderar com ela as medidas a tomar: hospitalização ou repatriamento. Recomenda-se vivamente um seguro de repatriamento." },
+            { icon: "ic-doc", title: "Óbito", text: "O consulado realiza, com o Consulado competente, as formalidades relativas ao óbito. As despesas são suportadas pelo seguro do falecido ou, na sua falta, pela família." },
+            { icon: "ic-doc", title: "Perda ou roubo de documentos", text: "O consulado informa-o sobre os procedimentos para obter novos documentos de identidade ou de viagem." }
           ] },
         { type: "accordion", title: "Perguntas frequentes", rule: true, key: "services",
           items: [
@@ -2068,6 +2078,7 @@ D.pt = {
               ] },
             { icon: "ic-tel", titre: "Telefone e correio eletrónico",
               lignes: [
+                { k: "Contacto", v: "{par:assistante}" },
                 { k: "Telefone", v: "{par:telephone}" },
                 { k: "Permanência", v: "{par:permanence}" },
                 { k: "Correio eletrónico", v: "{par:courriel}" }
@@ -2455,11 +2466,16 @@ D.en = {
             { t: "Contact the honorary consulate", x: "We tell you how to proceed and liaise with the competent Embassy." },
             { t: "Address your request to the Embassy", x: "The issuance of a new passport or travel document falls to {par:ambassade}." }
           ] },
-        { type: "cards", cols: 3, title: "Other emergencies", rule: true, variant: "sombre",
+        { type: "cards", cols: 3, title: "Assistance to nationals",
+          intro: "If you run into difficulty in Geneva, the honorary consulate can help and guide you. Some costs, however, remain your responsibility, as set out below.",
+          rule: true, variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Hospitalisation", text: "We can notify your relatives and liaise with the Embassy and the health services." },
-            { icon: "ic-batiment", title: "Detention", text: "You have the right to request that the consulate be informed; we can guide you." },
-            { icon: "ic-doc", title: "Death of a relative", text: "We guide you through the procedures and towards the Embassy for the official formalities." }
+            { icon: "ic-info", title: "Financial difficulties", text: "The consulate advises you on the most effective way for your relatives to send you the money you need quickly." },
+            { icon: "ic-batiment", title: "Arrest or detention", text: "You may request that the consulate be informed. It checks your conditions of detention and can provide a list of lawyers — their fees remain your responsibility." },
+            { icon: "ic-info", title: "Illness", text: "The consulate can put you in touch with an approved doctor and provide a list of physicians — medical costs remain your responsibility." },
+            { icon: "ic-alerte", title: "Serious accident", text: "The consulate can notify your family and consider with them the measures to take: hospitalisation or repatriation. Repatriation insurance is strongly recommended." },
+            { icon: "ic-doc", title: "Death", text: "The consulate carries out, together with the competent Consulate, the formalities relating to the death. Costs are borne by the deceased’s insurance or, failing that, by the family." },
+            { icon: "ic-doc", title: "Loss or theft of documents", text: "The consulate informs you of the procedures for obtaining new identity or travel documents." }
           ] },
         { type: "accordion", title: "Frequently asked questions", rule: true, key: "services",
           items: [
@@ -2590,6 +2606,7 @@ D.en = {
               ] },
             { icon: "ic-tel", titre: "Telephone & email",
               lignes: [
+                { k: "Contact", v: "{par:assistante}" },
                 { k: "Telephone", v: "{par:telephone}" },
                 { k: "Emergency line", v: "{par:permanence}" },
                 { k: "Email", v: "{par:courriel}" }
@@ -2913,7 +2930,8 @@ var DEFAUTS_PARAM = {
   zone_competence_en: "Switzerland",
   editeur: "Consulat honoraire de la République de Guinée-Bissau à Genève — 14, Quai du Seujet, 1201 Genève — secretariat@consulatgb.ch",
   hebergeur: "[À VALIDER : nom et adresse de l’hébergeur du site]",
-  conservation_fr: "12 mois", conservation_pt: "12 meses", conservation_en: "12 months"
+  conservation_fr: "12 mois", conservation_pt: "12 meses", conservation_en: "12 months",
+  assistante: "Mme Leila Vacca, assistante du Consul honoraire"
 };
 
 /* Remplace les jetons {par:clé} par la valeur du paramètre ou son repli. */

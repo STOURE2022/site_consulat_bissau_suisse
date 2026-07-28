@@ -665,6 +665,7 @@ textarea{min-height:120px;resize:vertical}
               <div class="champ"><label class="etq" for="pa_permanence">Permanence / urgence</label><input type="text" id="pa_permanence"></div>
             </div>
             <div class="champ"><label class="etq" for="pa_courriel">Courriel</label><input type="text" id="pa_courriel"></div>
+            <div class="champ"><label class="etq" for="pa_assistante">Interlocuteur / assistante (nom et fonction)</label><input type="text" id="pa_assistante" placeholder="Ex. : Mme Leila Vacca, assistante du Consul honoraire"></div>
             <div class="champ"><label class="etq" for="pa_ambassade">Ambassade de rattachement (ville et adresse)</label><input type="text" id="pa_ambassade"></div>
             <div class="ligne2">
               <div class="champ"><label class="etq" for="pa_hrec">Horaires — réception</label><input type="text" id="pa_hrec" placeholder="Sur rendez-vous"></div>
@@ -1332,7 +1333,7 @@ textarea{min-height:120px;resize:vertical}
   /* --- Paramètres : chargement --- */
   var CHAMPS_PARAM = {
     adresse:"pa_adresse", ville:"pa_ville", telephone:"pa_telephone", permanence:"pa_permanence",
-    courriel:"pa_courriel", ambassade:"pa_ambassade", horaires_reception:"pa_hrec",
+    courriel:"pa_courriel", assistante:"pa_assistante", ambassade:"pa_ambassade", horaires_reception:"pa_hrec",
     horaires_jours:"pa_hjours", horaires_permanence:"pa_hperm", bandeau_texte:"pa_btexte", bandeau_type:"pa_btype"
   };
   function chargerParams(){
