@@ -391,18 +391,45 @@ a.carte:hover{border-color:var(--vert);transform:translateY(-2px)}
   font-size:.85rem;color:var(--vert-fonce);display:inline-flex;align-items:center;gap:.3em}
 
 /* Bloc comparatif « can » : ce que nous faisons / ne faisons pas */
-.can{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,22px)}
-.can__col{border:1px solid var(--ligne);border-radius:var(--r);padding:clamp(16px,2.2vw,24px);background:#fff}
-.can__col--oui{background:var(--oui-fond);border-color:#bfe3cd}
-.can__col--non{background:var(--non-fond);border-color:#f0c9cf}
-.can__col h3{display:flex;align-items:center;gap:.5em}
-.can__col--oui h3{color:#04672f}
-.can__col--non h3{color:#a01523}
-.can__col ul{list-style:none;padding:0;margin:.6em 0 0}
-.can__col li{display:flex;gap:.55em;align-items:flex-start;margin:.55em 0;font-size:.95rem}
-.can__col li .ic{margin-top:.15em}
-.can__col--oui li .ic{color:#04672f}
-.can__col--non li .ic{color:#a01523}
+/* Comparatif « peut / ne peut pas » — cartes premium */
+.can{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,22px)}
+@media (max-width:760px){.can{grid-template-columns:1fr}}
+.can-carte{position:relative;background:#fff;border:1px solid var(--ligne);border-radius:16px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(16,40,28,.05),0 10px 30px rgba(16,40,28,.06)}
+.can-carte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
+.can-carte--oui::before{background:linear-gradient(90deg,var(--vert),var(--vert-fonce))}
+.can-carte--non::before{background:linear-gradient(90deg,var(--rouge),#a01523)}
+.can-tete{display:flex;align-items:center;gap:.8em;padding:clamp(16px,2.2vw,22px) clamp(16px,2.2vw,24px) .7em}
+.can-chip{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto}
+.can-carte--oui .can-chip{background:var(--oui-fond);color:#04672f}
+.can-carte--non .can-chip{background:var(--non-fond);color:#a01523}
+.can-tete h3{font-size:1.15rem;font-weight:800;letter-spacing:-.01em;margin:0}
+.can-carte--oui .can-tete h3{color:#04672f}
+.can-carte--non .can-tete h3{color:#a01523}
+.can-sous{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-top:.15em}
+.can-carte--oui .can-sous{color:var(--vert)}
+.can-carte--non .can-sous{color:var(--rouge)}
+.can-liste{list-style:none;padding:.2em clamp(16px,2.2vw,24px) clamp(16px,2.2vw,24px);margin:0}
+.can-liste li{display:flex;gap:.7em;align-items:flex-start;padding:.7em 0;border-top:1px solid var(--ligne);font-size:.97rem}
+.can-liste li:first-child{border-top:none}
+.can-liste li>span:last-child{color:#374039}
+.can-marque{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;margin-top:.05em}
+.can-marque .ic{width:13px;height:13px}
+.can-carte--oui .can-marque{background:var(--vert);color:#fff}
+.can-carte--non .can-marque{background:#a01523;color:#fff}
+
+/* Cartes « situations » d'assistance — premium */
+.situations{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,18px)}
+@media (max-width:860px){.situations{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.situations{grid-template-columns:1fr}}
+.situation{background:#fff;border-radius:16px;padding:clamp(18px,2vw,24px);display:flex;flex-direction:column;gap:.6em;
+  box-shadow:0 1px 2px rgba(16,40,28,.05),0 10px 30px rgba(16,40,28,.07);transition:transform .18s ease,box-shadow .18s ease}
+.situation:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.12),0 20px 40px rgba(0,0,0,.16)}
+.situation-ico{width:48px;height:48px;border-radius:13px;background:var(--oui-fond);color:var(--vert-fonce);display:grid;place-items:center;flex:0 0 auto}
+.situation h4{font-size:1.05rem;font-weight:800;color:var(--vert-fonce);letter-spacing:-.01em;margin:0}
+.situation p{font-size:.92rem;color:var(--gris);line-height:1.55;margin:0}
+.situation-tag{align-self:flex-start;margin-top:.15em;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+  color:#8a6d12;background:#efe3c2;padding:.35em .8em;border-radius:999px}
 
 /* Bloc « note » (encadré d'information) */
 .note{border:1px solid var(--ligne);border-left:4px solid var(--vert);
@@ -767,6 +794,8 @@ footer.site li{margin:.35em 0}
   <symbol id="ic-batiment" viewBox="0 0 24 24"><path d="M3 21V8l7-4 7 4v13h-4v-6H7v6H3zm14-9h4v9h-4v-9zM9 10h2v2H9v-2zm4 0h2v2h-2v-2z"/></symbol>
   <symbol id="ic-personne" viewBox="0 0 24 24"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></symbol>
   <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6V2zm7 1.5V7h3.5L13 3.5zM8 12h8v2H8v-2zm0 4h8v2H8v-2z"/></symbol>
+  <symbol id="ic-argent" viewBox="0 0 24 24"><path d="M2 6h20v12H2V6zm2 2v8h16V8H4zm8 1.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5zM5 9h2v2H5V9zm12 4h2v2h-2v-2z"/></symbol>
+  <symbol id="ic-coeur" viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9.3-8.5C1 9.5 2.5 6 6 6c2 0 3.2 1.2 4 2.3C10.8 7.2 12 6 14 6c3.5 0 5 3.5 3.3 6.5C19 16.65 12 21 12 21z"/></symbol>
   <symbol id="ic-tel" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></symbol>
   <symbol id="ic-drapeau" viewBox="0 0 24 24"><path d="M5 3v18H3V3h2zm2 1h13l-3 4 3 4H7V4z"/></symbol>
   <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
@@ -1039,6 +1068,7 @@ D.fr = {
             items: [
               "Informer sur les démarches et orienter vers l’autorité compétente",
               "Assister les ressortissants en difficulté (perte de papiers, hospitalisation, détention, décès)",
+              "Délivrer certains documents et percevoir les droits de chancellerie",
               "Faciliter le lien avec l’Ambassade et les autorités suisses",
               "Représenter la Guinée-Bissau lors d’événements officiels"
             ]
@@ -1252,6 +1282,7 @@ D.fr = {
               "Vous informer sur les démarches consulaires et administratives",
               "Vous orienter vers l’Ambassade ou l’autorité suisse compétente",
               "Vous assister en cas de perte de papiers, hospitalisation, détention ou décès",
+              "Délivrer certains documents et percevoir les droits de chancellerie",
               "Faciliter le contact avec l’Ambassade et transmettre des informations",
               "Vous renseigner sur la Guinée-Bissau (pays, culture, économie)",
               "Représenter la Guinée-Bissau lors d’événements officiels"
@@ -1295,18 +1326,18 @@ D.fr = {
           ]
         },
         {
-          type: "cards", cols: 3,
+          type: "situations",
           title: "Assistance aux ressortissants",
           intro: "En cas de difficulté à Genève, le consulat honoraire peut vous aider et vous orienter. Certaines dépenses restent toutefois à votre charge, comme précisé ci-dessous.",
           rule: true,
           variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Difficultés financières", text: "Le consulat vous indique le moyen le plus efficace pour que vos proches vous fassent parvenir rapidement l’argent dont vous avez besoin." },
-            { icon: "ic-batiment", title: "Arrestation ou détention", text: "Vous pouvez demander que le consulat soit informé. Il s’assure de vos conditions de détention et peut vous remettre une liste d’avocats — leurs honoraires restent à votre charge." },
-            { icon: "ic-info", title: "Maladie", text: "Le consulat peut vous mettre en relation avec un médecin agréé et vous fournir une liste de médecins — les frais médicaux restent à votre charge." },
-            { icon: "ic-alerte", title: "Accident grave", text: "Le consulat peut prévenir votre famille et envisager avec elle les mesures à prendre : hospitalisation ou rapatriement. Une assurance rapatriement est vivement conseillée." },
-            { icon: "ic-doc", title: "Décès", text: "Le consulat accomplit, avec le Consulat compétent, les formalités liées au décès. Les frais sont pris en charge par l’assurance du défunt ou, à défaut, par la famille." },
-            { icon: "ic-doc", title: "Perte ou vol de titres", text: "Le consulat vous renseigne sur les procédures pour obtenir de nouveaux titres d’identité ou de voyage." }
+            { icon: "ic-argent", title: "Difficultés financières", text: "Le consulat vous indique le moyen le plus efficace pour que vos proches vous fassent parvenir rapidement l’argent dont vous avez besoin." },
+            { icon: "ic-verrou", title: "Arrestation ou détention", text: "Le consulat s’assure de vos conditions de détention et peut vous remettre une liste d’avocats.", tag: "Honoraires à votre charge" },
+            { icon: "ic-coeur", title: "Maladie", text: "Le consulat peut vous mettre en relation avec un médecin agréé et vous fournir une liste de médecins.", tag: "Frais médicaux à votre charge" },
+            { icon: "ic-alerte", title: "Accident grave", text: "Le consulat peut prévenir votre famille et envisager avec elle hospitalisation ou rapatriement. Une assurance rapatriement est vivement conseillée." },
+            { icon: "ic-doc", title: "Décès", text: "Le consulat accomplit, avec le Consulat compétent, les formalités liées au décès.", tag: "Frais : assurance ou famille" },
+            { icon: "ic-personne", title: "Perte ou vol de titres", text: "Le consulat vous renseigne sur les procédures pour obtenir de nouveaux titres d’identité ou de voyage." }
           ]
         },
         {
@@ -1795,6 +1826,7 @@ D.pt = {
             items: [
               "Informar sobre as diligências e orientar para a autoridade competente",
               "Assistir os cidadãos em dificuldade (perda de documentos, hospitalização, detenção, óbito)",
+              "Emitir determinados documentos e cobrar os respetivos emolumentos consulares",
               "Facilitar a ligação com a Embaixada e as autoridades suíças",
               "Representar a Guiné-Bissau em eventos oficiais"
             ] },
@@ -1928,6 +1960,7 @@ D.pt = {
               "Informá-lo sobre as diligências consulares e administrativas",
               "Orientá-lo para a Embaixada ou a autoridade suíça competente",
               "Assisti-lo em caso de perda de documentos, hospitalização, detenção ou óbito",
+              "Emitir determinados documentos e cobrar os respetivos emolumentos consulares",
               "Facilitar o contacto com a Embaixada e transmitir informações",
               "Informá-lo sobre a Guiné-Bissau (país, cultura, economia)",
               "Representar a Guiné-Bissau em eventos oficiais"
@@ -1958,16 +1991,16 @@ D.pt = {
             { t: "Contactar o consulado honorário", x: "Indicamos-lhe os passos a seguir e fazemos a ligação com a Embaixada competente." },
             { t: "Dirigir o seu pedido à Embaixada", x: "A emissão de um novo passaporte ou salvo-conduto é da competência de {par:ambassade}." }
           ] },
-        { type: "cards", cols: 3, title: "Assistência aos cidadãos",
+        { type: "situations", title: "Assistência aos cidadãos",
           intro: "Em caso de dificuldade em Genebra, o consulado honorário pode ajudá-lo e orientá-lo. Algumas despesas ficam, contudo, a seu cargo, conforme indicado a seguir.",
           rule: true, variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Dificuldades financeiras", text: "O consulado indica-lhe a forma mais eficaz de os seus familiares lhe fazerem chegar rapidamente o dinheiro de que necessita." },
-            { icon: "ic-batiment", title: "Detenção ou prisão", text: "Pode pedir que o consulado seja informado. Este assegura-se das suas condições de detenção e pode entregar-lhe uma lista de advogados — os honorários ficam a seu cargo." },
-            { icon: "ic-info", title: "Doença", text: "O consulado pode pô-lo em contacto com um médico credenciado e fornecer-lhe uma lista de médicos — as despesas médicas ficam a seu cargo." },
-            { icon: "ic-alerte", title: "Acidente grave", text: "O consulado pode avisar a sua família e ponderar com ela as medidas a tomar: hospitalização ou repatriamento. Recomenda-se vivamente um seguro de repatriamento." },
-            { icon: "ic-doc", title: "Óbito", text: "O consulado realiza, com o Consulado competente, as formalidades relativas ao óbito. As despesas são suportadas pelo seguro do falecido ou, na sua falta, pela família." },
-            { icon: "ic-doc", title: "Perda ou roubo de documentos", text: "O consulado informa-o sobre os procedimentos para obter novos documentos de identidade ou de viagem." }
+            { icon: "ic-argent", title: "Dificuldades financeiras", text: "O consulado indica-lhe a forma mais eficaz de os seus familiares lhe fazerem chegar rapidamente o dinheiro de que necessita." },
+            { icon: "ic-verrou", title: "Detenção ou prisão", text: "O consulado assegura-se das suas condições de detenção e pode entregar-lhe uma lista de advogados.", tag: "Honorários a seu cargo" },
+            { icon: "ic-coeur", title: "Doença", text: "O consulado pode pô-lo em contacto com um médico credenciado e fornecer-lhe uma lista de médicos.", tag: "Despesas médicas a seu cargo" },
+            { icon: "ic-alerte", title: "Acidente grave", text: "O consulado pode avisar a sua família e ponderar com ela hospitalização ou repatriamento. Recomenda-se vivamente um seguro de repatriamento." },
+            { icon: "ic-doc", title: "Óbito", text: "O consulado realiza, com o Consulado competente, as formalidades relativas ao óbito.", tag: "Despesas: seguro ou família" },
+            { icon: "ic-personne", title: "Perda ou roubo de documentos", text: "O consulado informa-o sobre os procedimentos para obter novos documentos de identidade ou de viagem." }
           ] },
         { type: "accordion", title: "Perguntas frequentes", rule: true, key: "services",
           items: [
@@ -2330,6 +2363,7 @@ D.en = {
             items: [
               "Inform on procedures and refer you to the competent authority",
               "Assist nationals in difficulty (lost documents, hospitalisation, detention, death)",
+              "Issue certain documents and collect the corresponding chancery fees",
               "Facilitate contact with the Embassy and the Swiss authorities",
               "Represent Guinea-Bissau at official events"
             ] },
@@ -2463,6 +2497,7 @@ D.en = {
               "Inform you about consular and administrative procedures",
               "Refer you to the Embassy or the competent Swiss authority",
               "Assist you in case of lost documents, hospitalisation, detention or death",
+              "Issue certain documents and collect the corresponding chancery fees",
               "Facilitate contact with the Embassy and pass on information",
               "Provide information about Guinea-Bissau (country, culture, economy)",
               "Represent Guinea-Bissau at official events"
@@ -2493,16 +2528,16 @@ D.en = {
             { t: "Contact the honorary consulate", x: "We tell you how to proceed and liaise with the competent Embassy." },
             { t: "Address your request to the Embassy", x: "The issuance of a new passport or travel document falls to {par:ambassade}." }
           ] },
-        { type: "cards", cols: 3, title: "Assistance to nationals",
+        { type: "situations", title: "Assistance to nationals",
           intro: "If you run into difficulty in Geneva, the honorary consulate can help and guide you. Some costs, however, remain your responsibility, as set out below.",
           rule: true, variant: "sombre",
           items: [
-            { icon: "ic-info", title: "Financial difficulties", text: "The consulate advises you on the most effective way for your relatives to send you the money you need quickly." },
-            { icon: "ic-batiment", title: "Arrest or detention", text: "You may request that the consulate be informed. It checks your conditions of detention and can provide a list of lawyers — their fees remain your responsibility." },
-            { icon: "ic-info", title: "Illness", text: "The consulate can put you in touch with an approved doctor and provide a list of physicians — medical costs remain your responsibility." },
-            { icon: "ic-alerte", title: "Serious accident", text: "The consulate can notify your family and consider with them the measures to take: hospitalisation or repatriation. Repatriation insurance is strongly recommended." },
-            { icon: "ic-doc", title: "Death", text: "The consulate carries out, together with the competent Consulate, the formalities relating to the death. Costs are borne by the deceased’s insurance or, failing that, by the family." },
-            { icon: "ic-doc", title: "Loss or theft of documents", text: "The consulate informs you of the procedures for obtaining new identity or travel documents." }
+            { icon: "ic-argent", title: "Financial difficulties", text: "The consulate advises you on the most effective way for your relatives to send you the money you need quickly." },
+            { icon: "ic-verrou", title: "Arrest or detention", text: "The consulate checks your conditions of detention and can provide a list of lawyers.", tag: "Fees at your expense" },
+            { icon: "ic-coeur", title: "Illness", text: "The consulate can put you in touch with an approved doctor and provide a list of physicians.", tag: "Medical costs at your expense" },
+            { icon: "ic-alerte", title: "Serious accident", text: "The consulate can notify your family and consider with them hospitalisation or repatriation. Repatriation insurance is strongly recommended." },
+            { icon: "ic-doc", title: "Death", text: "The consulate carries out, together with the competent Consulate, the formalities relating to the death.", tag: "Costs: insurance or family" },
+            { icon: "ic-personne", title: "Loss or theft of documents", text: "The consulate informs you of the procedures for obtaining new identity or travel documents." }
           ] },
         { type: "accordion", title: "Frequently asked questions", rule: true, key: "services",
           items: [
@@ -3061,6 +3096,7 @@ function rendreBloc(b){
     case "hero":              return blocHero(b);
     case "cards":             return blocCards(b);
     case "can":               return blocCan(b);
+    case "situations":        return blocSituations(b);
     case "mot-consul":        return blocMotConsul(b);
     case "news-apercu":       return blocNewsApercu(b);
     case "note":              return blocNote(b);
@@ -3253,19 +3289,28 @@ function blocCards(b){
   return section;
 }
 
-/* --- Bloc CAN (comparatif faisons / ne faisons pas) --- */
+/* --- Bloc CAN (comparatif faisons / ne faisons pas), présentation premium --- */
 function blocCan(b){
   var section = creer("section",{class:"section section--teinte"});
   var wrap = creer("div",{class:"wrap"});
   wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
 
   function colonne(data, type){
-    var col = creer("div",{class:"can__col can__col--"+type});
-    col.appendChild(creer("h3",{},[ icone(type==="oui"?"ic-check":"ic-croix"), data.titre ]));
-    var ul = creer("ul");
+    var ic = type==="oui" ? "ic-check" : "ic-croix";
+    var col = creer("div",{class:"can-carte can-carte--"+type});
+    var tete = creer("div",{class:"can-tete"});
+    tete.appendChild(creer("span",{class:"can-chip"}, icone(ic,"ic--lg")));
+    var titres = creer("div");
+    titres.appendChild(creer("h3",{html:baliser(data.titre)}));
+    if (data.sous) titres.appendChild(creer("span",{class:"can-sous", text:data.sous}));
+    tete.appendChild(titres);
+    col.appendChild(tete);
+    var ul = creer("ul",{class:"can-liste"});
     data.items.forEach(function(t){
-      ul.appendChild(creer("li",{},[ icone(type==="oui"?"ic-check":"ic-croix"),
-        creer("span",{html:baliser(t)}) ]));
+      ul.appendChild(creer("li",{},[
+        creer("span",{class:"can-marque"}, icone(ic)),
+        creer("span",{html:baliser(t)})
+      ]));
     });
     col.appendChild(ul);
     return col;
@@ -3275,6 +3320,26 @@ function blocCan(b){
   can.appendChild(colonne(b.oui,"oui"));
   can.appendChild(colonne(b.non,"non"));
   wrap.appendChild(can);
+  section.appendChild(wrap);
+  return section;
+}
+
+/* --- Bloc SITUATIONS : cartes premium d'assistance (icône, titre, texte, étiquette) --- */
+function blocSituations(b){
+  var sombre = b.variant === "sombre";
+  var section = creer("section",{class:"section" + (sombre?" section--sombre":"")});
+  var wrap = creer("div",{class:"wrap"});
+  wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
+  var grille = creer("div",{class:"situations"});
+  (b.items||[]).forEach(function(it){
+    var carte = creer("div",{class:"situation"});
+    if (it.icon) carte.appendChild(creer("span",{class:"situation-ico"}, icone(it.icon,"ic--lg")));
+    carte.appendChild(creer("h4",{html:baliser(it.title)}));
+    if (it.text) carte.appendChild(creer("p",{html:baliser(it.text)}));
+    if (it.tag) carte.appendChild(creer("span",{class:"situation-tag", html:baliser(it.tag)}));
+    grille.appendChild(carte);
+  });
+  wrap.appendChild(grille);
   section.appendChild(wrap);
   return section;
 }
