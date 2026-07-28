@@ -227,11 +227,20 @@ app.use(express.json({ limit: "20kb" }));
 /* Fichiers statiques (le site). */
 app.use(express.static(path.join(__dirname, "public"), { maxAge: "1h" }));
 
-/* Limiteur de débit sur les endpoints d'envoi : 20 requêtes / 15 min / IP. */
-app.use(
-  "/api/",
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false })
-);
+/* Limiteur STRICT réservé aux endpoints qui envoient un e-mail ou acceptent une
+   écriture publique (formulaire de contact, demande et réservation de rendez-vous).
+   20 requêtes / 15 min / IP suffisent largement à un usage légitime et bloquent le
+   spam. À NE PAS appliquer globalement : les lectures et surtout les images passent
+   toutes par /api/ (une page peut faire des dizaines de requêtes), ce qui déclenchait
+   des 429 et faisait « disparaître » les photos pourtant présentes en base. */
+const limiteEnvoi = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false,
+  message: { ok: false, erreur: "Trop de tentatives. Merci de réessayer dans quelques minutes." },
+});
+
+/* Limiteur GLOBAL très large sur /api/ : n'entrave jamais la navigation normale
+   (images en cache, lectures), mais borne les abus manifestes. */
+app.use("/api/", rateLimit({ windowMs: 60 * 1000, max: 300, standardHeaders: true, legacyHeaders: false }));
 
 /* -------------------------------------------------------------------------- */
 /* Transport e-mail — créé uniquement si les variables SMTP sont présentes.    */
@@ -275,7 +284,7 @@ async function envoyer(sujet, corps, replyTo) {
 /* -------------------------------------------------------------------------- */
 /* Formulaire de contact                                                       */
 /* -------------------------------------------------------------------------- */
-app.post("/api/contact", async function (req, res) {
+app.post("/api/contact", limiteEnvoi, async function (req, res) {
   const b = req.body || {};
   if (b.site) return res.json({ ok: true }); // honeypot rempli => robot ignoré
 
@@ -307,7 +316,7 @@ app.post("/api/contact", async function (req, res) {
 /* -------------------------------------------------------------------------- */
 /* Demande de rendez-vous                                                      */
 /* -------------------------------------------------------------------------- */
-app.post("/api/rendezvous", async function (req, res) {
+app.post("/api/rendezvous", limiteEnvoi, async function (req, res) {
   const b = req.body || {};
   if (b.site) return res.json({ ok: true });
 
@@ -823,7 +832,7 @@ app.delete("/api/creneaux/:id", adminAuth, async function (req, res) {
 });
 
 /* Réserve un créneau libre (public) — confirmation automatique + lien visio. */
-app.post("/api/creneaux/:id/reserver", async function (req, res) {
+app.post("/api/creneaux/:id/reserver", limiteEnvoi, async function (req, res) {
   if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
   const id = parseInt(req.params.id, 10);
   const b = req.body || {};
