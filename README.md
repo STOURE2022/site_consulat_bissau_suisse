@@ -214,7 +214,8 @@ système, emplacements d'image réservés). Pour un rendu définitif :
 
 ### Rappel important
 
-Ce site est **informatif**. Il ne doit jamais laisser croire que le consulat
-honoraire délivre un document officiel (passeport, visa, acte d'état civil,
-légalisation). Ces démarches relèvent exclusivement de l'Ambassade compétente.
+Ce site est **informatif**. Les passeports, actes d'état civil et légalisations
+relèvent exclusivement de l'Ambassade compétente : le site ne doit jamais laisser
+croire que le consulat honoraire les délivre. Le consulat honoraire reçoit et
+traite en revanche les demandes de visa d'entrée (voir la page « Visas »).
 Conservez toujours cette distinction lors de vos modifications.
