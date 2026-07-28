@@ -128,7 +128,8 @@ const CLES_PARAM = [
   "consul_texte_fr", "consul_texte_pt", "consul_texte_en",
   // Zones institutionnelles à compléter par le consulat.
   "zone_competence_fr", "zone_competence_pt", "zone_competence_en",
-  "rdv_delai", "editeur", "hebergeur", "conservation",
+  "rdv_delai", "editeur", "hebergeur",
+  "conservation_fr", "conservation_pt", "conservation_en",
   // consul_portrait_id et hero_photo_id sont gérés par leurs endpoints d'upload.
 ];
 

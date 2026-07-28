@@ -608,7 +608,11 @@ textarea{min-height:120px;resize:vertical}
           <hr class="tricolore--court">
           <div class="champ"><label class="etq" for="ct_editeur">Éditeur responsable (nom, adresse, courriel)</label><input type="text" id="ct_editeur"></div>
           <div class="champ"><label class="etq" for="ct_hebergeur">Hébergeur du site (nom et adresse)</label><input type="text" id="ct_hebergeur"></div>
-          <div class="champ"><label class="etq" for="ct_conservation">Durée de conservation des messages</label><input type="text" id="ct_conservation" placeholder="Ex. : 12 mois"></div>
+          <div class="ligne2">
+            <div class="champ"><label class="etq" for="ct_conservation_fr">Durée de conservation (FR)</label><input type="text" id="ct_conservation_fr" placeholder="Ex. : 12 mois"></div>
+            <div class="champ"><label class="etq" for="ct_conservation_pt">Durée de conservation (PT)</label><input type="text" id="ct_conservation_pt" placeholder="Ex. : 12 meses"></div>
+          </div>
+          <div class="champ"><label class="etq" for="ct_conservation_en">Durée de conservation (EN)</label><input type="text" id="ct_conservation_en" placeholder="Ex. : 12 months"></div>
 
           <div class="actions"><button type="button" class="btn btn--primaire" id="btnContenu"><svg class="ic"><use href="#ic-check"></use></svg> Enregistrer les textes</button></div>
         </div>
@@ -931,7 +935,8 @@ textarea{min-height:120px;resize:vertical}
   /* --- Contenu & textes --- */
   var CHAMPS_CONTENU = {
     zone_competence_fr:"ct_zone_fr", zone_competence_pt:"ct_zone_pt", zone_competence_en:"ct_zone_en",
-    editeur:"ct_editeur", hebergeur:"ct_hebergeur", conservation:"ct_conservation"
+    editeur:"ct_editeur", hebergeur:"ct_hebergeur",
+    conservation_fr:"ct_conservation_fr", conservation_pt:"ct_conservation_pt", conservation_en:"ct_conservation_en"
   };
   function chargerContenu(){
     fetch("/api/parametres").then(function(r){ return r.json(); }).then(function(j){
