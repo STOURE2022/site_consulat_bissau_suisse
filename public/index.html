@@ -304,6 +304,16 @@ main{display:block}
 .hero .hero-photo{border-radius:var(--r);overflow:hidden;align-self:stretch}
 .hero .hero-img{width:100%;height:100%;min-height:300px;object-fit:cover;display:block}
 @media (max-width:560px){.hero .hero-img{min-height:200px}}
+/* Bandeau d'accueil en pleine largeur (sans emplacement photo). */
+.hero .grille--plein{grid-template-columns:1fr}
+.hero .grille--plein .lead{max-width:70ch}
+/* Photographie du lieu (page Contact, à la place du plan d'accès). */
+.photo-lieu{margin:0;border:1px solid var(--ligne);border-radius:var(--r);overflow:hidden;background:#fff}
+.photo-lieu-img{width:100%;display:block;aspect-ratio:16/8;object-fit:cover}
+.photo-lieu-legende{display:flex;align-items:center;gap:.6em;padding:.7em 1em;font-size:.9rem;color:var(--gris);border-top:1px solid var(--ligne)}
+.photo-lieu-legende .ic{color:var(--vert-fonce);flex:0 0 auto}
+.photo-lieu-legende strong{color:var(--vert-nuit)}
+@media (max-width:560px){.photo-lieu-img{aspect-ratio:4/3}}
 
 /* --- Diaporama « Le Consul » --- */
 .consul-diapo{position:relative;background:linear-gradient(135deg,var(--vert-fonce) 0%,var(--vert-nuit) 100%);color:#fff;overflow:hidden}
@@ -995,6 +1005,7 @@ D.fr = {
         /* En-tête d'accueil (hero). */
         {
           type: "hero",
+          pleineLargeur: true,
           title: "Consulat honoraire de Guinée-Bissau en Suisse",
           lead: "Le consulat honoraire informe, oriente et assiste les ressortissants bissau-guinéens et représente la Guinée-Bissau en Suisse. Pour toute délivrance de document, contactez le consulat, qui vous indiquera la marche à suivre ; les passeports, visas et actes d’état civil relèvent de l’Ambassade compétente.",
           img: "Photographie officielle — 1600 × 1200 px minimum (bâtiment ou vue institutionnelle neutre)",
@@ -1537,7 +1548,9 @@ D.fr = {
         },
         {
           type: "map",
-          legende: "Adresse : {par:adresse}, {par:ville}. Aucun service de cartographie tiers n’est chargé afin de préserver la vie privée des visiteurs."
+          title: "Où nous trouver",
+          rule: true,
+          legende: "<strong>Consulat honoraire de la République de Guinée-Bissau</strong> — {par:adresse}, {par:ville}."
         },
         {
           type: "note",
@@ -1759,6 +1772,7 @@ D.pt = {
       desc: "Consulado honorário da República da Guiné-Bissau na Suíça: informar, orientar e prestar assistência aos cidadãos. Este consulado não emite passaportes, vistos nem atos oficiais.",
       blocks: [
         { type: "hero",
+          pleineLargeur: true,
           title: "Consulado honorário da Guiné-Bissau na Suíça",
           lead: "O consulado honorário informa, orienta e presta assistência aos cidadãos guineenses e representa a Guiné-Bissau na Suíça. Para qualquer emissão de documento, contacte o consulado, que lhe indicará os passos a seguir; os passaportes, vistos e atos de registo civil são da competência da Embaixada competente.",
           img: "Fotografia oficial — 1600 × 1200 px no mínimo (edifício ou vista institucional neutra)",
@@ -2106,7 +2120,8 @@ D.pt = {
               ] }
           ] },
         { type: "map",
-          legende: "Endereço: {par:adresse}, {par:ville}. Nenhum serviço de cartografia de terceiros é carregado, a fim de preservar a privacidade dos visitantes." },
+          title: "Onde nos encontrar", rule: true,
+          legende: "<strong>Consulado honorário da República da Guiné-Bissau</strong> — {par:adresse}, {par:ville}." },
         { type: "note", variant: "attention",
           text: "Nunca transmita cópias do bilhete de identidade, do passaporte ou de qualquer documento pessoal através deste formulário nem por correio eletrónico. Esses documentos são apresentados apenas presencialmente, mediante marcação." },
         { type: "contact-form", title: "Formulário de contacto", rule: true,
@@ -2292,6 +2307,7 @@ D.en = {
       desc: "Honorary Consulate of the Republic of Guinea-Bissau in Switzerland: informing, guiding and assisting nationals. This consulate does not issue passports, visas or official documents.",
       blocks: [
         { type: "hero",
+          pleineLargeur: true,
           title: "Honorary Consulate of Guinea-Bissau in Switzerland",
           lead: "The honorary consulate informs, guides and assists Bissau-Guinean nationals and represents Guinea-Bissau in Switzerland. For any document, please contact the consulate, which will tell you how to proceed; passports, visas and civil-status documents fall to the competent Embassy.",
           img: "Official photograph — 1600 × 1200 px minimum (building or neutral institutional view)",
@@ -2639,7 +2655,8 @@ D.en = {
               ] }
           ] },
         { type: "map",
-          legende: "Address: {par:adresse}, {par:ville}. No third-party mapping service is loaded, in order to protect visitors' privacy." },
+          title: "Where to find us", rule: true,
+          legende: "<strong>Honorary Consulate of the Republic of Guinea-Bissau</strong> — {par:adresse}, {par:ville}." },
         { type: "note", variant: "attention",
           text: "Never send a copy of an identity document, passport or any personal document through this form or by email. These documents are shown only in person, by appointment." },
         { type: "contact-form", title: "Contact form", rule: true,
@@ -3088,7 +3105,9 @@ function enteteSection(titre, rule, intro){
 /* --- Bloc HERO --- */
 function blocHero(b){
   var section = creer("section",{class:"hero"});
-  var grille  = creer("div",{class:"grille"});
+  /* Option « pleine largeur » : bandeau sans emplacement photo (le texte occupe
+     toute la largeur). La photographie du consulat est affichée sur la page Contact. */
+  var grille  = creer("div",{class:"grille" + (b.pleineLargeur ? " grille--plein" : "")});
 
   var col = creer("div");
   if (b.eyebrow) col.appendChild(creer("p",{class:"etiquette", text:b.eyebrow}));
@@ -3102,24 +3121,25 @@ function blocHero(b){
     });
     col.appendChild(actions);
   }
+  grille.appendChild(col);
 
-  /* Photographie officielle : la vraie photo si elle a été téléversée dans
-     l'admin, sinon l'emplacement réservé. */
-  var media;
-  var hid = PARAMS.hero_photo_id;
-  if (hid && !modeDemo()){
-    media = creer("div",{class:"hero-photo"},
-      creer("img",{class:"hero-img", src:"/api/fichier/"+hid,
-        alt:"Photographie officielle du consulat honoraire de Guinée-Bissau en Suisse"}));
-  } else {
-    media = creer("div",{class:"imgslot", role:"img",
-      "aria-label":"Emplacement réservé à une photographie officielle"},
-      creer("span",{}, [creer("strong",{text:"Photographie officielle"}),
-                        creer("small",{text:b.img})]));
+  /* Emplacement photo — seulement si le bandeau n'est pas en pleine largeur. */
+  if (!b.pleineLargeur){
+    var media;
+    var hid = PARAMS.hero_photo_id;
+    if (hid && !modeDemo()){
+      media = creer("div",{class:"hero-photo"},
+        creer("img",{class:"hero-img", src:"/api/fichier/"+hid,
+          alt:"Photographie officielle du consulat honoraire de Guinée-Bissau en Suisse"}));
+    } else {
+      media = creer("div",{class:"imgslot", role:"img",
+        "aria-label":"Emplacement réservé à une photographie officielle"},
+        creer("span",{}, [creer("strong",{text:"Photographie officielle"}),
+                          creer("small",{text:b.img})]));
+    }
+    grille.appendChild(media);
   }
 
-  grille.appendChild(col);
-  grille.appendChild(media);
   section.appendChild(creer("div",{class:"wrap"}, grille));
   return section;
 }
@@ -3630,12 +3650,25 @@ function blocMap(b){
   var section = creer("section",{class:"section"});
   var wrap = creer("div",{class:"wrap"});
   wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
-  wrap.appendChild(creer("div",{class:"map", role:"img",
-    "aria-label":"Emplacement réservé à un plan d’accès"},
-    creer("span",{},[
-      creer("strong",{text:"Plan d’accès"}),
-      creer("small",{html:baliser(b.legende||"[À VALIDER PAR LE CONSULAT : plan ou lien vers un itinéraire]")})
-    ])));
+  /* Si une photographie du consulat a été téléversée (param hero_photo_id),
+     on l'affiche ici avec sa légende ; sinon on garde l'emplacement réservé. */
+  var pid = PARAMS.hero_photo_id;
+  if (pid && !modeDemo()){
+    var fig = creer("figure",{class:"photo-lieu"});
+    fig.appendChild(creer("img",{class:"photo-lieu-img", src:"/api/fichier/"+pid,
+      alt:"Photographie du consulat honoraire de la République de Guinée-Bissau à Genève"}));
+    if (b.legende) fig.appendChild(creer("figcaption",{class:"photo-lieu-legende"},[
+      icone("ic-batiment"), creer("span",{html:baliser(b.legende)})
+    ]));
+    wrap.appendChild(fig);
+  } else {
+    wrap.appendChild(creer("div",{class:"map", role:"img",
+      "aria-label":"Emplacement réservé à une photographie du consulat"},
+      creer("span",{},[
+        creer("strong",{text:"Photographie du consulat"}),
+        creer("small",{html:baliser(b.legende||"")})
+      ])));
+  }
   section.appendChild(wrap);
   return section;
 }
