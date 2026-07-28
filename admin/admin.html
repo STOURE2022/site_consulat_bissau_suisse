@@ -254,6 +254,12 @@ textarea{min-height:120px;resize:vertical}
 .crl-detail dt{font-weight:700;color:var(--vert-nuit)}
 .crl-detail dd{margin:0;word-break:break-word}
 
+/* Badge de rôle (consul / collaborateur) dans l'en-tête admin. */
+.role-badge{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.25em .7em;border-radius:999px;align-self:center}
+.role-badge[hidden]{display:none}
+.role-consul{background:var(--jaune);color:#3a2c00}
+.role-staff{background:var(--fond);color:var(--gris);border:1px solid var(--ligne)}
+
 /* ---- Responsive mobile (placé après les règles de base pour primer) ---- */
 @media (max-width:640px){
   .ligne2{grid-template-columns:1fr}
@@ -296,6 +302,7 @@ textarea{min-height:120px;resize:vertical}
         <span>Espace de publication</span>
       </span>
       <span class="droite">
+        <span class="role-badge" id="roleBadge" hidden></span>
         <a class="lien" href="/">Voir le site</a>
         <button class="lien" id="btnDeco" hidden type="button">Se déconnecter</button>
       </span>
@@ -705,6 +712,29 @@ textarea{min-height:120px;resize:vertical}
     cible.innerHTML = '<div class="message '+type+'"><svg class="ic ic--lg"><use href="#ic-'+(type==="succes"?"check":"alerte")+'"></use></svg><div>'+echap(texte)+'</div></div>';
   }
 
+  /* --- Rôle : le consul voit tout ; les autres n'ont pas « Mot du Consul ». --- */
+  var ROLE = "staff";
+  function appliquerRole(role){
+    ROLE = role === "consul" ? "consul" : "staff";
+    var estConsul = ROLE === "consul";
+    var onglet = document.querySelector('.onglet[data-panneau="consul"]');
+    if (onglet) onglet.hidden = !estConsul;
+    if (!estConsul){
+      var pc = $("panneau-consul"); if (pc) pc.hidden = true;
+      /* Si l'onglet actif était « Mot du Consul », on revient à Publications. */
+      if (onglet && onglet.classList.contains("actif")){
+        var ob = document.querySelector('.onglet[data-panneau="pubs"]');
+        if (ob) ob.click();
+      }
+    }
+    var badge = $("roleBadge");
+    if (badge){
+      badge.textContent = estConsul ? "Consul" : "Collaborateur";
+      badge.className = "role-badge " + (estConsul ? "role-consul" : "role-staff");
+      badge.hidden = false;
+    }
+  }
+
   /* --- Connexion --- */
   $("formConnexion").addEventListener("submit", function(e){
     e.preventDefault();
@@ -713,8 +743,9 @@ textarea{min-height:120px;resize:vertical}
     $("btnConnexion").disabled = true;
     fetch("/api/admin/verifier", { headers: { "Authorization": jeton } })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function(){
+      .then(function(j){
         AUTH = jeton;
+        appliquerRole((j && j.role) || "staff");
         $("ecranConnexion").hidden = true;
         $("ecranApp").hidden = false;
         $("btnDeco").hidden = false;

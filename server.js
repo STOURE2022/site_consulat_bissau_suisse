@@ -180,6 +180,16 @@ function comptesAdmin() {
   return comptes;
 }
 
+/* Rôle d'un compte : « consul » (accès complet, dont « Mot du Consul ») ou
+   « staff » (tout sauf le Mot du Consul). Sont consuls : le compte historique
+   ADMIN_USER, et tout identifiant listé dans ADMIN_CONSULS (séparés par des
+   virgules). Tous les autres sont des collaborateurs. */
+function roleDe(u) {
+  if (process.env.ADMIN_USER && u === process.env.ADMIN_USER) return "consul";
+  const liste = (process.env.ADMIN_CONSULS || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+  return liste.indexOf(u) !== -1 ? "consul" : "staff";
+}
+
 function adminAuth(req, res, next) {
   const comptes = comptesAdmin();
   if (!comptes.length) {
@@ -192,15 +202,32 @@ function adminAuth(req, res, next) {
     const u = paire.slice(0, i), p = paire.slice(i + 1);
     /* On teste tous les comptes sans court-circuit pour ne pas divulguer par le
        temps de réponse quel identifiant existe. */
-    let ok = false;
+    let trouve = null;
     for (const c of comptes) {
-      if (egaliteConstante(u, c.u) && egaliteConstante(p, c.p)) ok = true;
+      if (egaliteConstante(u, c.u) && egaliteConstante(p, c.p)) trouve = c;
     }
-    if (ok) return next();
+    if (trouve) {
+      req.adminUser = trouve.u;
+      req.adminRole = roleDe(trouve.u);
+      return next();
+    }
   }
   res.set("WWW-Authenticate", 'Basic realm="Espace consulat"');
   return res.status(401).json({ ok: false, erreur: "Authentification requise." });
 }
+
+/* Réserve une route au consul (à placer après adminAuth). */
+function consulAuth(req, res, next) {
+  if (req.adminRole === "consul") return next();
+  return res.status(403).json({ ok: false, erreur: "Action réservée au consul." });
+}
+
+/* Clés de paramètres relevant du « Mot du Consul » : modifiables par le consul
+   uniquement (les collaborateurs peuvent éditer tout le reste). */
+const CLES_CONSUL = [
+  "consul_nom", "consul_fonction_fr", "consul_fonction_pt", "consul_fonction_en",
+  "consul_texte_fr", "consul_texte_pt", "consul_texte_en",
+];
 
 /* Railway place l'application derrière un proxy : nécessaire pour que le
    limiteur de débit identifie correctement l'adresse d'origine. */
@@ -587,6 +614,8 @@ app.put("/api/parametres", adminAuth, async function (req, res) {
     for (let i = 0; i < CLES_PARAM.length; i++) {
       const cle = CLES_PARAM[i];
       if (!(cle in b)) continue; // on ne touche qu'aux clés fournies
+      // Les clés du « Mot du Consul » ne sont modifiables que par le consul.
+      if (CLES_CONSUL.indexOf(cle) !== -1 && req.adminRole !== "consul") continue;
       const val = b[cle] == null ? "" : String(b[cle]);
       await client.query(
         "INSERT INTO parametres (cle, valeur) VALUES ($1,$2) ON CONFLICT (cle) DO UPDATE SET valeur = $2",
@@ -607,7 +636,7 @@ app.put("/api/parametres", adminAuth, async function (req, res) {
 /* Téléverse (ou remplace) la photo du Consul honoraire. Réservé à l'admin.
    La photo est stockée dans la table « fichiers » (sans publication) et son id
    est mémorisé dans le paramètre « consul_portrait_id ». */
-app.post("/api/consul/portrait", adminAuth, upload.single("portrait"), async function (req, res) {
+app.post("/api/consul/portrait", adminAuth, consulAuth, upload.single("portrait"), async function (req, res) {
   if (!pool) return res.status(503).json({ ok: false, erreur: "Base de données non configurée." });
   if (!req.file || !/^image\//.test(req.file.mimetype)) {
     return res.status(400).json({ ok: false, erreur: "Veuillez fournir une image." });
@@ -628,7 +657,7 @@ app.post("/api/consul/portrait", adminAuth, upload.single("portrait"), async fun
 });
 
 /* Retire la photo du Consul. */
-app.delete("/api/consul/portrait", adminAuth, async function (req, res) {
+app.delete("/api/consul/portrait", adminAuth, consulAuth, async function (req, res) {
   if (!pool) return res.status(503).json({ ok: false });
   try {
     const ancien = await lireParam("consul_portrait_id");
@@ -679,7 +708,7 @@ app.delete("/api/hero/photo", adminAuth, async function (req, res) {
 
 /* Vérifie les identifiants d'administration (utilisé par l'écran de connexion). */
 app.get("/api/admin/verifier", adminAuth, function (req, res) {
-  res.json({ ok: true });
+  res.json({ ok: true, role: req.adminRole, user: req.adminUser });
 });
 
 /* ========================================================================== */
