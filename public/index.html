@@ -592,6 +592,19 @@ a.telechargement:hover{border-color:var(--vert)}
   justify-content:space-between;padding:1em 0}
 .cookies-banniere p{margin:0;font-size:.9rem;max-width:64ch}
 .cookies-banniere .boutons{display:flex;gap:.6em;flex-wrap:wrap}
+/* Mobile : le bandeau cookies s'empile, les boutons occupent toute la largeur
+   et se répartissent équitablement (évite tout rognage sur écran étroit). */
+@media (max-width:560px){
+  .cookies-banniere .wrap{flex-direction:column;align-items:stretch;gap:.7em}
+  .cookies-banniere p{max-width:none}
+  .cookies-banniere .boutons{width:100%}
+  .cookies-banniere .boutons .btn{flex:1 1 auto;justify-content:center;text-align:center}
+}
+/* Très petit écran : on empile les boutons pour éviter tout rognage. */
+@media (max-width:430px){
+  .cookies-banniere .boutons{flex-direction:column}
+  .cookies-banniere .boutons .btn{width:100%}
+}
 
 /* --- Bloc « rdv » : demande de rendez-vous --- */
 .bloc-rdv{display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,3vw,34px);align-items:start}
