@@ -1543,7 +1543,7 @@ D.fr = {
             envoyer: "Envoyer le message",
             envoye: "Message envoyé",
             confirmation: "Votre message a bien été pris en compte. Nous vous répondrons dans les meilleurs délais, aux coordonnées que vous avez indiquées.",
-            consentement: "J’accepte que les informations transmises soient utilisées pour traiter ma demande. Elles ne servent qu’à traiter votre demande ; durée de conservation : {par:conservation}..",
+            consentement: "J’accepte que les informations transmises soient utilisées pour traiter ma demande. Elles ne servent qu’à traiter votre demande ; durée de conservation : {par:conservation}.",
             champs: [
               { name: "nom", label: "Nom et prénom", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Adresse électronique", type: "email", requis: true, autocomplete: "email" },
@@ -2094,7 +2094,7 @@ D.pt = {
             envoyer: "Enviar a mensagem",
             envoye: "Mensagem enviada",
             confirmation: "A sua mensagem foi devidamente registada. Responder-lhe-emos com a maior brevidade, para os contactos que indicou.",
-            consentement: "Aceito que as informações transmitidas sejam utilizadas para tratar o meu pedido. São utilizadas apenas para tratar o seu pedido; prazo de conservação: {par:conservation}..",
+            consentement: "Aceito que as informações transmitidas sejam utilizadas para tratar o meu pedido. São utilizadas apenas para tratar o seu pedido; prazo de conservação: {par:conservation}.",
             champs: [
               { name: "nom", label: "Nome completo", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Correio eletrónico", type: "email", requis: true, autocomplete: "email" },
@@ -2616,7 +2616,7 @@ D.en = {
             envoyer: "Send the message",
             envoye: "Message sent",
             confirmation: "Your message has been received. We will reply as soon as possible, using the contact details you provided.",
-            consentement: "I agree that the information provided may be used to process my request. It is used only to handle your request; retention period: {par:conservation}..",
+            consentement: "I agree that the information provided may be used to process my request. It is used only to handle your request; retention period: {par:conservation}.",
             champs: [
               { name: "nom", label: "Full name", type: "text", requis: true, autocomplete: "name" },
               { name: "courriel", label: "Email address", type: "email", requis: true, autocomplete: "email" },
@@ -2913,7 +2913,7 @@ var DEFAUTS_PARAM = {
   zone_competence_en: "Switzerland",
   editeur: "Consulat honoraire de la République de Guinée-Bissau à Genève — 14, Quai du Seujet, 1201 Genève — secretariat@consulatgb.ch",
   hebergeur: "[À VALIDER : nom et adresse de l’hébergeur du site]",
-  conservation: "[À VALIDER : durée de conservation des messages]"
+  conservation: "12 mois"
 };
 
 /* Remplace les jetons {par:clé} par la valeur du paramètre ou son repli. */
@@ -3651,7 +3651,7 @@ function blocContactForm(b){
   if (f.consentement){
     form.appendChild(creer("div",{class:"champ consentement"},[
       creer("input",{type:"checkbox", id:"cf-consent", name:"consentement", required:"required"}),
-      creer("label",{for:"cf-consent", style:"font-weight:400"}, f.consentement)
+      creer("label",{for:"cf-consent", style:"font-weight:400", html:baliser(f.consentement)})
     ]));
   }
 
