@@ -447,6 +447,59 @@ a.carte:hover{border-color:var(--vert);transform:translateY(-2px)}
 .situation-tag{align-self:flex-start;margin-top:.15em;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
   color:#8a6d12;background:#efe3c2;padding:.35em .8em;border-radius:999px}
 
+/* Bloc VISAS — cartes de visa d'entrée (touristique / affaires) */
+.vz-grille{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.4vw,26px);align-items:start}
+@media (max-width:820px){.vz-grille{grid-template-columns:1fr}}
+.vz-carte{position:relative;background:#fff;border:1px solid var(--ligne);border-radius:18px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(16,40,28,.05),0 16px 40px rgba(16,40,28,.07);display:flex;flex-direction:column}
+.vz-carte::before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
+.vz-carte--tour::before{background:linear-gradient(90deg,var(--vert),var(--vert-fonce))}
+.vz-carte--aff::before{background:linear-gradient(90deg,var(--or),var(--or-sombre))}
+.vz-tete{display:flex;align-items:center;gap:1em;padding:clamp(22px,3vw,30px) clamp(20px,3vw,30px) .8em}
+.vz-chip{width:56px;height:56px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto}
+.vz-chip .ic{width:26px;height:26px}
+.vz-carte--tour .vz-chip{background:var(--oui-fond);color:#04672f}
+.vz-carte--aff .vz-chip{background:#faf1d6;color:var(--or-sombre)}
+.vz-tete h3{font-size:1.3rem;font-weight:800;margin:0}
+.vz-tete h3 small{font-weight:600;color:var(--gris);font-size:.8rem}
+.vz-sous{display:block;font-family:var(--titre);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:.3em}
+.vz-carte--tour .vz-sous{color:var(--vert)}
+.vz-carte--aff .vz-sous{color:var(--or-sombre)}
+.vz-legende{padding:0 clamp(20px,3vw,30px);color:var(--gris);font-size:.9rem;margin:.2em 0 .6em}
+.vz-liste{list-style:none;margin:0;padding:.4em clamp(20px,3vw,30px) clamp(22px,3vw,30px);display:flex;flex-direction:column}
+.vz-liste li{display:flex;gap:.85em;align-items:flex-start;padding:.85em 0;border-top:1px solid var(--ligne);font-size:.97rem;line-height:1.5}
+.vz-liste li:first-child{border-top:none}
+.vz-puce{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;margin-top:1px}
+.vz-puce .ic{width:13px;height:13px}
+.vz-carte--tour .vz-puce{background:var(--oui-fond);color:#04672f}
+.vz-carte--aff .vz-puce{background:#faf1d6;color:var(--or-sombre)}
+.vz-liste li strong{color:var(--vert-nuit)}
+.vz-liste li.vz-cle{background:linear-gradient(90deg,rgba(233,196,106,.14),transparent);
+  margin:0 calc(-1 * clamp(20px,3vw,30px));padding-left:clamp(20px,3vw,30px);padding-right:clamp(20px,3vw,30px);border-radius:4px}
+.vz-liste li.vz-cle .vz-puce{background:var(--or);color:#3a2c00}
+.vz-tag{display:inline-block;font-family:var(--titre);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--or-sombre);background:#fff;border:1px solid var(--or);border-radius:999px;padding:.15em .6em;margin-left:.4em;vertical-align:middle}
+/* Bon à savoir (bandeau sombre à 3 colonnes) */
+.vz-savoir{margin-top:clamp(26px,4vw,40px);background:var(--vert-nuit);border-radius:18px;padding:clamp(24px,3.4vw,40px);color:#dfeae2;position:relative;overflow:hidden}
+.vz-savoir::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% 10%,rgba(233,196,106,.12),transparent 42%);pointer-events:none}
+.vz-savoir h3{color:#fff;display:flex;align-items:center;gap:.55em;font-size:1.15rem;margin:0 0 1em}
+.vz-savoir h3 .ic{color:var(--or);width:22px;height:22px}
+.vz-savoir-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px);position:relative}
+@media (max-width:760px){.vz-savoir-grille{grid-template-columns:1fr}}
+.vz-note{display:flex;gap:.8em;align-items:flex-start}
+.vz-note .ic{color:var(--or);width:20px;height:20px;margin-top:2px}
+.vz-note b{display:block;font-family:var(--titre);color:#fff;font-size:.95rem;margin-bottom:.15em}
+.vz-note span{font-size:.9rem;color:#b9cabf}
+/* Appel à l'action + avis */
+.vz-cta{margin-top:clamp(26px,4vw,40px);background:#fff;border:1px solid var(--ligne);border-radius:18px;padding:clamp(24px,3.4vw,40px);
+  display:flex;flex-wrap:wrap;align-items:center;gap:1.4em;justify-content:space-between;box-shadow:0 1px 2px rgba(16,40,28,.04),0 14px 36px rgba(16,40,28,.05)}
+.vz-cta-txt h3{margin:0 0 .25em;font-size:1.25rem}
+.vz-cta-txt p{margin:0;color:var(--gris);max-width:48ch}
+.vz-cta-actions{display:flex;flex-wrap:wrap;gap:.7em}
+.vz-avis{max-width:64ch;margin:clamp(18px,3vw,26px) auto 0;text-align:center;font-size:.85rem;color:var(--gris);
+  display:flex;gap:.5em;align-items:flex-start;justify-content:center}
+.vz-avis .ic{color:var(--or-sombre);width:16px;height:16px;flex:0 0 auto;margin-top:.2em}
+
 /* Bloc « note » (encadré d'information) */
 .note{border:1px solid var(--ligne);border-left:4px solid var(--vert);
   background:#fff;border-radius:var(--r);padding:clamp(14px,2vw,20px);display:flex;gap:.8em}
@@ -1099,6 +1152,7 @@ D.fr = {
     { id: "consulat",       t: "Le Consulat" },
     { id: "consul",         t: "Le Consul" },
     { id: "services",       t: "Services" },
+    { id: "visas",          t: "Visas" },
     { id: "guinee-bissau",  t: "Guinée-Bissau" },
     { id: "actualites",     t: "Actualités" },
     { id: "contact",        t: "Contact" },
@@ -1524,6 +1578,63 @@ D.fr = {
       ]
     },
 
+    /* PAGE : VISAS D'ENTRÉE ----------------------------------------------- */
+    visas: {
+      title: "Visas d’entrée en République de Guinée-Bissau — Consulat honoraire à Genève",
+      desc: "Le consulat honoraire de la République de Guinée-Bissau à Genève assure la réception et le traitement des demandes de visa d’entrée (touristique et affaires) : documents requis et marche à suivre.",
+      blocks: [
+        {
+          type: "visa-cartes",
+          title: "Visas d’entrée en République de Guinée-Bissau",
+          rule: true,
+          intro: "Le Consulat honoraire de la République de Guinée-Bissau à Genève assure la réception et le traitement des demandes de visa d’entrée. Ce service est ouvert à toute personne souhaitant se rendre dans le pays, pour un voyage touristique comme professionnel.",
+          legende: "Les documents suivants sont requis :",
+          cartes: [
+            {
+              variante: "tourisme", icone: "ic-globe",
+              titre: "Visa touristique", sous: "Voyage d’agrément",
+              items: [
+                { h: "<strong>Passeport valide</strong> au moins 6 mois après la date prévue de sortie de la République de Guinée-Bissau, comportant au minimum <strong>deux pages vierges</strong>." },
+                { h: "Une <strong>réservation d’hôtel</strong> ou une preuve d’hébergement." },
+                { h: "Un <strong>justificatif de domicile</strong>." },
+                { h: "Un <strong>certificat de vaccination contre la fièvre jaune</strong>." },
+                { h: "<strong>Deux photographies d’identité</strong> récentes et identiques, au format passeport (prises depuis moins de 6 mois)." },
+                { h: "<strong>Attestation d’émission de billet</strong> aller/retour ou copie du billet." }
+              ]
+            },
+            {
+              variante: "affaires", icone: "ic-batiment",
+              titre: "Visa d’affaires", badge: "(Business)", sous: "Voyage professionnel",
+              items: [
+                { h: "<strong>Passeport valide</strong> au moins 6 mois après la date prévue de sortie de la République de Guinée-Bissau, comportant au minimum <strong>deux pages vierges</strong>." },
+                { h: "Une <strong>réservation d’hôtel</strong> ou une preuve d’hébergement." },
+                { h: "Un <strong>justificatif de domicile</strong>." },
+                { h: "Une <strong>lettre d’invitation</strong> de l’entreprise ou du partenaire en Guinée-Bissau, ou un <strong>ordre de mission</strong>.", cle: true, tag: "Propre aux affaires" },
+                { h: "Un <strong>certificat de vaccination contre la fièvre jaune</strong>." },
+                { h: "<strong>Deux photographies d’identité</strong> récentes et identiques, au format passeport (prises depuis moins de 6 mois)." },
+                { h: "<strong>Attestation d’émission de billet</strong> aller/retour ou copie du billet." }
+              ]
+            }
+          ],
+          savoirTitre: "Bon à savoir",
+          savoir: [
+            { icone: "ic-personne", b: "Photographies", x: "Format passeport, identiques, prises depuis moins de 6 mois." },
+            { icone: "ic-doc",      b: "Passeport",     x: "Valide 6 mois après la sortie du pays, 2 pages vierges minimum." },
+            { icone: "ic-fleche",   b: "Billet",        x: "Attestation d’émission aller/retour, ou copie du billet." }
+          ],
+          cta: {
+            titre: "Déposer une demande de visa",
+            texte: "Le consulat vous indique la marche à suivre et vérifie votre dossier avant traitement.",
+            actions: [
+              { t: "Prendre rendez-vous", href: "#/rendezvous", style: "primaire" },
+              { t: "Contacter le consulat", href: "#/contact", style: "ligne" }
+            ]
+          },
+          avis: "Liste des pièces indicative ; le consulat peut demander des documents complémentaires selon la situation."
+        }
+      ]
+    },
+
     /* PAGE : LA GUINÉE-BISSAU --------------------------------------------- */
     "guinee-bissau": {
       title: "La Guinée-Bissau — présentation",
@@ -1889,6 +2000,7 @@ D.pt = {
     { id: "consulat",      t: "O Consulado" },
     { id: "consul",        t: "O Cônsul" },
     { id: "services",      t: "Serviços" },
+    { id: "visas",         t: "Vistos" },
     { id: "guinee-bissau", t: "Guiné-Bissau" },
     { id: "actualites",    t: "Notícias" },
     { id: "contact",       t: "Contacto" },
@@ -2156,6 +2268,61 @@ D.pt = {
           ] },
         { type: "note", variant: "attention",
           text: "Segurança: nunca transmita cópias do bilhete de identidade, do passaporte ou de documentos pessoais por correio eletrónico ou através do formulário de contacto. Esses documentos são apresentados apenas presencialmente, mediante marcação." }
+      ]
+    },
+    visas: {
+      title: "Vistos de entrada na República da Guiné-Bissau — Consulado honorário em Genebra",
+      desc: "O Consulado honorário da República da Guiné-Bissau em Genebra assegura a receção e o tratamento dos pedidos de visto de entrada (turístico e de negócios): documentos exigidos e procedimento.",
+      blocks: [
+        {
+          type: "visa-cartes",
+          title: "Vistos de entrada na República da Guiné-Bissau",
+          rule: true,
+          intro: "O Consulado honorário da República da Guiné-Bissau em Genebra assegura a receção e o tratamento dos pedidos de visto de entrada. Este serviço está aberto a qualquer pessoa que pretenda deslocar-se ao país, seja em viagem turística ou profissional.",
+          legende: "São exigidos os seguintes documentos:",
+          cartes: [
+            {
+              variante: "tourisme", icone: "ic-globe",
+              titre: "Visto de turismo", sous: "Viagem de lazer",
+              items: [
+                { h: "<strong>Passaporte válido</strong> pelo menos 6 meses após a data prevista de saída da República da Guiné-Bissau, com no mínimo <strong>duas páginas em branco</strong>." },
+                { h: "Uma <strong>reserva de hotel</strong> ou um comprovativo de alojamento." },
+                { h: "Um <strong>comprovativo de morada</strong>." },
+                { h: "Um <strong>certificado de vacinação contra a febre amarela</strong>." },
+                { h: "<strong>Duas fotografias</strong> recentes e idênticas, tipo passe (tiradas há menos de 6 meses)." },
+                { h: "<strong>Comprovativo de emissão de bilhete</strong> de ida e volta ou cópia do bilhete." }
+              ]
+            },
+            {
+              variante: "affaires", icone: "ic-batiment",
+              titre: "Visto de negócios", badge: "(Business)", sous: "Viagem profissional",
+              items: [
+                { h: "<strong>Passaporte válido</strong> pelo menos 6 meses após a data prevista de saída da República da Guiné-Bissau, com no mínimo <strong>duas páginas em branco</strong>." },
+                { h: "Uma <strong>reserva de hotel</strong> ou um comprovativo de alojamento." },
+                { h: "Um <strong>comprovativo de morada</strong>." },
+                { h: "Uma <strong>carta-convite</strong> da empresa ou do parceiro na Guiné-Bissau, ou uma <strong>ordem de missão</strong>.", cle: true, tag: "Próprio dos negócios" },
+                { h: "Um <strong>certificado de vacinação contra a febre amarela</strong>." },
+                { h: "<strong>Duas fotografias</strong> recentes e idênticas, tipo passe (tiradas há menos de 6 meses)." },
+                { h: "<strong>Comprovativo de emissão de bilhete</strong> de ida e volta ou cópia do bilhete." }
+              ]
+            }
+          ],
+          savoirTitre: "Bom saber",
+          savoir: [
+            { icone: "ic-personne", b: "Fotografias", x: "Tipo passe, idênticas, tiradas há menos de 6 meses." },
+            { icone: "ic-doc",      b: "Passaporte",  x: "Válido 6 meses após a saída do país, mínimo 2 páginas em branco." },
+            { icone: "ic-fleche",   b: "Bilhete",     x: "Comprovativo de emissão de ida e volta, ou cópia do bilhete." }
+          ],
+          cta: {
+            titre: "Apresentar um pedido de visto",
+            texte: "O consulado indica-lhe o procedimento e verifica o seu processo antes do tratamento.",
+            actions: [
+              { t: "Marcar atendimento", href: "#/rendezvous", style: "primaire" },
+              { t: "Contactar o consulado", href: "#/contact", style: "ligne" }
+            ]
+          },
+          avis: "Lista de documentos indicativa; o consulado pode solicitar documentos complementares consoante a situação."
+        }
       ]
     },
     "guinee-bissau": {
@@ -2434,6 +2601,7 @@ D.en = {
     { id: "consulat",      t: "The Consulate" },
     { id: "consul",        t: "The Consul" },
     { id: "services",      t: "Services" },
+    { id: "visas",         t: "Visas" },
     { id: "guinee-bissau", t: "Guinea-Bissau" },
     { id: "actualites",    t: "News" },
     { id: "contact",       t: "Contact" },
@@ -2701,6 +2869,61 @@ D.en = {
           ] },
         { type: "note", variant: "attention",
           text: "Security: never send a copy of an identity document, passport or personal document by email or through the contact form. These documents are shown only in person, by appointment." }
+      ]
+    },
+    visas: {
+      title: "Entry visas for the Republic of Guinea-Bissau — Honorary Consulate in Geneva",
+      desc: "The Honorary Consulate of the Republic of Guinea-Bissau in Geneva receives and processes entry-visa applications (tourist and business): required documents and procedure.",
+      blocks: [
+        {
+          type: "visa-cartes",
+          title: "Entry visas for the Republic of Guinea-Bissau",
+          rule: true,
+          intro: "The Honorary Consulate of the Republic of Guinea-Bissau in Geneva receives and processes entry-visa applications. This service is open to anyone wishing to travel to the country, whether for tourism or business.",
+          legende: "The following documents are required:",
+          cartes: [
+            {
+              variante: "tourisme", icone: "ic-globe",
+              titre: "Tourist visa", sous: "Leisure travel",
+              items: [
+                { h: "<strong>Passport valid</strong> for at least 6 months after the intended date of departure from the Republic of Guinea-Bissau, with at least <strong>two blank pages</strong>." },
+                { h: "A <strong>hotel reservation</strong> or proof of accommodation." },
+                { h: "Proof of <strong>residence</strong>." },
+                { h: "A <strong>yellow-fever vaccination certificate</strong>." },
+                { h: "<strong>Two recent, identical passport-format photographs</strong> (taken within the last 6 months)." },
+                { h: "<strong>Ticket issuance confirmation</strong> for a return trip, or a copy of the ticket." }
+              ]
+            },
+            {
+              variante: "affaires", icone: "ic-batiment",
+              titre: "Business visa", badge: "(Business)", sous: "Professional travel",
+              items: [
+                { h: "<strong>Passport valid</strong> for at least 6 months after the intended date of departure from the Republic of Guinea-Bissau, with at least <strong>two blank pages</strong>." },
+                { h: "A <strong>hotel reservation</strong> or proof of accommodation." },
+                { h: "Proof of <strong>residence</strong>." },
+                { h: "An <strong>invitation letter</strong> from the company or partner in Guinea-Bissau, or a <strong>mission order</strong>.", cle: true, tag: "Business only" },
+                { h: "A <strong>yellow-fever vaccination certificate</strong>." },
+                { h: "<strong>Two recent, identical passport-format photographs</strong> (taken within the last 6 months)." },
+                { h: "<strong>Ticket issuance confirmation</strong> for a return trip, or a copy of the ticket." }
+              ]
+            }
+          ],
+          savoirTitre: "Good to know",
+          savoir: [
+            { icone: "ic-personne", b: "Photographs", x: "Passport format, identical, taken within the last 6 months." },
+            { icone: "ic-doc",      b: "Passport",    x: "Valid 6 months after leaving the country, at least 2 blank pages." },
+            { icone: "ic-fleche",   b: "Ticket",      x: "Return-trip issuance confirmation, or a copy of the ticket." }
+          ],
+          cta: {
+            titre: "Submit a visa application",
+            texte: "The consulate will explain the procedure and check your file before processing.",
+            actions: [
+              { t: "Book an appointment", href: "#/rendezvous", style: "primaire" },
+              { t: "Contact the consulate", href: "#/contact", style: "ligne" }
+            ]
+          },
+          avis: "Indicative list of documents; the consulate may request additional documents depending on the situation."
+        }
       ]
     },
     "guinee-bissau": {
@@ -3221,6 +3444,7 @@ function rendreBloc(b){
     case "cards":             return blocCards(b);
     case "can":               return blocCan(b);
     case "situations":        return blocSituations(b);
+    case "visa-cartes":       return blocVisaCartes(b);
     case "mot-consul":        return blocMotConsul(b);
     case "news-apercu":       return blocNewsApercu(b);
     case "note":              return blocNote(b);
@@ -3464,6 +3688,88 @@ function blocSituations(b){
     grille.appendChild(carte);
   });
   wrap.appendChild(grille);
+  section.appendChild(wrap);
+  return section;
+}
+
+/* --- Bloc VISAS : deux cartes de visa (touristique / affaires) + « bon à
+   savoir » + appel à l'action. Tout le texte vient du dico (b.*), donc traduit
+   dans les trois langues. --- */
+function blocVisaCartes(b){
+  var section = creer("section",{class:"section"});
+  var wrap = creer("div",{class:"wrap"});
+  wrap.appendChild(enteteSection(b.title, b.rule, b.intro));
+
+  /* Les deux cartes de visa. */
+  var grille = creer("div",{class:"vz-grille"});
+  (b.cartes||[]).forEach(function(c){
+    var suff = c.variante === "affaires" ? "aff" : "tour";
+    var carte = creer("article",{class:"vz-carte vz-carte--"+suff});
+
+    var tete = creer("div",{class:"vz-tete"});
+    tete.appendChild(creer("span",{class:"vz-chip"}, icone(c.icone || (suff==="aff" ? "ic-batiment" : "ic-globe"))));
+    var titres = creer("div");
+    var titreHtml = baliser(c.titre) + (c.badge ? ' <small>'+baliser(c.badge)+'</small>' : '');
+    titres.appendChild(creer("h3",{html:titreHtml}));
+    if (c.sous) titres.appendChild(creer("span",{class:"vz-sous", text:c.sous}));
+    tete.appendChild(titres);
+    carte.appendChild(tete);
+
+    if (b.legende) carte.appendChild(creer("p",{class:"vz-legende", text:b.legende}));
+
+    var ul = creer("ul",{class:"vz-liste"});
+    (c.items||[]).forEach(function(it){
+      var li = creer("li", it.cle ? {class:"vz-cle"} : null);
+      li.appendChild(creer("span",{class:"vz-puce"}, icone("ic-check")));
+      var html = baliser(it.h != null ? it.h : it) +
+                 (it.tag ? ' <span class="vz-tag">'+baliser(it.tag)+'</span>' : '');
+      li.appendChild(creer("span",{html:html}));
+      ul.appendChild(li);
+    });
+    carte.appendChild(ul);
+    grille.appendChild(carte);
+  });
+  wrap.appendChild(grille);
+
+  /* Bandeau « bon à savoir » (3 rappels). */
+  if (b.savoir && b.savoir.length){
+    var aside = creer("aside",{class:"vz-savoir"});
+    aside.appendChild(creer("h3",{},[ icone("ic-info"),
+      creer("span",{text: b.savoirTitre || "Bon à savoir"}) ]));
+    var sg = creer("div",{class:"vz-savoir-grille"});
+    b.savoir.forEach(function(n){
+      var note = creer("div",{class:"vz-note"});
+      note.appendChild(icone(n.icone || "ic-info"));
+      note.appendChild(creer("div",{},[ creer("b",{text:n.b}), creer("span",{html:baliser(n.x)}) ]));
+      sg.appendChild(note);
+    });
+    aside.appendChild(sg);
+    wrap.appendChild(aside);
+  }
+
+  /* Appel à l'action (rendez-vous / contact). */
+  if (b.cta){
+    var cta = creer("div",{class:"vz-cta"});
+    var txtc = creer("div",{class:"vz-cta-txt"});
+    txtc.appendChild(creer("h3",{html:baliser(b.cta.titre)}));
+    if (b.cta.texte) txtc.appendChild(creer("p",{html:baliser(b.cta.texte)}));
+    cta.appendChild(txtc);
+    if (b.cta.actions){
+      var acts = creer("div",{class:"vz-cta-actions"});
+      b.cta.actions.forEach(function(a){
+        acts.appendChild(creer("a",{class:"btn btn--"+(a.style||"primaire"), href:a.href}, a.t));
+      });
+      cta.appendChild(acts);
+    }
+    wrap.appendChild(cta);
+  }
+
+  /* Avis discret (liste indicative). */
+  if (b.avis){
+    wrap.appendChild(creer("p",{class:"vz-avis"},[ icone("ic-info"),
+      creer("span",{html:baliser(b.avis)}) ]));
+  }
+
   section.appendChild(wrap);
   return section;
 }
