@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistant d'orientation — Maquette</title>
+<style>
+:root{
+  --rouge:#CE1126; --jaune:#FCD116; --vert:#009E49;
+  --vert-fonce:#04452A; --vert-nuit:#032B1B;
+  --or:#E9C46A; --or-sombre:#C9A227;
+  --encre:#16201A; --gris:#5B6960; --ligne:#E3E7E3; --fond:#F7F9F7; --blanc:#fff;
+  --titre:'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --texte:'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r:3px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--texte);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+/* Bandeau maquette */
+.banniere{background:#fef7e0;border-bottom:1px solid #f0dca0;color:#6b5500;font-family:var(--titre);
+  font-size:.78rem;text-align:center;padding:.55em 1em}
+
+/* ---- Décor : aperçu de site en fond (contexte) ---- */
+.etat{background:linear-gradient(90deg,var(--vert-nuit),#06351f);color:#e7efe9;font-size:.78rem}
+.etat .in{max-width:1180px;margin:0 auto;padding:.5em 24px;display:flex;justify-content:space-between;align-items:center}
+.entete{background:#fff;border-bottom:1px solid var(--ligne)}
+.entete .in{max-width:1180px;margin:0 auto;padding:.8em 24px;display:flex;align-items:center;gap:1em}
+.embleme{width:46px;height:46px;border-radius:8px;background:var(--vert-fonce);color:var(--or);display:grid;place-items:center;flex:0 0 auto}
+.marque strong{display:block;font-family:var(--titre);font-weight:700;font-size:.95rem;color:var(--vert-nuit);line-height:1.15}
+.marque span{display:block;font-size:.76rem;color:var(--gris)}
+.nav{margin-left:auto;display:flex;gap:.3em;flex-wrap:wrap}
+.nav a{font-family:var(--titre);font-weight:600;font-size:.82rem;color:var(--vert-nuit);text-decoration:none;padding:.4em .7em;border-radius:var(--r)}
+.nav a.cta{background:var(--vert);color:#fff}
+.hero{background:linear-gradient(135deg,var(--vert-fonce),var(--vert-nuit));color:#eaf1ec;padding:clamp(40px,7vw,80px) 24px}
+.hero .in{max-width:1180px;margin:0 auto}
+.hero h1{font-family:var(--titre);font-weight:800;font-size:clamp(1.6rem,4vw,2.6rem);color:#fff;margin:0 0 .4em;max-width:20ch}
+.hero p{color:#cfe0d5;max-width:56ch;margin:0}
+.faux{max-width:1180px;margin:0 auto;padding:36px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.faux .c{background:#fff;border:1px solid var(--ligne);border-radius:14px;height:120px}
+
+/* ============ WIDGET ASSISTANT ============ */
+/* Bouton flottant */
+.cb-fab{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:.6em;
+  background:linear-gradient(135deg,var(--vert),var(--vert-fonce));color:#fff;border:none;cursor:pointer;
+  font-family:var(--titre);font-weight:700;font-size:.9rem;padding:14px 20px 14px 16px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(4,69,42,.35);transition:transform .15s,box-shadow .15s}
+.cb-fab:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(4,69,42,.45)}
+.cb-fab .ic{width:22px;height:22px}
+.cb-fab .pastille{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:var(--rouge);color:#fff;
+  border-radius:50%;font-size:.7rem;display:grid;place-items:center;font-family:var(--titre);border:2px solid var(--fond)}
+.cb-fab.cache{display:none}
+
+/* Panneau */
+.cb-panneau{position:fixed;right:24px;bottom:24px;z-index:61;width:380px;max-width:calc(100vw - 32px);
+  height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:20px;overflow:hidden;display:flex;
+  flex-direction:column;box-shadow:0 24px 70px rgba(3,43,27,.35);border:1px solid rgba(0,0,0,.06);
+  transform-origin:bottom right}
+.cb-panneau[hidden]{display:none}
+.cb-anim{animation:cbPop .25s cubic-bezier(.22,.9,.3,1)}
+@keyframes cbPop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+
+/* En-tête du panneau */
+.cb-tete{background:linear-gradient(135deg,var(--vert-fonce),var(--vert-nuit));color:#fff;padding:16px 16px 18px;
+  display:flex;align-items:center;gap:.8em;position:relative;overflow:hidden}
+.cb-tete::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 10%,rgba(233,196,106,.18),transparent 50%)}
+.cb-av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(233,196,106,.5);
+  color:var(--or);display:grid;place-items:center;flex:0 0 auto;position:relative}
+.cb-av .ic{width:22px;height:22px}
+.cb-ti{position:relative}
+.cb-ti strong{font-family:var(--titre);font-weight:700;font-size:1rem;display:block;line-height:1.2}
+.cb-ti span{font-size:.76rem;color:#bcd2c4;display:flex;align-items:center;gap:.35em;margin-top:.15em}
+.cb-dot{width:7px;height:7px;border-radius:50%;background:#37d67a;display:inline-block}
+.cb-fermer{margin-left:auto;position:relative;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;
+  width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
+.cb-fermer:hover{background:rgba(255,255,255,.22)}
+
+/* Zone messages */
+.cb-corps{flex:1;overflow-y:auto;padding:16px;background:var(--fond);display:flex;flex-direction:column;gap:12px}
+.cb-msg{display:flex;gap:.5em;max-width:88%}
+.cb-msg .cb-bul{padding:11px 14px;border-radius:14px;font-size:.92rem;line-height:1.5}
+.cb-msg--bot{align-self:flex-start}
+.cb-msg--bot .cb-bul{background:#fff;border:1px solid var(--ligne);border-top-left-radius:4px;color:var(--encre)}
+.cb-msg--user{align-self:flex-end;flex-direction:row-reverse}
+.cb-msg--user .cb-bul{background:var(--vert);color:#fff;border-top-right-radius:4px}
+.cb-mini{width:28px;height:28px;border-radius:50%;background:var(--vert-fonce);color:var(--or);display:grid;place-items:center;flex:0 0 auto;align-self:flex-end}
+.cb-mini .ic{width:15px;height:15px}
+.cb-bul strong{color:var(--vert-fonce)}
+.cb-msg--user .cb-bul strong{color:#fff}
+
+/* Lien d'action dans une bulle */
+.cb-cta{display:inline-flex;align-items:center;gap:.4em;margin-top:.6em;background:var(--vert-fonce);color:#fff;
+  text-decoration:none;font-family:var(--titre);font-weight:600;font-size:.82rem;padding:.55em .9em;border-radius:8px}
+.cb-cta:hover{background:var(--vert-nuit)}
+.cb-cta .ic{width:15px;height:15px}
+.cb-fiche{margin-top:.6em;border-top:1px solid var(--ligne);padding-top:.5em;font-size:.85rem;color:var(--gris);display:grid;gap:.25em}
+.cb-fiche div{display:flex;gap:.5em;align-items:flex-start}
+.cb-fiche .ic{width:15px;height:15px;color:var(--vert-fonce);margin-top:.2em}
+
+/* Puces de réponse rapide */
+.cb-chips{display:flex;flex-wrap:wrap;gap:.5em;padding:0 16px 12px}
+.cb-chip{background:#fff;border:1px solid var(--vert);color:var(--vert-fonce);font-family:var(--titre);font-weight:600;
+  font-size:.82rem;padding:.5em .85em;border-radius:999px;cursor:pointer;transition:background .12s,color .12s}
+.cb-chip:hover{background:var(--vert);color:#fff}
+.cb-chip .ic{width:14px;height:14px;vertical-align:-2px;margin-right:.25em}
+
+/* Indicateur de saisie */
+.cb-typing{display:flex;gap:4px;padding:12px 14px;background:#fff;border:1px solid var(--ligne);border-radius:14px;border-top-left-radius:4px;width:fit-content}
+.cb-typing i{width:7px;height:7px;border-radius:50%;background:#b7c3bb;display:inline-block;animation:cbBlink 1.2s infinite}
+.cb-typing i:nth-child(2){animation-delay:.2s}.cb-typing i:nth-child(3){animation-delay:.4s}
+@keyframes cbBlink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* Pied : saisie */
+.cb-pied{border-top:1px solid var(--ligne);background:#fff;padding:10px 12px}
+.cb-saisie{display:flex;gap:.5em;align-items:center}
+.cb-saisie input{flex:1;border:1px solid var(--ligne);border-radius:999px;padding:.6em .9em;font-family:var(--texte);font-size:.9rem;outline:none}
+.cb-saisie input:focus{border-color:var(--vert)}
+.cb-envoi{width:40px;height:40px;border-radius:50%;background:var(--vert);color:#fff;border:none;cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.cb-envoi:hover{background:var(--vert-fonce)}
+.cb-legal{font-size:.68rem;color:var(--gris);text-align:center;margin:.5em 0 0;display:flex;align-items:center;justify-content:center;gap:.35em}
+.cb-legal .ic{width:12px;height:12px;color:var(--or-sombre)}
+
+@media (max-width:460px){
+  .cb-panneau{right:8px;left:8px;bottom:8px;width:auto;height:calc(100vh - 16px)}
+  .cb-fab{right:14px;bottom:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="banniere">Maquette — Assistant d'orientation local (aucune donnée traitée, sans IA tierce). À valider avant intégration.</div>
+
+<!-- ===== Décor : aperçu du site en fond ===== -->
+<div class="etat"><div class="in"><span>République de Guinée-Bissau</span><span>Permanence téléphonique · +41 22 908 15 99</span></div></div>
+<header class="entete"><div class="in">
+  <span class="embleme"><svg class="ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 2l2.4 5 5.6.6-4 4 1 5.4L12 19l-5 3 1-5.4-4-4 5.6-.6z"/></svg></span>
+  <span class="marque"><strong>Consulat honoraire de la République de Guinée-Bissau</strong><span>à Genève</span></span>
+  <nav class="nav">
+    <a href="#">Accueil</a><a href="#">Services</a><a href="#">Visas</a><a href="#">Contact</a><a href="#" class="cta">Rendez-vous</a>
+  </nav>
+</div></header>
+<section class="hero"><div class="in">
+  <h1>Informer, orienter et assister les ressortissants</h1>
+  <p>Le Consulat honoraire vous accompagne dans vos démarches et reçoit les demandes de visa d'entrée en Guinée-Bissau.</p>
+</div></section>
+<div class="faux"><div class="c"></div><div class="c"></div><div class="c"></div></div>
+
+<!-- ===== Bouton flottant ===== -->
+<button class="cb-fab" id="cbFab" aria-label="Ouvrir l'assistant d'orientation">
+  <svg class="ic" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+  Besoin d'aide ?
+  <span class="pastille">1</span>
+</button>
+
+<!-- ===== Panneau de conversation ===== -->
+<section class="cb-panneau cb-anim" id="cbPanneau" role="dialog" aria-label="Assistant d'orientation du consulat">
+  <div class="cb-tete">
+    <span class="cb-av"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7v3a3 3 0 0 0 3 3h1v-6H7V9a5 5 0 0 1 10 0v0h-2v6h1a3 3 0 0 0 3-3V9a7 7 0 0 0-7-7z"/><path d="M12 19h4a2 2 0 0 0 2-2"/></svg></span>
+    <span class="cb-ti">
+      <strong>Assistant du consulat</strong>
+      <span><i class="cb-dot"></i> Orientation · en ligne</span>
+    </span>
+    <button class="cb-fermer" id="cbFermer" aria-label="Fermer l'assistant">
+      <svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="cb-corps" id="cbCorps" aria-live="polite"></div>
+  <div class="cb-chips" id="cbChips"></div>
+
+  <div class="cb-pied">
+    <form class="cb-saisie" id="cbForm">
+      <input id="cbInput" type="text" placeholder="Posez votre question…" autocomplete="off" aria-label="Votre message">
+      <button class="cb-envoi" type="submit" aria-label="Envoyer">
+        <svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+      </button>
+    </form>
+    <p class="cb-legal"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Aucune donnée enregistrée · orientation uniquement</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  var corps = document.getElementById('cbCorps');
+  var chipsZone = document.getElementById('cbChips');
+  var panneau = document.getElementById('cbPanneau');
+  var fab = document.getElementById('cbFab');
+
+  function el(t,c,html){ var e=document.createElement(t); if(c)e.className=c; if(html!=null)e.innerHTML=html; return e; }
+  function icone(p,style){ return '<svg class="ic" viewBox="0 0 24 24"'+(style?' style="'+style+'"':'')+'>'+p+'</svg>'; }
+  var IC = {
+    visa:'<path d="M2 7h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M2 10h20M6 15h4"/>',
+    passe:'<path d="M6 2h12v20H6z"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 16a3.5 3.5 0 0 1 7 0"/>',
+    rdv:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    aide:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4M12 17h.01"/>',
+    tel:'<path d="M22 16.9V20a2 2 0 0 1-2.2 2A19 19 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2L8 9.5a15 15 0 0 0 6 6l1-1.2a2 2 0 0 1 2-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+    doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h5"/>',
+    fleche:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    lieu:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+  };
+
+  /* --- Base de connaissances (arbre de décision local) --- */
+  var REPONSES = {
+    visa: {
+      user:"Demander un visa d'entrée",
+      bot:"Le consulat honoraire <strong>reçoit et traite les demandes de visa d'entrée</strong> en Guinée-Bissau (touristique ou affaires). La page Visas indique les pièces à fournir et la marche à suivre.",
+      cta:{t:"Ouvrir la page « Visas »",href:"#/visas",ic:IC.visa},
+      chips:["visa_tour","visa_aff","rdv"]
+    },
+    visa_tour:{
+      user:"Visa touristique",
+      bot:"Pour un <strong>visa touristique</strong>, prévoyez : passeport valide 6 mois (2 pages vierges), réservation d'hôtel, justificatif de domicile, vaccination fièvre jaune, 2 photos et l'attestation de billet aller/retour.",
+      cta:{t:"Voir le détail sur la page Visas",href:"#/visas",ic:IC.visa},
+      chips:["rdv","contact"]
+    },
+    visa_aff:{
+      user:"Visa d'affaires",
+      bot:"Le <strong>visa d'affaires</strong> demande les mêmes pièces que le visa touristique, plus une <strong>lettre d'invitation</strong> de l'entreprise/partenaire en Guinée-Bissau ou un ordre de mission.",
+      cta:{t:"Voir le détail sur la page Visas",href:"#/visas",ic:IC.visa},
+      chips:["rdv","contact"]
+    },
+    passeport:{
+      user:"Passeport / acte d'état civil",
+      bot:"Ces documents <strong>ne sont pas délivrés par le consulat honoraire</strong> : passeports et actes d'état civil relèvent de l'Ambassade compétente. Le consulat peut toutefois vous indiquer la marche à suivre.",
+      cta:{t:"Nos services et l'Ambassade",href:"#/services",ic:IC.fleche},
+      chips:["contact","rdv"]
+    },
+    rdv:{
+      user:"Prendre rendez-vous",
+      bot:"La réception se fait <strong>sur rendez-vous</strong>. Réservez un créneau en présentiel, par téléphone ou en visioconférence — la confirmation est immédiate.",
+      cta:{t:"Prendre rendez-vous",href:"#/rendezvous",ic:IC.rdv},
+      chips:["visa","assistance"]
+    },
+    assistance:{
+      user:"Être assisté (urgence)",
+      bot:"En cas de difficulté grave à Genève — perte de papiers, arrestation, hospitalisation, décès — le consulat honoraire peut vous <strong>assister et vous orienter</strong> (certains frais restant à votre charge).",
+      cta:{t:"Voir l'assistance aux ressortissants",href:"#/services",ic:IC.aide},
+      chips:["contact","rdv"]
+    },
+    contact:{
+      user:"Horaires & contact",
+      bot:"Voici comment joindre le consulat :",
+      fiche:[
+        {ic:IC.lieu,t:"14, Quai du Seujet, 1201 Genève"},
+        {ic:IC.tel,t:"+41 22 908 15 99"},
+        {ic:IC.mail,t:"secretariat@consulatgb.ch"},
+        {ic:IC.horloge,t:"Lun, mar, jeu · 15h–17h (sur rendez-vous)"}
+      ],
+      cta:{t:"Ouvrir la page Contact",href:"#/contact",ic:IC.fleche},
+      chips:["rdv","visa"]
+    },
+    documents:{
+      user:"Documents utiles",
+      bot:"Le consulat met à disposition des <strong>documents utiles</strong> (formulaires, mémentos, listes de contacts) à télécharger.",
+      cta:{t:"Voir les documents",href:"#/services",ic:IC.doc},
+      chips:["visa","contact"]
+    },
+    humain:{
+      user:"Parler à une personne",
+      bot:"Bien sûr. Le secrétariat vous répond directement : utilisez le formulaire de la page Contact ou la permanence téléphonique. L'assistant, lui, ne fait qu'orienter.",
+      cta:{t:"Contacter le consulat",href:"#/contact",ic:IC.tel},
+      chips:["contact","rdv"]
+    },
+    inconnu:{
+      bot:"Je ne suis pas sûr d'avoir bien compris. Je peux vous orienter sur les visas, les rendez-vous, l'assistance ou le contact. Choisissez un sujet ou reformulez.",
+      chips:["visa","rdv","assistance","contact"]
+    }
+  };
+
+  var LIBELLE_CHIP = {
+    visa:{t:"Demander un visa",ic:IC.visa}, visa_tour:{t:"Visa touristique",ic:IC.visa},
+    visa_aff:{t:"Visa d'affaires",ic:IC.visa}, passeport:{t:"Passeport / état civil",ic:IC.passe},
+    rdv:{t:"Prendre rendez-vous",ic:IC.rdv}, assistance:{t:"Être assisté",ic:IC.aide},
+    contact:{t:"Horaires & contact",ic:IC.tel}, documents:{t:"Documents utiles",ic:IC.doc},
+    humain:{t:"Parler à une personne",ic:IC.aide}
+  };
+
+  /* Détection de mots-clés pour la saisie libre. */
+  function detecter(txt){
+    var t = txt.toLowerCase();
+    if(/visa|visto/.test(t)){ if(/affaire|business|entreprise|mission/.test(t)) return 'visa_aff'; if(/touris|vacance|loisir/.test(t)) return 'visa_tour'; return 'visa'; }
+    if(/passeport|carte d'ident|état civil|etat civil|naissance|mariage|décès|deces|acte/.test(t)) return 'passeport';
+    if(/rendez|rdv|créneau|creneau|réserv|reserv|appointment/.test(t)) return 'rdv';
+    if(/perte|vol|volé|détention|detention|arrest|prison|hospital|malade|santé|sante|urgence|accident|assist/.test(t)) return 'assistance';
+    if(/horaire|contact|adresse|téléphone|telephone|mail|courriel|email|ouvert|joindre/.test(t)) return 'contact';
+    if(/document|formulaire|télécharg|telecharg|mémento|memento|pdf/.test(t)) return 'documents';
+    if(/humain|personne|agent|secrétariat|secretariat|parler|conseiller/.test(t)) return 'humain';
+    return 'inconnu';
+  }
+
+  function bulleBot(rep){
+    var wrap = el('div','cb-msg cb-msg--bot');
+    wrap.appendChild(el('span','cb-mini', icone(IC.aide)));
+    var bul = el('div','cb-bul', rep.bot);
+    if(rep.fiche){ var f=el('div','cb-fiche'); rep.fiche.forEach(function(x){ f.appendChild(el('div',null, icone(x.ic)+'<span>'+x.t+'</span>')); }); bul.appendChild(f); }
+    if(rep.cta){ var a=el('a','cb-cta'); a.href=rep.cta.href; a.innerHTML=icone(rep.cta.ic)+rep.cta.t; a.addEventListener('click',function(e){e.preventDefault();}); bul.appendChild(a); }
+    wrap.appendChild(bul);
+    corps.appendChild(wrap);
+    corps.scrollTop = corps.scrollHeight;
+  }
+  function bulleUser(txt){
+    var wrap = el('div','cb-msg cb-msg--user');
+    wrap.appendChild(el('div','cb-bul', txt));
+    corps.appendChild(wrap);
+    corps.scrollTop = corps.scrollHeight;
+  }
+  function typing(cb){
+    var t = el('div','cb-msg cb-msg--bot');
+    t.appendChild(el('span','cb-mini', icone(IC.aide)));
+    t.appendChild(el('div','cb-typing','<i></i><i></i><i></i>'));
+    corps.appendChild(t); corps.scrollTop = corps.scrollHeight;
+    setTimeout(function(){ corps.removeChild(t); cb(); }, 650);
+  }
+  function poserChips(cles){
+    chipsZone.innerHTML='';
+    cles.forEach(function(k){
+      var d = LIBELLE_CHIP[k]; if(!d) return;
+      var b = el('button','cb-chip', icone(d.ic)+d.t);
+      b.addEventListener('click', function(){ repondre(k); });
+      chipsZone.appendChild(b);
+    });
+  }
+  function repondre(cle){
+    var rep = REPONSES[cle]; if(!rep) return;
+    if(rep.user) bulleUser(rep.user);
+    chipsZone.innerHTML='';
+    typing(function(){ bulleBot(rep); poserChips(rep.chips || ["visa","rdv","contact"]); });
+  }
+
+  /* Accueil */
+  function demarrer(){
+    corps.innerHTML='';
+    bulleBot({ bot:"Bonjour. Je suis l'<strong>assistant d'orientation</strong> du Consulat honoraire. Je ne traite aucune donnée personnelle : je vous indique simplement le bon interlocuteur. Que souhaitez-vous faire ?" });
+    poserChips(["visa","rdv","passeport","assistance","contact","documents"]);
+  }
+
+  /* Saisie libre */
+  document.getElementById('cbForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var input = document.getElementById('cbInput');
+    var v = (input.value||'').trim(); if(!v) return;
+    bulleUser(v); input.value='';
+    chipsZone.innerHTML='';
+    var cle = detecter(v);
+    typing(function(){ bulleBot(REPONSES[cle]); poserChips(REPONSES[cle].chips || ["visa","rdv","contact"]); });
+  });
+
+  /* Ouverture / fermeture */
+  function ouvrir(){ panneau.hidden=false; panneau.classList.remove('cb-anim'); void panneau.offsetWidth; panneau.classList.add('cb-anim'); fab.classList.add('cache'); }
+  function fermer(){ panneau.hidden=true; fab.classList.remove('cache'); }
+  fab.addEventListener('click', ouvrir);
+  document.getElementById('cbFermer').addEventListener('click', fermer);
+
+  demarrer();
+  /* La maquette s'ouvre déjà pour la démonstration. */
+})();
+</script>
+</body>
+</html>
