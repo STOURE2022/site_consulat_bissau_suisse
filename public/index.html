@@ -720,6 +720,75 @@ a.telechargement:hover{border-color:var(--vert)}
 .cf-secu-ico svg{width:20px;height:20px;color:#a5730a}
 .cf-secu p{font-size:.85rem;color:#5a4406;margin:0}
 
+/* ===== ASSISTANT D'ORIENTATION (widget global, 100 % local) ===== */
+.cb-i{width:1.1em;height:1.1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.cb-fab{position:fixed;right:24px;bottom:24px;z-index:140;display:flex;align-items:center;gap:.55em;
+  background:linear-gradient(135deg,var(--vert),var(--vert-fonce));color:#fff;border:none;cursor:pointer;
+  font-family:var(--titre);font-weight:700;font-size:.9rem;padding:13px 18px 13px 15px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(4,69,42,.35);transition:transform .15s,box-shadow .15s}
+.cb-fab:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(4,69,42,.45)}
+.cb-fab .cb-i{width:22px;height:22px}
+.cb-fab[hidden]{display:none}
+.cb-panneau{position:fixed;right:24px;bottom:24px;z-index:141;width:380px;max-width:calc(100vw - 32px);
+  height:600px;max-height:calc(100vh - 40px);background:#fff;border-radius:20px;overflow:hidden;display:flex;
+  flex-direction:column;box-shadow:0 24px 70px rgba(3,43,27,.35);border:1px solid rgba(0,0,0,.06);
+  animation:cbPop .25s cubic-bezier(.22,.9,.3,1)}
+.cb-panneau[hidden]{display:none}
+@keyframes cbPop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+.cb-tete{background:linear-gradient(135deg,var(--vert-fonce),var(--vert-nuit));color:#fff;padding:16px;
+  display:flex;align-items:center;gap:.8em;position:relative;overflow:hidden}
+.cb-tete::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 10%,rgba(233,196,106,.18),transparent 50%)}
+.cb-av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(233,196,106,.5);
+  color:var(--or);display:grid;place-items:center;flex:0 0 auto;position:relative}
+.cb-av .cb-i{width:22px;height:22px}
+.cb-ti{position:relative;min-width:0}
+.cb-ti strong{font-family:var(--titre);font-weight:700;font-size:1rem;display:block;line-height:1.2}
+.cb-ti span{font-size:.76rem;color:#bcd2c4;display:flex;align-items:center;gap:.35em;margin-top:.15em}
+.cb-dot{width:7px;height:7px;border-radius:50%;background:#37d67a;display:inline-block;flex:0 0 auto}
+.cb-fermer{margin-left:auto;position:relative;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;
+  width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
+.cb-fermer:hover{background:rgba(255,255,255,.22)}
+.cb-corps{flex:1;overflow-y:auto;padding:16px;background:var(--fond);display:flex;flex-direction:column;gap:12px}
+.cb-msg{display:flex;gap:.5em;max-width:88%}
+.cb-msg .cb-bul{padding:11px 14px;border-radius:14px;font-size:.92rem;line-height:1.5}
+.cb-msg--bot{align-self:flex-start}
+.cb-msg--bot .cb-bul{background:#fff;border:1px solid var(--ligne);border-top-left-radius:4px;color:var(--encre)}
+.cb-msg--user{align-self:flex-end;flex-direction:row-reverse}
+.cb-msg--user .cb-bul{background:var(--vert);color:#fff;border-top-right-radius:4px}
+.cb-mini{width:28px;height:28px;border-radius:50%;background:var(--vert-fonce);color:var(--or);display:grid;place-items:center;flex:0 0 auto;align-self:flex-end}
+.cb-mini .cb-i{width:15px;height:15px}
+.cb-bul strong{color:var(--vert-fonce)}
+.cb-msg--user .cb-bul strong{color:#fff}
+.cb-cta{display:inline-flex;align-items:center;gap:.4em;margin-top:.6em;background:var(--vert-fonce);color:#fff;
+  text-decoration:none;font-family:var(--titre);font-weight:600;font-size:.82rem;padding:.55em .9em;border-radius:8px}
+.cb-cta:hover{background:var(--vert-nuit);color:#fff}
+.cb-cta .cb-i{width:15px;height:15px}
+.cb-fiche{margin-top:.6em;border-top:1px solid var(--ligne);padding-top:.5em;font-size:.85rem;color:var(--gris);display:grid;gap:.25em}
+.cb-fiche div{display:flex;gap:.5em;align-items:flex-start}
+.cb-fiche .cb-i{width:15px;height:15px;color:var(--vert-fonce);margin-top:.2em}
+.cb-chips{display:flex;flex-wrap:wrap;gap:.5em;padding:0 16px 12px;background:var(--fond)}
+.cb-chip{background:#fff;border:1px solid var(--vert);color:var(--vert-fonce);font-family:var(--titre);font-weight:600;
+  font-size:.82rem;padding:.5em .85em;border-radius:999px;cursor:pointer;transition:background .12s,color .12s;display:inline-flex;align-items:center;gap:.35em}
+.cb-chip:hover{background:var(--vert);color:#fff}
+.cb-chip .cb-i{width:14px;height:14px}
+.cb-typing{display:flex;gap:4px;padding:12px 14px;background:#fff;border:1px solid var(--ligne);border-radius:14px;border-top-left-radius:4px;width:-moz-fit-content;width:fit-content}
+.cb-typing i{width:7px;height:7px;border-radius:50%;background:#b7c3bb;display:inline-block;animation:cbBlink 1.2s infinite}
+.cb-typing i:nth-child(2){animation-delay:.2s}.cb-typing i:nth-child(3){animation-delay:.4s}
+@keyframes cbBlink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.cb-pied{border-top:1px solid var(--ligne);background:#fff;padding:10px 12px}
+.cb-saisie{display:flex;gap:.5em;align-items:center}
+.cb-saisie input{flex:1;min-width:0;border:1px solid var(--ligne);border-radius:999px;padding:.6em .9em;font-family:var(--texte);font-size:.9rem;outline:none}
+.cb-saisie input:focus{border-color:var(--vert)}
+.cb-envoi{width:40px;height:40px;border-radius:50%;background:var(--vert);color:#fff;border:none;cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.cb-envoi:hover{background:var(--vert-fonce)}
+.cb-legal{font-size:.68rem;color:var(--gris);text-align:center;margin:.5em 0 0;display:flex;align-items:center;justify-content:center;gap:.35em}
+.cb-legal .cb-i{width:12px;height:12px;color:var(--or-sombre)}
+@media (max-width:460px){
+  .cb-panneau{right:8px;left:8px;bottom:8px;width:auto;height:calc(100vh - 16px)}
+  .cb-fab{right:14px;bottom:14px}
+}
+@media (prefers-reduced-motion:reduce){.cb-panneau{animation:none}.cb-typing i{animation:none}}
+
 /* --- Bandeau cookies (refus aussi simple que l'acceptation) --- */
 .cookies-banniere{position:fixed;left:0;right:0;bottom:0;z-index:150;background:#fff;
   border-top:3px solid var(--vert-fonce);box-shadow:0 -6px 24px rgba(0,0,0,.12)}
@@ -1070,6 +1139,35 @@ footer.site li{margin:.35em 0}
   </div>
 </aside>
 
+<!-- ==========================================================================
+     ASSISTANT D'ORIENTATION (widget global, 100 % local : aucune donnée traitée,
+     aucun réseau tiers). Les textes sont injectés depuis D[langue].ui.assistant.
+     ========================================================================== -->
+<button class="cb-fab" id="cbFab" type="button" aria-haspopup="dialog" aria-controls="cbPanneau" hidden>
+  <svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+  <span id="cbFabTexte"></span>
+</button>
+<section class="cb-panneau" id="cbPanneau" role="dialog" aria-label="" hidden>
+  <div class="cb-tete">
+    <span class="cb-av"><svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2" y="13.5" width="4.5" height="7" rx="1.4"/><rect x="17.5" y="13.5" width="4.5" height="7" rx="1.4"/><path d="M20 20v.5a3 3 0 0 1-3 3h-3"/></svg></span>
+    <span class="cb-ti"><strong id="cbTitre"></strong><span><i class="cb-dot"></i> <span id="cbStatut"></span></span></span>
+    <button class="cb-fermer" id="cbFermer" type="button" aria-label="">
+      <svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cb-corps" id="cbCorps" aria-live="polite"></div>
+  <div class="cb-chips" id="cbChips"></div>
+  <div class="cb-pied">
+    <form class="cb-saisie" id="cbForm" autocomplete="off">
+      <input id="cbInput" type="text" aria-label="" autocomplete="off">
+      <button class="cb-envoi" type="submit" aria-label="">
+        <svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+      </button>
+    </form>
+    <p class="cb-legal"><svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> <span id="cbLegal"></span></p>
+  </div>
+</section>
+
 <script>
 /* ============================================================================
    DICTIONNAIRE DE CONTENU « D »
@@ -1143,6 +1241,50 @@ D.fr = {
       accepter: "J’ai compris",
       refuser: "Refuser",
       lien: "En savoir plus"
+    },
+
+    /* Assistant d'orientation (widget guidé). */
+    assistant: {
+      ouvrir: "Besoin d’aide ?",
+      titre: "Assistant du consulat",
+      statut: "Orientation · en ligne",
+      fermer: "Fermer l’assistant",
+      envoyer: "Envoyer",
+      placeholder: "Posez votre question…",
+      legal: "Aucune donnée enregistrée · orientation uniquement",
+      bienvenue: "Bonjour. Je suis l’<strong>assistant d’orientation</strong> du Consulat honoraire. Je ne traite aucune donnée personnelle : je vous indique simplement le bon interlocuteur. Que souhaitez-vous faire ?",
+      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      sujets: {
+        visa: { chip:"Demander un visa", user:"Demander un visa d’entrée",
+          bot:"Le consulat honoraire <strong>reçoit et traite les demandes de visa d’entrée</strong> en Guinée-Bissau (touristique ou affaires). La page Visas indique les pièces à fournir et la marche à suivre.",
+          cta:{ t:"Ouvrir la page « Visas »", href:"#/visas" }, suite:["visa_tour","visa_aff","rdv"] },
+        visa_tour: { chip:"Visa touristique", user:"Visa touristique",
+          bot:"Pour un <strong>visa touristique</strong> : passeport valide 6 mois (2 pages vierges), réservation d’hôtel, justificatif de domicile, vaccination fièvre jaune, 2 photos et l’attestation de billet aller/retour.",
+          cta:{ t:"Voir le détail sur la page Visas", href:"#/visas" }, suite:["rdv","contact"] },
+        visa_aff: { chip:"Visa d’affaires", user:"Visa d’affaires",
+          bot:"Le <strong>visa d’affaires</strong> demande les mêmes pièces que le visa touristique, plus une <strong>lettre d’invitation</strong> de l’entreprise ou du partenaire en Guinée-Bissau, ou un ordre de mission.",
+          cta:{ t:"Voir le détail sur la page Visas", href:"#/visas" }, suite:["rdv","contact"] },
+        passeport: { chip:"Passeport / état civil", user:"Passeport ou acte d’état civil",
+          bot:"Ces documents <strong>ne sont pas délivrés par le consulat honoraire</strong> : passeports et actes d’état civil relèvent de l’Ambassade compétente. Le consulat peut toutefois vous indiquer la marche à suivre.",
+          cta:{ t:"Nos services", href:"#/services" }, suite:["contact","rdv"] },
+        rdv: { chip:"Prendre rendez-vous", user:"Prendre rendez-vous",
+          bot:"La réception se fait <strong>sur rendez-vous</strong>. Réservez un créneau en présentiel, par téléphone ou en visioconférence — confirmation immédiate.",
+          cta:{ t:"Prendre rendez-vous", href:"#/rendezvous" }, suite:["visa","assistance"] },
+        assistance: { chip:"Être assisté", user:"Être assisté (urgence)",
+          bot:"En cas de difficulté grave à Genève — perte de papiers, arrestation, hospitalisation, décès — le consulat honoraire peut vous <strong>assister et vous orienter</strong> (certains frais restant à votre charge).",
+          cta:{ t:"Assistance aux ressortissants", href:"#/services" }, suite:["contact","rdv"] },
+        contact: { chip:"Horaires & contact", user:"Horaires & contact",
+          bot:"Voici comment joindre le consulat :", fiche:true,
+          cta:{ t:"Ouvrir la page Contact", href:"#/contact" }, suite:["rdv","visa"] },
+        documents: { chip:"Documents utiles", user:"Documents utiles",
+          bot:"Le consulat met à disposition des <strong>documents utiles</strong> (formulaires, mémentos, listes de contacts) à télécharger.",
+          cta:{ t:"Voir les documents", href:"#/services" }, suite:["visa","contact"] },
+        humain: { chip:"Parler à une personne", user:"Parler à une personne",
+          bot:"Bien sûr. Le secrétariat vous répond directement via le formulaire de la page Contact ou la permanence téléphonique. L’assistant, lui, ne fait qu’orienter.",
+          cta:{ t:"Contacter le consulat", href:"#/contact" }, suite:["contact","rdv"] },
+        inconnu: { bot:"Je ne suis pas sûr d’avoir bien compris. Je peux vous orienter sur les visas, les rendez-vous, l’assistance ou le contact. Choisissez un sujet ou reformulez.",
+          suite:["visa","rdv","assistance","contact"] }
+      }
     }
   },
 
@@ -1996,6 +2138,50 @@ D.pt = {
       accepter: "Compreendi",
       refuser: "Recusar",
       lien: "Saber mais"
+    },
+
+    /* Assistente de orientação (widget guiado). */
+    assistant: {
+      ouvrir: "Precisa de ajuda?",
+      titre: "Assistente do consulado",
+      statut: "Orientação · online",
+      fermer: "Fechar o assistente",
+      envoyer: "Enviar",
+      placeholder: "Coloque a sua questão…",
+      legal: "Nenhum dado registado · apenas orientação",
+      bienvenue: "Olá. Sou o <strong>assistente de orientação</strong> do Consulado honorário. Não trato quaisquer dados pessoais: apenas lhe indico o interlocutor certo. O que pretende fazer?",
+      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      sujets: {
+        visa: { chip:"Pedir um visto", user:"Pedir um visto de entrada",
+          bot:"O consulado honorário <strong>recebe e trata os pedidos de visto de entrada</strong> na Guiné-Bissau (turismo ou negócios). A página Vistos indica os documentos e o procedimento.",
+          cta:{ t:"Abrir a página « Vistos »", href:"#/visas" }, suite:["visa_tour","visa_aff","rdv"] },
+        visa_tour: { chip:"Visto de turismo", user:"Visto de turismo",
+          bot:"Para um <strong>visto de turismo</strong>: passaporte válido 6 meses (2 páginas em branco), reserva de hotel, comprovativo de morada, vacina da febre amarela, 2 fotografias e o comprovativo de bilhete de ida e volta.",
+          cta:{ t:"Ver o detalhe na página Vistos", href:"#/visas" }, suite:["rdv","contact"] },
+        visa_aff: { chip:"Visto de negócios", user:"Visto de negócios",
+          bot:"O <strong>visto de negócios</strong> exige os mesmos documentos que o de turismo, mais uma <strong>carta-convite</strong> da empresa ou do parceiro na Guiné-Bissau, ou uma ordem de missão.",
+          cta:{ t:"Ver o detalhe na página Vistos", href:"#/visas" }, suite:["rdv","contact"] },
+        passeport: { chip:"Passaporte / estado civil", user:"Passaporte ou ato de registo civil",
+          bot:"Estes documentos <strong>não são emitidos pelo consulado honorário</strong>: passaportes e atos de registo civil são da competência da Embaixada. O consulado pode, ainda assim, indicar-lhe o procedimento.",
+          cta:{ t:"Os nossos serviços", href:"#/services" }, suite:["contact","rdv"] },
+        rdv: { chip:"Marcar atendimento", user:"Marcar atendimento",
+          bot:"O atendimento é <strong>mediante marcação</strong>. Reserve um horário presencial, por telefone ou por videoconferência — confirmação imediata.",
+          cta:{ t:"Marcar atendimento", href:"#/rendezvous" }, suite:["visa","assistance"] },
+        assistance: { chip:"Ser assistido", user:"Ser assistido (urgência)",
+          bot:"Em caso de dificuldade grave em Genebra — perda de documentos, detenção, hospitalização, óbito — o consulado honorário pode <strong>assisti-lo e orientá-lo</strong> (alguns custos ficam a seu cargo).",
+          cta:{ t:"Assistência aos cidadãos", href:"#/services" }, suite:["contact","rdv"] },
+        contact: { chip:"Horário e contacto", user:"Horário e contacto",
+          bot:"Como contactar o consulado:", fiche:true,
+          cta:{ t:"Abrir a página Contacto", href:"#/contact" }, suite:["rdv","visa"] },
+        documents: { chip:"Documentos úteis", user:"Documentos úteis",
+          bot:"O consulado disponibiliza <strong>documentos úteis</strong> (formulários, memorandos, listas de contactos) para descarregar.",
+          cta:{ t:"Ver os documentos", href:"#/services" }, suite:["visa","contact"] },
+        humain: { chip:"Falar com uma pessoa", user:"Falar com uma pessoa",
+          bot:"Com certeza. O secretariado responde-lhe diretamente através do formulário da página Contacto ou da permanência telefónica. O assistente apenas orienta.",
+          cta:{ t:"Contactar o consulado", href:"#/contact" }, suite:["contact","rdv"] },
+        inconnu: { bot:"Não tenho a certeza de ter compreendido. Posso orientá-lo sobre vistos, marcações, assistência ou contacto. Escolha um tema ou reformule.",
+          suite:["visa","rdv","assistance","contact"] }
+      }
     }
   },
   nav: [
@@ -2600,6 +2786,50 @@ D.en = {
       accepter: "I understand",
       refuser: "Decline",
       lien: "Learn more"
+    },
+
+    /* Guidance assistant (guided widget). */
+    assistant: {
+      ouvrir: "Need help?",
+      titre: "Consulate assistant",
+      statut: "Guidance · online",
+      fermer: "Close the assistant",
+      envoyer: "Send",
+      placeholder: "Ask your question…",
+      legal: "No data stored · guidance only",
+      bienvenue: "Hello. I am the Honorary Consulate’s <strong>guidance assistant</strong>. I process no personal data: I simply point you to the right contact. What would you like to do?",
+      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      sujets: {
+        visa: { chip:"Apply for a visa", user:"Apply for an entry visa",
+          bot:"The honorary consulate <strong>receives and processes entry-visa applications</strong> for Guinea-Bissau (tourist or business). The Visas page lists the required documents and the procedure.",
+          cta:{ t:"Open the “Visas” page", href:"#/visas" }, suite:["visa_tour","visa_aff","rdv"] },
+        visa_tour: { chip:"Tourist visa", user:"Tourist visa",
+          bot:"For a <strong>tourist visa</strong>: passport valid 6 months (2 blank pages), hotel reservation, proof of residence, yellow-fever vaccination, 2 photographs and the return-ticket issuance confirmation.",
+          cta:{ t:"See details on the Visas page", href:"#/visas" }, suite:["rdv","contact"] },
+        visa_aff: { chip:"Business visa", user:"Business visa",
+          bot:"The <strong>business visa</strong> requires the same documents as the tourist visa, plus an <strong>invitation letter</strong> from the company or partner in Guinea-Bissau, or a mission order.",
+          cta:{ t:"See details on the Visas page", href:"#/visas" }, suite:["rdv","contact"] },
+        passeport: { chip:"Passport / civil status", user:"Passport or civil-status document",
+          bot:"These documents are <strong>not issued by the honorary consulate</strong>: passports and civil-status documents fall to the competent Embassy. The consulate can still tell you how to proceed.",
+          cta:{ t:"Our services", href:"#/services" }, suite:["contact","rdv"] },
+        rdv: { chip:"Book an appointment", user:"Book an appointment",
+          bot:"Reception is <strong>by appointment</strong>. Book a slot in person, by phone or by video call — immediate confirmation.",
+          cta:{ t:"Book an appointment", href:"#/rendezvous" }, suite:["visa","assistance"] },
+        assistance: { chip:"Get assistance", user:"Get assistance (emergency)",
+          bot:"In case of serious difficulty in Geneva — lost documents, arrest, hospitalisation, death — the honorary consulate can <strong>assist and guide you</strong> (some costs remaining at your expense).",
+          cta:{ t:"Assistance to nationals", href:"#/services" }, suite:["contact","rdv"] },
+        contact: { chip:"Hours & contact", user:"Hours & contact",
+          bot:"How to reach the consulate:", fiche:true,
+          cta:{ t:"Open the Contact page", href:"#/contact" }, suite:["rdv","visa"] },
+        documents: { chip:"Useful documents", user:"Useful documents",
+          bot:"The consulate provides <strong>useful documents</strong> (forms, memos, contact lists) to download.",
+          cta:{ t:"See the documents", href:"#/services" }, suite:["visa","contact"] },
+        humain: { chip:"Talk to a person", user:"Talk to a person",
+          bot:"Of course. The secretariat replies directly via the Contact page form or the telephone helpline. The assistant only provides guidance.",
+          cta:{ t:"Contact the consulate", href:"#/contact" }, suite:["contact","rdv"] },
+        inconnu: { bot:"I’m not sure I understood. I can guide you on visas, appointments, assistance or contact. Choose a topic or rephrase.",
+          suite:["visa","rdv","assistance","contact"] }
+      }
     }
   },
   nav: [
@@ -5009,6 +5239,8 @@ function rendreChrome(){
   document.getElementById("cookiesRefuser").textContent = ck.refuser;
   document.getElementById("cookiesAccepter").textContent = ck.accepter;
   document.getElementById("cookiesLien").textContent = ck.lien;
+
+  rendreAssistant();
 }
 
 /* Raccourci : écrit du texte dans un élément repéré par data-ui. */
@@ -5073,6 +5305,122 @@ function activerReveal(){
 /* ============================================================================
    AMORÇAGE DE L'APPLICATION
    ============================================================================ */
+/* ============================================================================
+   ASSISTANT D'ORIENTATION (widget guidé, 100 % local)
+   Arbre de décision défini dans D[langue].ui.assistant ; aucune donnée traitée,
+   aucun appel réseau. Oriente l'utilisateur vers la bonne page du site.
+   ============================================================================ */
+var CBIC = {
+  visa:'<path d="M2 7h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M2 10h20M6 15h4"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  batiment:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M8 7h.01M12 7h.01M16 7h.01M8 11h.01M12 11h.01M16 11h.01"/>',
+  passe:'<rect x="6" y="2" width="12" height="20" rx="2"/><circle cx="12" cy="9" r="2.4"/><path d="M8.5 16a3.5 3.5 0 0 1 7 0"/>',
+  rdv:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  aide:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4M12 17h.01"/>',
+  tel:'<path d="M22 16.9V20a2 2 0 0 1-2.2 2A19 19 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2L8 9.5a15 15 0 0 0 6 6l1-1.2a2 2 0 0 1 2-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h5"/>',
+  personne:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  fleche:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  lieu:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+var CB_ICON_SUJET = { visa:"visa", visa_tour:"globe", visa_aff:"batiment", passeport:"passe",
+  rdv:"rdv", assistance:"aide", contact:"tel", documents:"doc", humain:"personne", inconnu:"aide" };
+var cbLangRendu = null;
+
+function cbSvg(cle){ return '<svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true">'+(CBIC[cle]||CBIC.aide)+'</svg>'; }
+function cbEl(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+function cbCorpsEl(){ return document.getElementById("cbCorps"); }
+function cbAuBas(){ var c=cbCorpsEl(); if(c) c.scrollTop=c.scrollHeight; }
+
+function cbBulleBot(rep){
+  var wrap = cbEl("div","cb-msg cb-msg--bot", '<span class="cb-mini">'+cbSvg("aide")+'</span>');
+  var bul = cbEl("div","cb-bul", baliser(rep.bot));
+  if(rep.fiche){
+    bul.appendChild(cbEl("div","cb-fiche",
+      '<div>'+cbSvg("lieu")+'<span>'+baliser("{par:adresse}, {par:ville}")+'</span></div>'+
+      '<div>'+cbSvg("tel")+'<span>'+baliser("{par:telephone}")+'</span></div>'+
+      '<div>'+cbSvg("mail")+'<span>'+baliser("{par:courriel}")+'</span></div>'+
+      '<div>'+cbSvg("horloge")+'<span>'+baliser("{par:horaires_jours} — {par:horaires_reception}")+'</span></div>'));
+  }
+  if(rep.cta){
+    var a = cbEl("a","cb-cta", cbSvg("fleche")+baliser(rep.cta.t));
+    a.setAttribute("href", rep.cta.href);
+    bul.appendChild(a);
+  }
+  wrap.appendChild(bul);
+  cbCorpsEl().appendChild(wrap); cbAuBas();
+}
+function cbBulleUser(texte){
+  var wrap = cbEl("div","cb-msg cb-msg--user");
+  var bul = cbEl("div","cb-bul"); bul.textContent = texte; /* texte utilisateur : jamais interprété en HTML */
+  wrap.appendChild(bul);
+  cbCorpsEl().appendChild(wrap); cbAuBas();
+}
+function cbTyping(apres){
+  var t = cbEl("div","cb-msg cb-msg--bot",
+    '<span class="cb-mini">'+cbSvg("aide")+'</span><div class="cb-typing"><i></i><i></i><i></i></div>');
+  cbCorpsEl().appendChild(t); cbAuBas();
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); apres(); }, 600);
+}
+function cbPoserChips(cles){
+  var z = document.getElementById("cbChips"); if(!z) return; z.innerHTML="";
+  var suj = dico().ui.assistant.sujets;
+  (cles||[]).forEach(function(k){
+    var s = suj[k]; if(!s || !s.chip) return;
+    var b = cbEl("button","cb-chip", cbSvg(CB_ICON_SUJET[k]||"aide")+'<span>'+baliser(s.chip)+'</span>');
+    b.type="button";
+    b.addEventListener("click", function(){ cbRepondre(k); });
+    z.appendChild(b);
+  });
+}
+function cbRepondre(cle){
+  var a = dico().ui.assistant; var rep = a.sujets[cle]; if(!rep) return;
+  if(rep.user) cbBulleUser(rep.user);
+  var z = document.getElementById("cbChips"); if(z) z.innerHTML="";
+  cbTyping(function(){ cbBulleBot(rep); cbPoserChips(rep.suite || a.accueil); });
+}
+function cbDetecter(txt){
+  var t = (txt||"").toLowerCase();
+  if(/visa|visto/.test(t)){
+    if(/affaire|business|entreprise|mission|neg[oó]ci/.test(t)) return "visa_aff";
+    if(/touris|vacance|loisir|lazer|leisure/.test(t)) return "visa_tour";
+    return "visa";
+  }
+  if(/passeport|passaporte|passport|[ée]tat civil|registo civil|civil.?status|naissance|nascimento|birth|mariage|casamento|marriage|d[ée]c[eè]s|[oó]bito|death|acte\b|\bato\b/.test(t)) return "passeport";
+  if(/rendez|rdv|cr[ée]neau|r[ée]serv|marca|appointment|book|slot/.test(t)) return "rdv";
+  if(/perte|perda|lost|vol[ée]?|roubo|theft|d[ée]tention|arrest|prison|hospital|malade|doente|sick|sant[ée]|sa[uú]de|urgen|emergency|accident|acidente|assist/.test(t)) return "assistance";
+  if(/horaire|hor[aá]rio|hours|contact|adresse|morada|address|t[ée]l[ée]phone|telefone|phone|mail|courriel|correio|email|ouvert|aberto|\bopen\b|joindre|reach/.test(t)) return "contact";
+  if(/document|formulaire|formul[aá]rio|\bform\b|t[ée]l[ée]charg|descarreg|download|m[ée]mento|memorando|pdf/.test(t)) return "documents";
+  if(/humain|human|pessoa|person|agent|secr[ée]t|secretari|parler|falar|talk|conseiller/.test(t)) return "humain";
+  return "inconnu";
+}
+function cbSaisieLibre(v){
+  cbBulleUser(v);
+  var z = document.getElementById("cbChips"); if(z) z.innerHTML="";
+  var a = dico().ui.assistant; var cle = cbDetecter(v);
+  cbTyping(function(){ cbBulleBot(a.sujets[cle]); cbPoserChips(a.sujets[cle].suite || a.accueil); });
+}
+function cbDemarrer(){
+  var a = dico().ui.assistant; var c = cbCorpsEl(); if(!c) return;
+  c.innerHTML=""; cbBulleBot({ bot:a.bienvenue }); cbPoserChips(a.accueil);
+}
+
+/* Injecte les libellés traduits ; réinitialise l'accueil si la langue change. */
+function rendreAssistant(){
+  var a = dico().ui.assistant; if(!a) return;
+  function set(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+  function attr(id,at,val){ var e=document.getElementById(id); if(e) e.setAttribute(at,val); }
+  set("cbFabTexte", a.ouvrir); set("cbTitre", a.titre); set("cbStatut", a.statut); set("cbLegal", a.legal);
+  attr("cbFab","aria-label",a.ouvrir); attr("cbPanneau","aria-label",a.titre); attr("cbFermer","aria-label",a.fermer);
+  attr("cbInput","placeholder",a.placeholder); attr("cbInput","aria-label",a.placeholder);
+  var env=document.querySelector("#cbForm .cb-envoi"); if(env) env.setAttribute("aria-label",a.envoyer);
+  var corps=document.getElementById("cbCorps");
+  if(corps && (cbLangRendu!==Etat.langue || !corps.children.length)){ cbLangRendu=Etat.langue; cbDemarrer(); }
+}
+
+
 (function initialiser(){
 
   /* Langue initiale : paramètre ?lang= s'il est présent et valide, sinon FR. */
@@ -5094,11 +5442,36 @@ function activerReveal(){
 
   /* Bandeau cookies : affiché tant qu'il n'a pas été fermé dans la session. */
   var banniere = document.getElementById("cookiesBanniere");
-  function fermerCookies(){ Etat.cookiesFerme = true; banniere.hidden = true; }
-  if (!Etat.cookiesFerme) banniere.hidden = false;
+  function fermerCookies(){ Etat.cookiesFerme = true; banniere.hidden = true; revelerAssistant(); }
+  /* Le bouton de l'assistant n'apparaît qu'une fois le bandeau cookies traité,
+     pour éviter tout chevauchement en bas d'écran. */
+  function revelerAssistant(){ var f=document.getElementById("cbFab"), p=document.getElementById("cbPanneau");
+    if (f && p && p.hidden) f.hidden = false; }
+  if (!Etat.cookiesFerme) banniere.hidden = false; else revelerAssistant();
   document.getElementById("cookiesAccepter").addEventListener("click", fermerCookies);
   document.getElementById("cookiesRefuser").addEventListener("click", fermerCookies);
   document.getElementById("cookiesLien").addEventListener("click", fermerCookies);
+
+  /* --- Assistant d'orientation : ouverture / fermeture / saisie libre --- */
+  var cbFab = document.getElementById("cbFab");
+  var cbPan = document.getElementById("cbPanneau");
+  if (cbFab && cbPan){
+    var cbOuvrir = function(){ cbPan.hidden = false; cbFab.hidden = true; var i=document.getElementById("cbInput"); if(i) i.focus(); };
+    var cbFermerPan = function(){ cbPan.hidden = true; cbFab.hidden = false; cbFab.focus(); };
+    cbFab.addEventListener("click", cbOuvrir);
+    document.getElementById("cbFermer").addEventListener("click", cbFermerPan);
+    document.getElementById("cbForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      var i = document.getElementById("cbInput"); var v = (i.value||"").trim(); if(!v) return;
+      i.value = ""; cbSaisieLibre(v);
+    });
+    /* Suivre un lien d'action ferme le panneau (on navigue vers une page). */
+    document.getElementById("cbCorps").addEventListener("click", function(e){
+      if (e.target.closest(".cb-cta")) cbFermerPan();
+    });
+    /* Touche Échap : ferme le panneau s'il est ouvert. */
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !cbPan.hidden) cbFermerPan(); });
+  }
 
   /* Routage : réagit au changement de hash (et au bouton « précédent »). */
   window.addEventListener("hashchange", function(){
