@@ -774,7 +774,8 @@ footer.site li{margin:.35em 0}
   .marque .lignes strong{font-size:.9rem}
   .langue>button{padding:.5em .55em;gap:.25em}
   .hero .imgslot{min-height:200px}
-  .pied-bas .wrap{gap:.5em}
+  .pied-bas .wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:.6em} /* empilé : les textes occupent la largeur et passent à la ligne */
+  .pied-bas .lien-admin{align-self:flex-start} /* le bouton reste compact */
   .permanence-tel [data-ui="perm-label"]{display:none} /* on garde l'icône + le numéro */
 }
 
