@@ -186,20 +186,34 @@ li{margin:.25em 0}
 /* ==========================================================================
    3. EN-TÊTE / NAVIGATION
    ========================================================================== */
-.bandeau-etat{background:var(--vert-nuit);color:#dfe8e2;font-size:.8rem}
-.bandeau-etat .wrap{display:flex;gap:.5em 1.2em;flex-wrap:wrap;align-items:center;
-  justify-content:space-between;padding-top:.4em;padding-bottom:.4em}
-.bandeau-etat strong{color:#fff;font-weight:700}
-.etat-droite{display:flex;align-items:center;gap:.6em 1.1em;flex-wrap:wrap}
-/* Permanence téléphonique */
-.permanence-tel{display:inline-flex;align-items:center;gap:.4em;color:#dfe8e2;text-decoration:none}
-.permanence-tel:hover{color:#fff}
-.permanence-tel .ic{color:var(--jaune)}
-.permanence-tel strong{color:#fff}
+/* Barre supérieure (état) — version premium */
+.bandeau-etat{background:linear-gradient(90deg,var(--vert-nuit),#06351f);color:#e7efe9;font-size:.8rem}
+.bandeau-etat .wrap{display:flex;gap:.5em 1.4em;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;padding-top:.55em;padding-bottom:.55em}
+.bandeau-etat strong{color:#fff;font-weight:800}
+.etat-pays{display:inline-flex;align-items:center;gap:.6em;font-size:.72rem;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:#dfe8e2;margin:0}
+.etat-flag{width:20px;height:14px;border-radius:2px;overflow:hidden;flex:0 0 auto;box-shadow:0 1px 3px rgba(0,0,0,.4);display:block}
+.etat-flag svg{display:block;width:20px;height:14px}
+.etat-droite{display:flex;align-items:center;gap:.7em;flex-wrap:wrap}
+/* Permanence téléphonique = bouton d'appel */
+.permanence-tel{display:inline-flex;align-items:center;gap:.6em;text-decoration:none;color:#fff;
+  background:rgba(233,196,106,.12);border:1px solid rgba(233,196,106,.4);border-radius:9px;padding:.4em .7em}
+.permanence-tel:hover{background:rgba(233,196,106,.2);border-color:rgba(233,196,106,.65)}
+.permanence-tel .perm-ic{width:28px;height:28px;border-radius:7px;background:var(--vert);display:grid;place-items:center;flex:0 0 auto}
+.permanence-tel .perm-ic .ic{color:#fff;width:15px;height:15px}
+.permanence-tel .perm-txt{display:flex;flex-direction:column;line-height:1.15}
+.permanence-tel .perm-k{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--or);font-weight:700}
+.permanence-tel strong{color:#fff;font-weight:800;font-size:.92rem}
 /* Sélecteur de langue dans la barre sombre */
-.bandeau-etat .langue>button{background:transparent;border-color:rgba(255,255,255,.28);
-  color:#dfe8e2;padding:.3em .55em;font-size:.8rem}
-.bandeau-etat .langue>button:hover{color:#fff;border-color:rgba(255,255,255,.6)}
+.bandeau-etat .langue>button{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.3);
+  color:#e7efe9;padding:.55em .7em;font-size:.82rem;border-radius:9px}
+.bandeau-etat .langue>button:hover{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.1)}
+@media (max-width:560px){
+  .bandeau-etat .etat-pays{width:100%}
+  .bandeau-etat .etat-droite{width:100%}
+  .bandeau-etat .permanence-tel{flex:1 1 auto}
+}
 
 header.site{position:sticky;top:0;z-index:100;background:var(--blanc);
   box-shadow:0 1px 0 var(--ligne)}
@@ -830,7 +844,6 @@ footer.site li{margin:.35em 0}
   .hero .imgslot{min-height:200px}
   .pied-bas .wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:.6em} /* empilé : les textes occupent la largeur et passent à la ligne */
   .pied-bas .lien-admin{align-self:flex-start} /* le bouton reste compact */
-  .permanence-tel [data-ui="perm-label"]{display:none} /* on garde l'icône + le numéro */
 }
 
 /* Voile sombre derrière le menu mobile ouvert. */
@@ -882,13 +895,20 @@ footer.site li{margin:.35em 0}
   <!-- Bandeau d'État : intitulé + permanence téléphonique + sélecteur de langue. -->
   <div class="bandeau-etat">
     <div class="wrap">
-      <span data-ui="etat-gauche"></span>
+      <p class="etat-pays">
+        <span class="etat-flag" aria-hidden="true">
+          <svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#FCD116"/><rect y="7" width="20" height="7" fill="#009E49"/><rect width="7.5" height="14" fill="#CE1126"/><text x="3.7" y="9.3" fill="#000" font-size="6" text-anchor="middle">★</text></svg>
+        </span>
+        <span data-ui="etat-gauche"></span>
+      </p>
       <div class="etat-droite">
-        <!-- Permanence téléphonique (numéro géré depuis l'admin). -->
+        <!-- Permanence téléphonique (numéro géré depuis l'admin) — bouton d'appel. -->
         <a class="permanence-tel" id="permanenceTel" href="#">
-          <svg class="ic" aria-hidden="true"><use href="#ic-tel"></use></svg>
-          <span data-ui="perm-label"></span>
-          <strong id="permNum"></strong>
+          <span class="perm-ic" aria-hidden="true"><svg class="ic"><use href="#ic-tel"></use></svg></span>
+          <span class="perm-txt">
+            <span class="perm-k" data-ui="perm-label"></span>
+            <strong id="permNum"></strong>
+          </span>
         </a>
         <!-- Sélecteur de langue. -->
         <div class="langue">
