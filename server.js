@@ -159,17 +159,44 @@ function egaliteConstante(a, b) {
   const ba = Buffer.from(String(a)), bb = Buffer.from(String(b));
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
+/* Liste des comptes admin autorisés. Deux sources cumulables :
+   - ADMIN_USER / ADMIN_PASSWORD : le compte unique historique ;
+   - ADMIN_USERS : plusieurs comptes nominatifs, sous la forme
+     "leila:motdepasse1,consul:motdepasse2" (paires séparées par des virgules,
+     identifiant et mot de passe séparés par « : »). Le mot de passe ne doit
+     pas contenir de virgule. */
+function comptesAdmin() {
+  const comptes = [];
+  if (process.env.ADMIN_USER && process.env.ADMIN_PASSWORD) {
+    comptes.push({ u: process.env.ADMIN_USER, p: process.env.ADMIN_PASSWORD });
+  }
+  if (process.env.ADMIN_USERS) {
+    process.env.ADMIN_USERS.split(",").forEach(function (paire) {
+      const s = paire.trim();
+      const i = s.indexOf(":");
+      if (i > 0) comptes.push({ u: s.slice(0, i).trim(), p: s.slice(i + 1) });
+    });
+  }
+  return comptes;
+}
+
 function adminAuth(req, res, next) {
-  const user = process.env.ADMIN_USER, pass = process.env.ADMIN_PASSWORD;
-  if (!user || !pass) {
-    return res.status(503).json({ ok: false, erreur: "Espace d'administration non configuré (ADMIN_USER / ADMIN_PASSWORD)." });
+  const comptes = comptesAdmin();
+  if (!comptes.length) {
+    return res.status(503).json({ ok: false, erreur: "Espace d'administration non configuré (ADMIN_USER / ADMIN_PASSWORD ou ADMIN_USERS)." });
   }
   const m = (req.headers.authorization || "").match(/^Basic (.+)$/);
   if (m) {
     const paire = Buffer.from(m[1], "base64").toString();
     const i = paire.indexOf(":");
     const u = paire.slice(0, i), p = paire.slice(i + 1);
-    if (egaliteConstante(u, user) && egaliteConstante(p, pass)) return next();
+    /* On teste tous les comptes sans court-circuit pour ne pas divulguer par le
+       temps de réponse quel identifiant existe. */
+    let ok = false;
+    for (const c of comptes) {
+      if (egaliteConstante(u, c.u) && egaliteConstante(p, c.p)) ok = true;
+    }
+    if (ok) return next();
   }
   res.set("WWW-Authenticate", 'Basic realm="Espace consulat"');
   return res.status(401).json({ ok: false, erreur: "Authentification requise." });

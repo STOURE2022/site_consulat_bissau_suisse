@@ -2859,10 +2859,13 @@ function posterJSON(url, data){
    l'espace d'administration, et les convertit au format des actualités. Renvoie
    null en mode local ou en cas d'échec, pour retomber sur les actualités
    statiques du dictionnaire D. */
-var PUBLICATIONS = null; // cache
+/* Durée de vie des caches côté site : au-delà, on re-télécharge pour que les
+   ajouts faits dans l'admin apparaissent sans recharger toute la page. */
+var TTL_CACHE = 30000; // 30 secondes
+var PUBLICATIONS = null, PUBLICATIONS_TS = 0; // cache court
 function chargerPublications(){
   if (modeDemo()) return Promise.resolve(null);
-  if (PUBLICATIONS) return Promise.resolve(PUBLICATIONS);
+  if (PUBLICATIONS && (Date.now() - PUBLICATIONS_TS < TTL_CACHE)) return Promise.resolve(PUBLICATIONS);
   return fetch("/api/publications")
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
@@ -2871,6 +2874,7 @@ function chargerPublications(){
           return { cat: p.rubrique, r: p.une ? 1 : 0, d: p.date,
                    t: p.titre, x: p.resume || p.corps, fichiers: p.fichiers || [] };
         });
+        PUBLICATIONS_TS = Date.now();
         return PUBLICATIONS;
       }
       return null; // aucune publication : on garde les actualités statiques
@@ -2922,14 +2926,15 @@ function injecter(texte){
 }
 
 /* Charge une fois les paramètres depuis le serveur (repli : objet vide). */
-var PARAMS_CHARGES = false;
+var PARAMS_TS = 0;
 function chargerParametres(){
-  if (modeDemo() || PARAMS_CHARGES) return Promise.resolve(PARAMS);
+  if (modeDemo()) return Promise.resolve(PARAMS);
+  if (PARAMS_TS && (Date.now() - PARAMS_TS < TTL_CACHE)) return Promise.resolve(PARAMS);
   return fetch("/api/parametres")
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       if (j && j.ok && j.parametres) PARAMS = j.parametres;
-      PARAMS_CHARGES = true;
+      PARAMS_TS = Date.now();
       return PARAMS;
     })
     .catch(function(){ return PARAMS; });
@@ -2954,14 +2959,14 @@ function afficherBandeau(){
 
 /* Charge (une fois) les documents utiles gérés par le consulat. Renvoie null en
    mode local ou en cas d'échec (le bloc conserve alors ses éléments statiques). */
-var DOCUMENTS = null;
+var DOCUMENTS = null, DOCUMENTS_TS = 0;
 function chargerDocuments(){
   if (modeDemo()) return Promise.resolve(null);
-  if (DOCUMENTS) return Promise.resolve(DOCUMENTS);
+  if (DOCUMENTS && (Date.now() - DOCUMENTS_TS < TTL_CACHE)) return Promise.resolve(DOCUMENTS);
   return fetch("/api/documents")
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
-      if (j && j.ok && j.documents && j.documents.length){ DOCUMENTS = j.documents; return DOCUMENTS; }
+      if (j && j.ok && j.documents && j.documents.length){ DOCUMENTS = j.documents; DOCUMENTS_TS = Date.now(); return DOCUMENTS; }
       return null;
     })
     .catch(function(){ return null; });
