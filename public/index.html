@@ -457,12 +457,27 @@ a.carte:hover{border-color:var(--vert);transform:translateY(-2px)}
 .note p:last-child{margin-bottom:0}
 
 /* Mot du Consul */
-.mot-consul{display:grid;grid-template-columns:220px 1fr;gap:clamp(18px,3vw,36px);align-items:start}
-.mot-consul .portrait{aspect-ratio:3/4}
-.mot-consul .portrait-img{width:100%;height:100%;object-fit:cover;border-radius:var(--r);border:1px solid var(--ligne)}
-.mot-consul blockquote{margin:0;font-size:1.08rem;line-height:1.7}
-.mot-consul .signature{font-family:var(--titre);font-weight:700;color:var(--vert-nuit);margin-top:.8em}
-.mot-consul .signature span{display:block;font-weight:400;font-size:.9rem;color:var(--gris)}
+/* Mot du Consul — présentation premium (portrait encadré + carte message) */
+.mc{display:grid;grid-template-columns:300px 1fr;gap:clamp(24px,4vw,52px);align-items:start}
+.mc-portrait{margin:0;width:100%;max-width:300px}
+.mc-photo{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 50px rgba(16,40,28,.2);display:block}
+.mc-slot{width:100%;aspect-ratio:3/4;border-radius:18px;border:1px dashed var(--ligne);background:var(--fond);
+  display:grid;place-items:center;text-align:center;color:var(--gris);padding:1em}
+.mc-slot strong{display:block;color:var(--vert-fonce)}
+.mc-slot small{font-size:.8rem}
+.mc-carte{position:relative;background:#fff;border:1px solid var(--ligne);border-radius:18px;
+  padding:clamp(24px,3.4vw,42px);box-shadow:0 1px 2px rgba(16,40,28,.04),0 14px 40px rgba(16,40,28,.06)}
+.mc-carte::before{content:"\201C";position:absolute;top:2px;left:20px;font-family:Georgia,"Times New Roman",serif;
+  font-size:6.5rem;line-height:1;color:rgba(201,162,39,.2);pointer-events:none}
+.mc-texte{position:relative;color:#3a4640;font-size:1.03rem;line-height:1.75}
+.mc-texte strong{color:var(--vert-fonce)}
+.mc-signature{margin-top:1.6em;padding-top:1.2em;border-top:1px solid var(--ligne);display:flex;align-items:center;gap:.8em}
+.mc-sceau{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--or-sombre);color:var(--or-sombre);
+  display:grid;place-items:center;flex:0 0 auto;font-size:1.25rem}
+.mc-sig-txt{display:flex;flex-direction:column;line-height:1.3}
+.mc-sig-nom{font-family:var(--titre);font-weight:800;color:var(--vert-nuit)}
+.mc-sig-fct{font-size:.86rem;color:var(--gris)}
+@media (max-width:760px){.mc{grid-template-columns:1fr;justify-items:center}.mc-carte{text-align:left}}
 
 /* Liste d'actualités */
 .actus{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,22px)}
@@ -820,8 +835,6 @@ footer.site li{margin:.35em 0}
 }
 @media (max-width:900px){
   .hero .grille{grid-template-columns:1fr}
-  .mot-consul{grid-template-columns:1fr}
-  .mot-consul .portrait{max-width:220px}
   .actus{grid-template-columns:1fr}
   .cartes--3{grid-template-columns:1fr 1fr}
   footer.site .cols{grid-template-columns:1fr 1fr}
@@ -1300,7 +1313,7 @@ D.fr = {
               titre: [ { t: "Riccardo", or: true }, { t: "Mortara" } ],
               sous: "Consul honoraire de la République de Guinée-Bissau à Genève." },
             { kicker: "Nomination",
-              titre: [ { t: "Nommé par la République," }, { t: "agréé par la Suisse", or: true } ],
+              titre: [ { t: "Nommé par la République de Guinée-Bissau," }, { t: "agréé par la Fédération de Suisse", or: true } ],
               sous: "Son entrée en fonction est reconnue par un exequatur des autorités suisses." },
             { kicker: "Mission",
               titre: [ { t: "Une fonction" }, { t: "bénévole", or: true } ],
@@ -3461,30 +3474,34 @@ function blocMotConsul(b){
   var wrap = creer("div",{class:"wrap"});
   wrap.appendChild(enteteSection(b.title, b.rule, null));
 
-  var grille = creer("div",{class:"mot-consul"});
+  var grille = creer("div",{class:"mc"});
 
-  /* Portrait : la vraie photo si elle a été téléversée dans l'admin, sinon
-     l'emplacement réservé. */
+  /* Portrait encadré : la vraie photo si elle a été téléversée dans l'admin,
+     sinon l'emplacement réservé. (Pas de plaque ni de filet : le nom ne figure
+     que dans la signature, pour éviter la répétition.) */
   var pid = PARAMS.consul_portrait_id;
+  var portrait = creer("figure",{class:"mc-portrait"});
   if (pid && !modeDemo()){
-    grille.appendChild(creer("div",{class:"portrait"},
-      creer("img",{class:"portrait-img", src:"/api/fichier/"+pid,
-        alt:"Portrait du Consul honoraire de la République de Guinée-Bissau en Suisse"})));
+    portrait.appendChild(creer("img",{class:"mc-photo", src:"/api/fichier/"+pid,
+      alt:"Portrait du Consul honoraire de la République de Guinée-Bissau en Suisse"}));
   } else {
-    grille.appendChild(creer("div",{class:"imgslot portrait", role:"img",
+    portrait.appendChild(creer("div",{class:"mc-slot", role:"img",
       "aria-label":"Emplacement réservé au portrait du Consul honoraire"},
-      creer("span",{},[creer("strong",{text:"Portrait officiel"}),
-                       creer("small",{text:b.portrait})])));
+      creer("span",{},[creer("strong",{text:"Portrait officiel"}), creer("small",{text:b.portrait})])));
   }
+  grille.appendChild(portrait);
 
-  var corps = creer("div");
-  corps.appendChild(creer("blockquote",{html:'« '+baliser(b.texte)+' »'}));
-  corps.appendChild(creer("p",{class:"signature"},[
-    document.createTextNode(""),
-    creer("span",{html:baliser(b.nom)}),
-    creer("span",{html:baliser(b.fonction)})
+  /* Message : carte avec guillemet dorée décorative + signature. */
+  var carte = creer("div",{class:"mc-carte"});
+  carte.appendChild(creer("div",{class:"mc-texte", html:baliser(b.texte)}));
+  var sig = creer("div",{class:"mc-signature"});
+  sig.appendChild(creer("span",{class:"mc-sceau", "aria-hidden":"true", html:"&#9733;"}));
+  sig.appendChild(creer("span",{class:"mc-sig-txt"},[
+    creer("span",{class:"mc-sig-nom", html:baliser(b.nom)}),
+    creer("span",{class:"mc-sig-fct", html:baliser(b.fonction)})
   ]));
-  grille.appendChild(corps);
+  carte.appendChild(sig);
+  grille.appendChild(carte);
 
   wrap.appendChild(grille);
   section.appendChild(wrap);
