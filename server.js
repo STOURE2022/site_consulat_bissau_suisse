@@ -911,6 +911,66 @@ app.post("/api/creneaux/:id/reserver", limiteEnvoi, async function (req, res) {
   }
 });
 
+/* ========================================================================== */
+/* PRÉSENCE EN DIRECT (visiteurs actifs, comptage en mémoire vive)            */
+/* -------------------------------------------------------------------------- */
+/* « En direct » = un onglet a émis un battement dans les 60 dernières        */
+/* secondes. Rien n'est écrit en base, aucune adresse IP ni donnée            */
+/* personnelle n'est conservée : une simple table de présences en mémoire,    */
+/* purgée en continu, indexée par un identifiant aléatoire propre à l'onglet  */
+/* (perdu au rechargement). Minimisation des données — nLPD / RGPD.           */
+/* ========================================================================== */
+const PRESENCE_TTL = 60 * 1000; // fenêtre « en direct »
+const presences = new Map(); // id -> { vu: horodatage, page: string, lang: string }
+
+/* Purge périodique des présences expirées (borne la mémoire). */
+const purgePresence = setInterval(function () {
+  const limite = Date.now() - PRESENCE_TTL;
+  for (const [id, p] of presences) { if (p.vu < limite) presences.delete(id); }
+}, 30 * 1000);
+if (purgePresence.unref) purgePresence.unref();
+
+/* Nom lisible d'une page à partir de son ancre (#/accueil, #/rendezvous…). */
+const PAGES_NOM = {
+  accueil: "Accueil", consulat: "Le Consulat", consul: "Le Consul",
+  services: "Services & Rôle", visas: "Visas d'entrée", guineebissau: "La Guinée-Bissau",
+  actualites: "Actualités", contact: "Contact", rendezvous: "Rendez-vous",
+  mentions: "Mentions légales", confidentialite: "Confidentialité", cookies: "Cookies",
+};
+function nomPage(hash) {
+  const cle = String(hash || "").replace(/^#\/?/, "").split(/[/?]/)[0].toLowerCase() || "accueil";
+  return PAGES_NOM[cle] || (cle.charAt(0).toUpperCase() + cle.slice(1));
+}
+
+/* Battement de présence (public). Corps JSON : { id, page, lang }.
+   Répond 204 sans corps : l'appel est émis en tâche de fond (sendBeacon) et sa
+   réponse n'est jamais lue par le navigateur — inutile de la charger. */
+app.post("/api/presence", function (req, res) {
+  const b = req.body || {};
+  const id = txt(b.id).slice(0, 40);
+  if (!id) return res.status(204).end();
+  const lang = ["fr", "pt", "en"].indexOf(txt(b.lang)) !== -1 ? txt(b.lang) : "fr";
+  presences.set(id, { vu: Date.now(), page: nomPage(b.page), lang: lang });
+  res.status(204).end();
+});
+
+/* Synthèse pour l'administration : nombre de visiteurs actifs + répartitions. */
+app.get("/api/presence/live", adminAuth, function (req, res) {
+  const limite = Date.now() - PRESENCE_TTL;
+  const parPage = {}, parLangue = { fr: 0, pt: 0, en: 0 };
+  let total = 0;
+  for (const p of presences.values()) {
+    if (p.vu < limite) continue;
+    total++;
+    parPage[p.page] = (parPage[p.page] || 0) + 1;
+    if (p.lang in parLangue) parLangue[p.lang]++;
+  }
+  const pages = Object.keys(parPage)
+    .map(function (nom) { return { nom: nom, n: parPage[nom] }; })
+    .sort(function (a, b) { return b.n - a.n; });
+  res.json({ ok: true, total: total, pages: pages, langues: parLangue });
+});
+
 /* Page d'administration : l'écran de connexion est public, mais toutes les
    opérations d'écriture (publier / supprimer) exigent les identifiants. */
 app.get("/admin", function (req, res) {

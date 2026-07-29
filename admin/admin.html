@@ -68,6 +68,30 @@ main{padding:clamp(20px,4vw,40px) 0}
 .onglet:hover{color:var(--vert-fonce)}
 .onglet.actif{color:var(--vert-fonce);border-bottom-color:var(--vert)}
 
+/* Fréquentation (visiteurs en direct) */
+.freq-grille{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,20px);align-items:start}
+.freq-live{grid-column:1 / -1;background:linear-gradient(150deg,var(--vert-fonce),var(--vert-nuit));color:#eaf1ec;border:0;position:relative;overflow:hidden}
+.freq-live-tete{display:flex;align-items:center;justify-content:space-between;gap:1em}
+.freq-lib{font-family:var(--titre);font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--jaune)}
+.freq-direct{display:inline-flex;align-items:center;gap:.5em;font-size:.82rem;color:#cfe3d6;font-weight:600}
+.freq-dot{width:9px;height:9px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 0 rgba(61,220,132,.6);animation:freqPulse 2.4s infinite}
+@keyframes freqPulse{0%{box-shadow:0 0 0 0 rgba(61,220,132,.55)}70%{box-shadow:0 0 0 12px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
+.freq-nombre{font-family:var(--titre);font-weight:700;color:#fff;margin:.15em 0 0;line-height:1}
+.freq-nombre #freqTotal{font-size:clamp(3rem,9vw,4.6rem);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.freq-nombre .freq-u{font-size:.95rem;color:#b9d2c2;font-weight:600}
+.freq-sous{color:#a9c6b6;font-size:.85rem;margin:.5em 0 0}
+.freq-rang{display:flex;align-items:center;gap:.7em;padding:.55em 0;border-top:1px solid var(--ligne)}
+.freq-rang:first-child{border-top:0}
+.freq-rang .nom{flex:0 0 42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.92rem}
+.freq-rang .barre{flex:1;height:8px;background:var(--fond);border:1px solid var(--ligne);border-radius:99px;overflow:hidden}
+.freq-rang .barre i{display:block;height:100%;background:linear-gradient(90deg,var(--vert),var(--vert-fonce));border-radius:99px}
+.freq-rang .c{font-variant-numeric:tabular-nums;font-weight:700;color:var(--vert-nuit);min-width:1.6em;text-align:right}
+.freq-langues{display:flex;flex-wrap:wrap;gap:.5em}
+.freq-puce{display:inline-flex;align-items:center;gap:.5em;background:var(--fond);border:1px solid var(--ligne);border-radius:99px;padding:.4em .8em;font-size:.9rem}
+.freq-puce b{font-variant-numeric:tabular-nums;color:var(--vert-nuit)}
+@media (max-width:860px){ .freq-grille{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .freq-dot{animation:none} }
+
 /* Connexion */
 .connexion{max-width:420px;margin:6vh auto}
 /* Application */
@@ -287,6 +311,7 @@ textarea{min-height:120px;resize:vertical}
   <symbol id="ic-verrou" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 1112 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1h1zm2 0h8V7a4 4 0 10-8 0v3z"/></symbol>
   <symbol id="ic-cal" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 00-2 2v13a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2V2h-2v2H9V2H7zM5 9h14v10H5V9z"/></symbol>
   <symbol id="ic-croix" viewBox="0 0 24 24"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.9 9h-3a15.7 15.7 0 00-1.2-5.4A8 8 0 0118.9 11zM12 4.1c.8 1 1.8 3 2 6.9h-4c.2-3.9 1.2-5.9 2-6.9zM4.6 13h3a15.7 15.7 0 001.2 5.4A8 8 0 014.6 13zm3-2h-3a8 8 0 014.2-5.4A15.7 15.7 0 007.6 11zM12 19.9c-.8-1-1.8-3-2-6.9h4c-.2 3.9-1.2 5.9-2 6.9zm2.7-1.5a15.7 15.7 0 001.2-5.4h3a8 8 0 01-4.2 5.4z"/></symbol>
 </svg>
 
 <header>
@@ -342,6 +367,7 @@ textarea{min-height:120px;resize:vertical}
         <button type="button" class="onglet" data-panneau="contenu" aria-selected="false">Contenu &amp; textes</button>
         <button type="button" class="onglet" data-panneau="documents" aria-selected="false">Documents</button>
         <button type="button" class="onglet" data-panneau="params" aria-selected="false">Paramètres &amp; bandeau</button>
+        <button type="button" class="onglet" data-panneau="freq" aria-selected="false">Fréquentation</button>
       </nav>
 
       <div id="panneau-pubs">
@@ -690,6 +716,34 @@ textarea{min-height:120px;resize:vertical}
         </div>
       </div><!-- /panneau-params -->
 
+      <div id="panneau-freq" hidden>
+        <div class="freq-grille">
+          <div class="carte freq-live">
+            <div class="freq-live-tete">
+              <span class="freq-lib">En ce moment</span>
+              <span class="freq-direct"><span class="freq-dot"></span> Direct</span>
+            </div>
+            <div class="freq-nombre"><span id="freqTotal">—</span> <span class="freq-u">visiteur(s) actif(s)</span></div>
+            <p class="freq-sous">Personnes présentes sur le site public dans les 60 dernières secondes.</p>
+          </div>
+
+          <div class="carte">
+            <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-oeil"></use></svg> Pages consultées maintenant</h2>
+            <hr class="tricolore tricolore--court">
+            <div id="freqPages"><p class="vide">En attente de données…</p></div>
+          </div>
+
+          <div class="carte">
+            <h2 class="col-titre"><svg class="ic ic--lg"><use href="#ic-globe"></use></svg> Langue d'affichage</h2>
+            <hr class="tricolore tricolore--court">
+            <div id="freqLangues" class="freq-langues"></div>
+            <p class="aide" id="freqMaj" style="margin:.8em 0 0">—</p>
+          </div>
+        </div>
+        <p class="aide" style="margin:14px 2px 0">Comptage effectué sur votre propre serveur, sans cookie,
+          sans service tiers et sans enregistrer aucune donnée personnelle. L'affichage se met à jour automatiquement.</p>
+      </div><!-- /panneau-freq -->
+
     </section>
 
   </div>
@@ -886,11 +940,54 @@ textarea{min-height:120px;resize:vertical}
     $("panneau-contenu").hidden = cible!=="contenu";
     $("panneau-documents").hidden = cible!=="documents";
     $("panneau-params").hidden = cible!=="params";
+    $("panneau-freq").hidden = cible!=="freq";
     if (cible==="rdv"){ chargerRdv(); chargerCreneaux(); crxTout(); }
     if (cible==="consul") chargerConsul();
     if (cible==="contenu") chargerContenu();
     if (cible==="documents") chargerDoc();
+    if (cible==="freq") demarrerFreq(); else arreterFreq();
   });
+
+  /* --- Fréquentation : visiteurs en direct ---
+     Interroge /api/presence/live toutes les 5 s tant que l'onglet est ouvert.
+     Le comptage est fait en mémoire côté serveur (aucune donnée conservée). */
+  var freqTimer = null;
+  function demarrerFreq(){ chargerFreq(); if(freqTimer) clearInterval(freqTimer); freqTimer = setInterval(chargerFreq, 5000); }
+  function arreterFreq(){ if(freqTimer){ clearInterval(freqTimer); freqTimer = null; } }
+  function chargerFreq(){
+    if(!AUTH) return;
+    fetch("/api/presence/live", { headers:{ "Authorization": AUTH } })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(j){
+        if(!j || !j.ok) return;
+        $("freqTotal").textContent = j.total;
+        var pages = j.pages || [];
+        var maxi = pages.length ? pages[0].n : 0;
+        var hp = $("freqPages");
+        if(!pages.length){ hp.innerHTML = '<p class="vide">Personne sur le site à cet instant.</p>'; }
+        else {
+          hp.innerHTML = "";
+          pages.forEach(function(p){
+            var pct = maxi ? Math.round(p.n/maxi*100) : 0;
+            var row = document.createElement("div"); row.className = "freq-rang";
+            row.innerHTML = '<span class="nom">'+echap(p.nom)+'</span>'+
+              '<span class="barre"><i style="width:'+pct+'%"></i></span>'+
+              '<span class="c">'+p.n+'</span>';
+            hp.appendChild(row);
+          });
+        }
+        var L = j.langues || {}, noms = { fr:"Français", pt:"Português", en:"English" };
+        var hl = $("freqLangues"); hl.innerHTML = "";
+        ["fr","pt","en"].forEach(function(code){
+          var puce = document.createElement("span"); puce.className = "freq-puce";
+          puce.innerHTML = echap(noms[code])+' <b>'+(L[code]||0)+'</b>';
+          hl.appendChild(puce);
+        });
+        var d = new Date();
+        $("freqMaj").textContent = "Actualisé à "+p2(d.getHours())+":"+p2(d.getMinutes())+":"+p2(d.getSeconds());
+      })
+      .catch(function(){ /* silencieux : nouvel essai au cycle suivant */ });
+  }
 
   /* --- Documents utiles --- */
   function chargerDoc(){
