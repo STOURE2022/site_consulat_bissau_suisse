@@ -5479,6 +5479,31 @@ function rendreAssistant(){
     rendrePage();
   });
 
+  /* --- Présence : comptage des visiteurs en direct, côté consulat ---
+     Un identifiant aléatoire, vivant uniquement en mémoire pour cet onglet
+     (perdu au rechargement — ni cookie ni stockage), est transmis toutes les
+     30 s. Le serveur n'en garde qu'un compteur de présence temporaire (60 s),
+     sans aucune donnée personnelle. L'envoi part en tâche de fond via
+     navigator.sendBeacon : il ne bloque ni l'affichage ni le défilement. */
+  (function presence(){
+    var id = "v" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    function battre(){
+      try{
+        var charge = JSON.stringify({ id:id, page:location.hash || "#/accueil", lang:Etat.langue });
+        if (navigator.sendBeacon){
+          navigator.sendBeacon("/api/presence", new Blob([charge], { type:"application/json" }));
+        } else {
+          fetch("/api/presence", { method:"POST", headers:{ "Content-Type":"application/json" },
+            body:charge, keepalive:true }).catch(function(){});
+        }
+      }catch(e){ /* le comptage ne doit jamais gêner la navigation */ }
+    }
+    battre();
+    setInterval(battre, 30000);
+    /* Nouveau battement au retour sur l'onglet (l'utilisateur revient). */
+    document.addEventListener("visibilitychange", function(){ if(!document.hidden) battre(); });
+  })();
+
   /* Sélecteur de langue : ouverture/fermeture. */
   document.getElementById("btnLangue").addEventListener("click", function(e){
     e.stopPropagation();
