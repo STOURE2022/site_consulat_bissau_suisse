@@ -788,6 +788,69 @@ a.telechargement:hover{border-color:var(--vert)}
   .cb-fab{right:14px;bottom:14px}
 }
 @media (prefers-reduced-motion:reduce){.cb-panneau{animation:none}.cb-typing i{animation:none}}
+/* --- Assistant : prise de rendez-vous DANS le chat (branchée sur l'API créneaux) --- */
+.cb-msg--large{max-width:100%}
+.cbr-pan{background:#fff;border:1px solid var(--ligne);border-radius:14px;border-top-left-radius:4px;padding:12px;font-size:.9rem;flex:1;min-width:0}
+.cbr-titre{font-family:var(--titre);font-weight:700;color:var(--vert-fonce);font-size:.9rem;margin:0 0 .6em;display:flex;align-items:center;gap:.4em}
+.cbr-titre .cb-i{width:16px;height:16px}
+.cbr-types{display:grid;grid-template-columns:repeat(3,1fr);gap:.5em}
+.cbr-type{border:1px solid var(--ligne);border-radius:10px;background:#fff;cursor:pointer;padding:.7em .3em;text-align:center;
+  font-family:var(--titre);font-weight:600;font-size:.72rem;color:var(--vert-nuit);display:flex;flex-direction:column;align-items:center;gap:.35em;transition:.12s}
+.cbr-type .cb-i{width:20px;height:20px;color:var(--vert)}
+.cbr-type:hover{border-color:var(--vert);background:#f2faf5}
+.cbr-type:disabled{cursor:default}
+.cbr-type[aria-pressed=true]{border-color:var(--vert-fonce);background:var(--vert-fonce);color:#fff}
+.cbr-type[aria-pressed=true] .cb-i{color:var(--or)}
+.cbr-fil{display:flex;gap:.3em;margin:0 0 .7em;font-size:.66rem;color:var(--gris);font-family:var(--titre);font-weight:600;flex-wrap:wrap}
+.cbr-fil span{display:flex;align-items:center;gap:.3em}
+.cbr-fil b{width:16px;height:16px;border-radius:50%;background:var(--ligne);color:#fff;display:grid;place-items:center;font-size:.6rem}
+.cbr-fil .on b{background:var(--vert)}
+.cbr-fil .on{color:var(--vert-fonce)}
+.cbr-fil i{width:10px;height:1px;background:var(--ligne);align-self:center}
+.cbr-caltete{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5em}
+.cbr-caltete strong{font-family:var(--titre);font-size:.82rem;color:var(--vert-nuit);text-transform:capitalize}
+.cbr-nav{width:26px;height:26px;border:1px solid var(--ligne);background:#fff;border-radius:6px;cursor:pointer;display:grid;place-items:center;color:var(--vert-fonce)}
+.cbr-nav:hover{background:#f2faf5;border-color:var(--vert)}
+.cbr-nav:disabled{opacity:.4;cursor:default}
+.cbr-nav .cb-i{width:14px;height:14px}
+.cbr-grille{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cbr-jn{text-align:center;font-size:.6rem;color:var(--gris);font-family:var(--titre);font-weight:700;padding:2px 0}
+.cbr-jour{aspect-ratio:1;border:none;background:transparent;border-radius:7px;font-family:var(--texte);
+  font-size:.78rem;color:#c2ccc5;display:flex;align-items:center;justify-content:center;position:relative;padding:0}
+.cbr-jour.dispo{background:#e9f7ef;color:var(--vert-fonce);cursor:pointer;font-weight:700}
+.cbr-jour.dispo:hover{background:var(--vert);color:#fff}
+.cbr-jour.sel{background:var(--vert-fonce);color:#fff}
+.cbr-jour.dispo::after{content:"";position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--vert)}
+.cbr-jour.sel::after,.cbr-jour.dispo:hover::after{background:#fff}
+.cbr-hortitre{margin:.7em 0 .4em;font-size:.75rem;color:var(--gris);font-family:var(--titre);font-weight:600}
+.cbr-heures{display:flex;flex-wrap:wrap;gap:.4em}
+.cbr-heure{border:1px solid var(--vert);color:var(--vert-fonce);background:#fff;border-radius:8px;padding:.4em .7em;
+  font-family:var(--titre);font-weight:700;font-size:.8rem;cursor:pointer}
+.cbr-heure:hover{background:var(--vert);color:#fff}
+.cbr-heure:disabled{opacity:.5;cursor:default}
+.cbr-vide{font-size:.82rem;color:var(--gris);margin:.2em 0}
+.cbr-form{display:grid;gap:.5em}
+.cbr-champ label{display:block;font-size:.72rem;color:var(--gris);font-family:var(--titre);font-weight:600;margin-bottom:.2em}
+.cbr-champ input,.cbr-champ textarea{width:100%;border:1px solid var(--ligne);border-radius:8px;padding:.5em .7em;font-family:var(--texte);font-size:.85rem;outline:none}
+.cbr-champ input:focus,.cbr-champ textarea:focus{border-color:var(--vert)}
+.cbr-recap{background:#f2faf5;border:1px solid #cdead9;border-radius:8px;padding:.5em .7em;font-size:.8rem;color:var(--vert-fonce);margin-bottom:.4em;display:flex;align-items:center;gap:.5em}
+.cbr-recap .cb-i{width:15px;height:15px;flex:0 0 auto}
+.cbr-env{width:100%;background:var(--vert);color:#fff;border:none;border-radius:9px;padding:.7em;font-family:var(--titre);font-weight:700;font-size:.88rem;cursor:pointer;margin-top:.2em;display:flex;align-items:center;justify-content:center;gap:.4em}
+.cbr-env:hover{background:var(--vert-fonce)}
+.cbr-env:disabled{opacity:.7;cursor:default}
+.cbr-env .cb-i{width:16px;height:16px}
+.cbr-conf{border:1px solid #cdead9;border-radius:12px;overflow:hidden}
+.cbr-conf-tete{background:linear-gradient(135deg,var(--vert),var(--vert-fonce));color:#fff;padding:.7em .9em;display:flex;align-items:center;gap:.5em;font-family:var(--titre);font-weight:700;font-size:.88rem}
+.cbr-conf-tete .cb-i{width:20px;height:20px}
+.cbr-conf-corps{padding:.7em .9em;display:grid;gap:.45em;font-size:.85rem}
+.cbr-conf-corps .l{display:flex;gap:.5em;align-items:flex-start}
+.cbr-conf-corps .l .cb-i{width:15px;height:15px;color:var(--vert-fonce);margin-top:.2em;flex:0 0 auto}
+.cbr-conf-corps .l b{font-family:var(--titre);color:var(--vert-nuit)}
+.cbr-lien{color:var(--vert-fonce);word-break:break-all;font-size:.8rem}
+.cbr-note{font-size:.72rem;color:var(--gris);padding:.2em .2em 0;margin:0}
+.cbr-err{color:var(--rouge);font-size:.82rem;margin:.3em 0 0;display:flex;gap:.4em;align-items:flex-start}
+.cbr-err[hidden]{display:none}
+.cbr-err .cb-i{width:15px;height:15px;flex:0 0 auto;margin-top:.15em}
 
 /* --- Bandeau cookies (refus aussi simple que l'acceptation) --- */
 .cookies-banniere{position:fixed;left:0;right:0;bottom:0;z-index:150;background:#fff;
@@ -1252,8 +1315,8 @@ D.fr = {
       envoyer: "Envoyer",
       placeholder: "Posez votre question…",
       legal: "Aucune donnée enregistrée · orientation uniquement",
-      bienvenue: "Bonjour. Je suis l’<strong>assistant d’orientation</strong> du Consulat honoraire. Je ne traite aucune donnée personnelle : je vous indique simplement le bon interlocuteur. Que souhaitez-vous faire ?",
-      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      bienvenue: "Bonjour. Je suis l’<strong>assistant du Consulat honoraire</strong>. Je peux vous orienter et vous <strong>prendre un rendez-vous</strong> directement ici, avec confirmation immédiate. Que souhaitez-vous faire ?",
+      accueil: ["visa","rdv","dispo","passeport","assistance","contact","documents"],
       sujets: {
         visa: { chip:"Demander un visa", user:"Demander un visa d’entrée",
           bot:"Le consulat honoraire <strong>reçoit et traite les demandes de visa d’entrée</strong> en Guinée-Bissau (touristique ou affaires). La page Visas indique les pièces à fournir et la marche à suivre.",
@@ -1268,8 +1331,9 @@ D.fr = {
           bot:"Ces documents <strong>ne sont pas délivrés par le consulat honoraire</strong> : passeports et actes d’état civil relèvent de l’Ambassade compétente. Le consulat peut toutefois vous indiquer la marche à suivre.",
           cta:{ t:"Nos services", href:"#/services" }, suite:["contact","rdv"] },
         rdv: { chip:"Prendre rendez-vous", user:"Prendre rendez-vous",
-          bot:"La réception se fait <strong>sur rendez-vous</strong>. Réservez un créneau en présentiel, par téléphone ou en visioconférence — confirmation immédiate.",
-          cta:{ t:"Prendre rendez-vous", href:"#/rendezvous" }, suite:["visa","assistance"] },
+          bot:"La réception se fait <strong>sur rendez-vous</strong>. Je peux vous en réserver un ici même — présentiel, téléphone ou visioconférence, avec confirmation immédiate." },
+        dispo: { chip:"Voir les disponibilités", user:"Y a-t-il des créneaux disponibles ?",
+          bot:"Voici les disponibilités du moment :" },
         assistance: { chip:"Être assisté", user:"Être assisté (urgence)",
           bot:"En cas de difficulté grave à Genève — perte de papiers, arrestation, hospitalisation, décès — le consulat honoraire peut vous <strong>assister et vous orienter</strong> (certains frais restant à votre charge).",
           cta:{ t:"Assistance aux ressortissants", href:"#/services" }, suite:["contact","rdv"] },
@@ -1284,6 +1348,36 @@ D.fr = {
           cta:{ t:"Contacter le consulat", href:"#/contact" }, suite:["contact","rdv"] },
         inconnu: { bot:"Je ne suis pas sûr d’avoir bien compris. Je peux vous orienter sur les visas, les rendez-vous, l’assistance ou le contact. Choisissez un sujet ou reformulez.",
           suite:["visa","rdv","assistance","contact"] }
+      },
+      /* Prise de rendez-vous dans le chat (branchée sur l’API créneaux). */
+      resa: {
+        etape: ["Type","Date","Coordonnées"],
+        t1: "1. Choisissez le type de rendez-vous",
+        types: { visio:"Visioconférence", tel:"Téléphonique", pres:"Présentiel" },
+        choixJour: "Voici les jours où un créneau est libre. Choisissez une date.",
+        calChoisir: "Sélectionnez un jour en surbrillance pour voir les horaires.",
+        horTitre: "Créneaux du {j} :",
+        chargement: "Recherche des créneaux…",
+        vide: "Aucun créneau n’est ouvert pour ce type actuellement. Essayez un autre type ou contactez le secrétariat.",
+        moisPrec: "Mois précédent",
+        moisSuiv: "Mois suivant",
+        formIntro: "Dernière étape : vos coordonnées pour confirmer et recevoir le récapitulatif.",
+        recap: "<strong>{type}</strong> — {q}",
+        champs: { nom:"Nom et prénom", courriel:"Courriel", tel:"Téléphone", motif:"Motif (facultatif)" },
+        confirmer: "Confirmer le rendez-vous",
+        enCours: "Réservation en cours…",
+        confTitre: "Rendez-vous confirmé",
+        lienVisio: "Lien de connexion (visio) :",
+        detailsTel: "Le consulat vous appellera au numéro indiqué, à l’heure convenue.",
+        confMail: "Récapitulatif envoyé à {mail}",
+        confNote: "Un e-mail de confirmation vous a été envoyé. Pour modifier ou annuler, répondez à cet e-mail ou contactez le secrétariat.",
+        fini: "C’est fait ! Puis-je vous aider pour autre chose ?",
+        erreur: "La réservation a échoué. Réessayez ou choisissez un autre créneau.",
+        demo: "L’agenda de réservation est disponible sur le site en ligne. Ouvrez la page Rendez-vous pour réserver.",
+        dispoTitre: "Disponibilités en ce moment",
+        dispoLigne: "<strong>{type}</strong> — {n} créneau(x) · prochain le {j} à {h}",
+        dispoProposer: "Souhaitez-vous <strong>réserver</strong> l’un de ces créneaux ?",
+        dispoAucun: "Aucun créneau n’est ouvert pour le moment. Vous pouvez laisser un message via la page Contact."
       }
     }
   },
@@ -2149,8 +2243,8 @@ D.pt = {
       envoyer: "Enviar",
       placeholder: "Coloque a sua questão…",
       legal: "Nenhum dado registado · apenas orientação",
-      bienvenue: "Olá. Sou o <strong>assistente de orientação</strong> do Consulado honorário. Não trato quaisquer dados pessoais: apenas lhe indico o interlocutor certo. O que pretende fazer?",
-      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      bienvenue: "Olá. Sou o <strong>assistente do Consulado honorário</strong>. Posso orientá-lo e <strong>marcar-lhe um atendimento</strong> aqui mesmo, com confirmação imediata. O que pretende fazer?",
+      accueil: ["visa","rdv","dispo","passeport","assistance","contact","documents"],
       sujets: {
         visa: { chip:"Pedir um visto", user:"Pedir um visto de entrada",
           bot:"O consulado honorário <strong>recebe e trata os pedidos de visto de entrada</strong> na Guiné-Bissau (turismo ou negócios). A página Vistos indica os documentos e o procedimento.",
@@ -2165,8 +2259,9 @@ D.pt = {
           bot:"Estes documentos <strong>não são emitidos pelo consulado honorário</strong>: passaportes e atos de registo civil são da competência da Embaixada. O consulado pode, ainda assim, indicar-lhe o procedimento.",
           cta:{ t:"Os nossos serviços", href:"#/services" }, suite:["contact","rdv"] },
         rdv: { chip:"Marcar atendimento", user:"Marcar atendimento",
-          bot:"O atendimento é <strong>mediante marcação</strong>. Reserve um horário presencial, por telefone ou por videoconferência — confirmação imediata.",
-          cta:{ t:"Marcar atendimento", href:"#/rendezvous" }, suite:["visa","assistance"] },
+          bot:"O atendimento é <strong>mediante marcação</strong>. Posso reservar-lhe um horário aqui mesmo — presencial, por telefone ou por videoconferência, com confirmação imediata." },
+        dispo: { chip:"Ver disponibilidades", user:"Há horários disponíveis?",
+          bot:"Eis as disponibilidades do momento:" },
         assistance: { chip:"Ser assistido", user:"Ser assistido (urgência)",
           bot:"Em caso de dificuldade grave em Genebra — perda de documentos, detenção, hospitalização, óbito — o consulado honorário pode <strong>assisti-lo e orientá-lo</strong> (alguns custos ficam a seu cargo).",
           cta:{ t:"Assistência aos cidadãos", href:"#/services" }, suite:["contact","rdv"] },
@@ -2181,6 +2276,36 @@ D.pt = {
           cta:{ t:"Contactar o consulado", href:"#/contact" }, suite:["contact","rdv"] },
         inconnu: { bot:"Não tenho a certeza de ter compreendido. Posso orientá-lo sobre vistos, marcações, assistência ou contacto. Escolha um tema ou reformule.",
           suite:["visa","rdv","assistance","contact"] }
+      },
+      /* Marcação de atendimento no chat (ligada à API de horários). */
+      resa: {
+        etape: ["Tipo","Data","Contactos"],
+        t1: "1. Escolha o tipo de atendimento",
+        types: { visio:"Videoconferência", tel:"Telefónico", pres:"Presencial" },
+        choixJour: "Eis os dias com horário livre. Escolha uma data.",
+        calChoisir: "Selecione um dia em destaque para ver os horários.",
+        horTitre: "Horários de {j}:",
+        chargement: "A procurar horários…",
+        vide: "Não há horários abertos para este tipo de momento. Tente outro tipo ou contacte o secretariado.",
+        moisPrec: "Mês anterior",
+        moisSuiv: "Mês seguinte",
+        formIntro: "Última etapa: os seus contactos para confirmar e receber o resumo.",
+        recap: "<strong>{type}</strong> — {q}",
+        champs: { nom:"Nome completo", courriel:"Correio eletrónico", tel:"Telefone", motif:"Motivo (facultativo)" },
+        confirmer: "Confirmar o atendimento",
+        enCours: "A reservar…",
+        confTitre: "Atendimento confirmado",
+        lienVisio: "Ligação (videoconferência):",
+        detailsTel: "O consulado ligar-lhe-á para o número indicado, à hora combinada.",
+        confMail: "Resumo enviado para {mail}",
+        confNote: "Foi-lhe enviado um e-mail de confirmação. Para alterar ou anular, responda a esse e-mail ou contacte o secretariado.",
+        fini: "Está feito! Posso ajudar em mais alguma coisa?",
+        erreur: "A reserva falhou. Tente novamente ou escolha outro horário.",
+        demo: "A agenda de marcação está disponível no site em linha. Abra a página Atendimento para reservar.",
+        dispoTitre: "Disponibilidades neste momento",
+        dispoLigne: "<strong>{type}</strong> — {n} horário(s) · próximo a {j} às {h}",
+        dispoProposer: "Deseja <strong>reservar</strong> um destes horários?",
+        dispoAucun: "Não há horários abertos de momento. Pode deixar uma mensagem através da página Contacto."
       }
     }
   },
@@ -2797,8 +2922,8 @@ D.en = {
       envoyer: "Send",
       placeholder: "Ask your question…",
       legal: "No data stored · guidance only",
-      bienvenue: "Hello. I am the Honorary Consulate’s <strong>guidance assistant</strong>. I process no personal data: I simply point you to the right contact. What would you like to do?",
-      accueil: ["visa","rdv","passeport","assistance","contact","documents"],
+      bienvenue: "Hello. I am the Honorary Consulate’s <strong>assistant</strong>. I can guide you and <strong>book an appointment</strong> right here, with immediate confirmation. What would you like to do?",
+      accueil: ["visa","rdv","dispo","passeport","assistance","contact","documents"],
       sujets: {
         visa: { chip:"Apply for a visa", user:"Apply for an entry visa",
           bot:"The honorary consulate <strong>receives and processes entry-visa applications</strong> for Guinea-Bissau (tourist or business). The Visas page lists the required documents and the procedure.",
@@ -2813,8 +2938,9 @@ D.en = {
           bot:"These documents are <strong>not issued by the honorary consulate</strong>: passports and civil-status documents fall to the competent Embassy. The consulate can still tell you how to proceed.",
           cta:{ t:"Our services", href:"#/services" }, suite:["contact","rdv"] },
         rdv: { chip:"Book an appointment", user:"Book an appointment",
-          bot:"Reception is <strong>by appointment</strong>. Book a slot in person, by phone or by video call — immediate confirmation.",
-          cta:{ t:"Book an appointment", href:"#/rendezvous" }, suite:["visa","assistance"] },
+          bot:"Reception is <strong>by appointment</strong>. I can book one for you right here — in person, by phone or by video call, with immediate confirmation." },
+        dispo: { chip:"See availability", user:"Are there any slots available?",
+          bot:"Here is the current availability:" },
         assistance: { chip:"Get assistance", user:"Get assistance (emergency)",
           bot:"In case of serious difficulty in Geneva — lost documents, arrest, hospitalisation, death — the honorary consulate can <strong>assist and guide you</strong> (some costs remaining at your expense).",
           cta:{ t:"Assistance to nationals", href:"#/services" }, suite:["contact","rdv"] },
@@ -2829,6 +2955,36 @@ D.en = {
           cta:{ t:"Contact the consulate", href:"#/contact" }, suite:["contact","rdv"] },
         inconnu: { bot:"I’m not sure I understood. I can guide you on visas, appointments, assistance or contact. Choose a topic or rephrase.",
           suite:["visa","rdv","assistance","contact"] }
+      },
+      /* In-chat appointment booking (wired to the slots API). */
+      resa: {
+        etape: ["Type","Date","Details"],
+        t1: "1. Choose the type of appointment",
+        types: { visio:"Video call", tel:"By phone", pres:"In person" },
+        choixJour: "Here are the days with a free slot. Choose a date.",
+        calChoisir: "Select a highlighted day to see the times.",
+        horTitre: "Slots on {j}:",
+        chargement: "Looking for slots…",
+        vide: "No slots are open for this type at the moment. Try another type or contact the secretariat.",
+        moisPrec: "Previous month",
+        moisSuiv: "Next month",
+        formIntro: "Last step: your details to confirm and receive the summary.",
+        recap: "<strong>{type}</strong> — {q}",
+        champs: { nom:"Full name", courriel:"Email", tel:"Phone", motif:"Reason (optional)" },
+        confirmer: "Confirm the appointment",
+        enCours: "Booking…",
+        confTitre: "Appointment confirmed",
+        lienVisio: "Connection link (video):",
+        detailsTel: "The consulate will call you on the number provided, at the agreed time.",
+        confMail: "Summary sent to {mail}",
+        confNote: "A confirmation email has been sent to you. To change or cancel, reply to that email or contact the secretariat.",
+        fini: "All done! Can I help with anything else?",
+        erreur: "The booking failed. Try again or choose another slot.",
+        demo: "The booking calendar is available on the live website. Open the Appointment page to book.",
+        dispoTitre: "Availability right now",
+        dispoLigne: "<strong>{type}</strong> — {n} slot(s) · next on {j} at {h}",
+        dispoProposer: "Would you like to <strong>book</strong> one of these slots?",
+        dispoAucun: "No slots are open at the moment. You can leave a message via the Contact page."
       }
     }
   },
@@ -5323,10 +5479,18 @@ var CBIC = {
   fleche:'<path d="M5 12h14M13 6l6 6-6 6"/>',
   lieu:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
   mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
-  horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+  horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  cam:'<rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3z"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  checkcercle:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  gauche:'<path d="M15 6l-6 6 6 6"/>',
+  droite:'<path d="M9 6l6 6-6 6"/>',
+  alerte:'<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'
 };
 var CB_ICON_SUJET = { visa:"visa", visa_tour:"globe", visa_aff:"batiment", passeport:"passe",
-  rdv:"rdv", assistance:"aide", contact:"tel", documents:"doc", humain:"personne", inconnu:"aide" };
+  rdv:"rdv", dispo:"horloge", assistance:"aide", contact:"tel", documents:"doc", humain:"personne", inconnu:"aide" };
+/* Icône par type de rendez-vous (clés CBIC). */
+var CB_TYPE_ICONE = { visio:"cam", tel:"tel", pres:"batiment" };
 var cbLangRendu = null;
 
 function cbSvg(cle){ return '<svg class="cb-i" viewBox="0 0 24 24" aria-hidden="true">'+(CBIC[cle]||CBIC.aide)+'</svg>'; }
@@ -5375,11 +5539,19 @@ function cbPoserChips(cles){
     z.appendChild(b);
   });
 }
+/* Affiche la réponse à un sujet ; « rdv » et « dispo » lancent un parcours actif. */
+function cbApresBot(cle){
+  var a = dico().ui.assistant, rep = a.sujets[cle]; if(!rep) return;
+  cbBulleBot(rep);
+  if(cle==="rdv"){ cbResaTypes(); return; }
+  if(cle==="dispo"){ cbResaDispo(); return; }
+  cbPoserChips(rep.suite || a.accueil);
+}
 function cbRepondre(cle){
   var a = dico().ui.assistant; var rep = a.sujets[cle]; if(!rep) return;
   if(rep.user) cbBulleUser(rep.user);
   var z = document.getElementById("cbChips"); if(z) z.innerHTML="";
-  cbTyping(function(){ cbBulleBot(rep); cbPoserChips(rep.suite || a.accueil); });
+  cbTyping(function(){ cbApresBot(cle); });
 }
 function cbDetecter(txt){
   var t = (txt||"").toLowerCase();
@@ -5389,6 +5561,7 @@ function cbDetecter(txt){
     return "visa";
   }
   if(/passeport|passaporte|passport|[ée]tat civil|registo civil|civil.?status|naissance|nascimento|birth|mariage|casamento|marriage|d[ée]c[eè]s|[oó]bito|death|acte\b|\bato\b/.test(t)) return "passeport";
+  if(/disponib|dispon[ií]vel|availab|libre|reste|prochain cr[ée]neau|next slot/.test(t)) return "dispo";
   if(/rendez|rdv|cr[ée]neau|r[ée]serv|marca|appointment|book|slot/.test(t)) return "rdv";
   if(/perte|perda|lost|vol[ée]?|roubo|theft|d[ée]tention|arrest|prison|hospital|malade|doente|sick|sant[ée]|sa[uú]de|urgen|emergency|accident|acidente|assist/.test(t)) return "assistance";
   if(/horaire|hor[aá]rio|hours|contact|adresse|morada|address|t[ée]l[ée]phone|telefone|phone|mail|courriel|correio|email|ouvert|aberto|\bopen\b|joindre|reach/.test(t)) return "contact";
@@ -5399,8 +5572,235 @@ function cbDetecter(txt){
 function cbSaisieLibre(v){
   cbBulleUser(v);
   var z = document.getElementById("cbChips"); if(z) z.innerHTML="";
-  var a = dico().ui.assistant; var cle = cbDetecter(v);
-  cbTyping(function(){ cbBulleBot(a.sujets[cle]); cbPoserChips(a.sujets[cle].suite || a.accueil); });
+  var cle = cbDetecter(v);
+  cbTyping(function(){ cbApresBot(cle); });
+}
+
+/* ==========================================================================
+   PRISE DE RENDEZ-VOUS DANS LE CHAT
+   Réutilise l'API des créneaux (GET /api/creneaux, POST …/reserver) et les
+   libellés traduits de D[langue].ui.assistant.resa. Aucune donnée n'est
+   stockée par l'assistant : tout passe par les mêmes points d'entrée que la
+   page Rendez-vous. En mode local (file:), on renvoie vers la page en ligne.
+   ========================================================================== */
+var cbResa = null;
+function cbResaDico(){ return dico().ui.assistant.resa; }
+function cbEscape(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function cbDeux(n){ return (n<10?"0":"")+n; }
+function cbDebutMois(d){ var x=new Date(d.getFullYear(),d.getMonth(),1); x.setHours(0,0,0,0); return x; }
+function cbCleDate(d){ return d.getFullYear()+"-"+cbDeux(d.getMonth()+1)+"-"+cbDeux(d.getDate()); }
+
+/* Bulle « large » contenant un panneau interactif (cartes, calendrier, form). */
+function cbBulleRiche(){
+  var wrap = cbEl("div","cb-msg cb-msg--bot cb-msg--large", '<span class="cb-mini">'+cbSvg("rdv")+'</span>');
+  var pan = cbEl("div","cbr-pan");
+  wrap.appendChild(pan);
+  cbCorpsEl().appendChild(wrap); cbAuBas();
+  return pan;
+}
+function cbLock(pan){ if(!pan) return; var b=pan.querySelectorAll("button"); for(var i=0;i<b.length;i++) b[i].disabled=true; }
+function cbResaFil(n){
+  var r=cbResaDico(), out="";
+  (r.etape||[]).forEach(function(t,i){ out += (i?'<i></i>':'') + '<span class="'+((i+1)<=n?"on":"")+'"><b>'+(i+1)+'</b>'+baliser(t)+'</span>'; });
+  return '<div class="cbr-fil">'+out+'</div>';
+}
+
+/* Étape 1 — choix du type. */
+function cbResaTypes(){
+  cbResa = { type:null, dispo:{}, jourSel:null, vueMois:null, creneau:null, creneauTexte:null, calPan:null };
+  var r=cbResaDico(), pan=cbBulleRiche();
+  pan.innerHTML = cbResaFil(1) + '<p class="cbr-titre">'+cbSvg("rdv")+baliser(r.t1)+'</p><div class="cbr-types"></div>';
+  var z=pan.querySelector(".cbr-types");
+  TYPES_ORDRE.forEach(function(t){
+    var b=cbEl("button","cbr-type", cbSvg(CB_TYPE_ICONE[t])+'<span>'+baliser(r.types[t])+'</span>');
+    b.type="button"; b.setAttribute("data-type",t); b.setAttribute("aria-pressed","false");
+    b.addEventListener("click", function(){ if(cbResa.type) return; cbResaChoisirType(t, pan); });
+    z.appendChild(b);
+  });
+  cbAuBas();
+}
+function cbResaChoisirType(t, panType){
+  cbResa.type=t;
+  var btns=panType.querySelectorAll(".cbr-type");
+  for(var i=0;i<btns.length;i++){ btns[i].setAttribute("aria-pressed", btns[i].getAttribute("data-type")===t?"true":"false"); btns[i].disabled=true; }
+  cbBulleUser(baliser(cbResaDico().types[t]));
+  cbTyping(cbResaDates);
+}
+
+/* Étape 2 — chargement des créneaux du type, puis calendrier. */
+function cbResaDates(){
+  var r=cbResaDico();
+  if(modeDemo()){
+    cbBulleBot({ bot:r.demo, cta:{ t:dico().ui.assistant.sujets.rdv.chip, href:"#/rendezvous" } });
+    cbPoserChips(["contact"]); return;
+  }
+  cbBulleBot({ bot:r.choixJour });
+  var pan=cbBulleRiche();
+  pan.innerHTML = cbResaFil(2) + '<p class="cbr-vide">'+baliser(r.chargement)+'</p>';
+  cbResa.calPan = pan;
+  fetch("/api/creneaux?type="+encodeURIComponent(cbResa.type))
+    .then(function(x){ return x.ok ? x.json() : null; })
+    .then(function(j){ cbResaAfficher(j && j.ok ? j.creneaux : []); })
+    .catch(function(){ cbResaAfficher([]); });
+}
+function cbResaAfficher(liste){
+  var r=cbResaDico(), pan=cbResa.calPan; if(!pan) return;
+  cbResa.dispo={}; cbResa.jourSel=null;
+  (liste||[]).forEach(function(c){ (cbResa.dispo[c.jour] = cbResa.dispo[c.jour] || []).push({id:c.id, heure:c.heure}); });
+  for(var k in cbResa.dispo) cbResa.dispo[k].sort(function(a,b){ return a.heure < b.heure ? -1 : 1; });
+  if(!Object.keys(cbResa.dispo).length){
+    pan.innerHTML = cbResaFil(2) + '<p class="cbr-vide">'+baliser(r.vide)+'</p>';
+    cbPoserChips(["rdv","contact"]); return;
+  }
+  cbResa.vueMois = cbPremierMoisDispo();
+  cbResaRendreCal();
+}
+function cbPremierMoisDispo(){
+  var courant=cbDebutMois(new Date()), ks=Object.keys(cbResa.dispo).sort();
+  for(var i=0;i<ks.length;i++){ var p=ks[i].split("-"); var m=new Date(p[0], p[1]-1, 1); if(m>=courant) return m; }
+  return courant;
+}
+function cbResaRendreCal(){
+  var r=cbResaDico(), pan=cbResa.calPan, lang=Etat.langue;
+  var moisNoms=MOIS[lang]||MOIS.fr, joursMin=JOURS_MIN[lang]||JOURS_MIN.fr;
+  var courant=cbDebutMois(new Date()), today=new Date(); today.setHours(0,0,0,0);
+  var vm=cbResa.vueMois;
+  var dec=(new Date(vm.getFullYear(), vm.getMonth(), 1).getDay()+6)%7;   // lundi = 0
+  var nb=new Date(vm.getFullYear(), vm.getMonth()+1, 0).getDate();
+  var cells="";
+  for(var i=0;i<dec;i++) cells+='<button class="cbr-jour" disabled></button>';
+  for(var d=1;d<=nb;d++){
+    var dd=new Date(vm.getFullYear(), vm.getMonth(), d), k=cbCleDate(dd);
+    var on=cbResa.dispo[k] && dd>=today, sel=(k===cbResa.jourSel)?" sel":"";
+    cells += '<button class="cbr-jour'+(on?" dispo":"")+sel+'"'+(on?' data-k="'+k+'"':' disabled')+'>'+d+'</button>';
+  }
+  var prevDis=(vm<=courant)?" disabled":"";
+  pan.innerHTML = cbResaFil(2)
+    + '<div class="cbr-caltete"><button class="cbr-nav" type="button" data-nav="-1"'+prevDis+' aria-label="'+cbEscape(r.moisPrec||"")+'">'+cbSvg("gauche")+'</button>'
+    + '<strong>'+moisNoms[vm.getMonth()]+' '+vm.getFullYear()+'</strong>'
+    + '<button class="cbr-nav" type="button" data-nav="1" aria-label="'+cbEscape(r.moisSuiv||"")+'">'+cbSvg("droite")+'</button></div>'
+    + '<div class="cbr-grille">'+joursMin.map(function(n){ return '<div class="cbr-jn">'+n+'</div>'; }).join("")+cells+'</div>'
+    + '<div class="cbr-hor"></div>';
+  pan.querySelectorAll(".cbr-nav").forEach(function(b){
+    b.addEventListener("click", function(){
+      var n=parseInt(b.getAttribute("data-nav"),10);
+      cbResa.vueMois=new Date(vm.getFullYear(), vm.getMonth()+n, 1); cbResaRendreCal();
+    });
+  });
+  pan.querySelectorAll(".cbr-jour.dispo").forEach(function(b){
+    b.addEventListener("click", function(){ cbResa.jourSel=b.getAttribute("data-k"); cbResaRendreCal(); });
+  });
+  cbResaRendreHoraires();
+  cbAuBas();
+}
+function cbResaRendreHoraires(){
+  var r=cbResaDico(), pan=cbResa.calPan, hz=pan.querySelector(".cbr-hor"); if(!hz) return;
+  if(!cbResa.jourSel){ hz.innerHTML='<p class="cbr-vide">'+baliser(r.calChoisir)+'</p>'; return; }
+  var slots=cbResa.dispo[cbResa.jourSel]||[];
+  var h='<p class="cbr-hortitre">'+baliser(r.horTitre.replace("{j}", dateLisible(cbResa.jourSel)))+'</p><div class="cbr-heures">';
+  slots.forEach(function(c){ h+='<button class="cbr-heure" type="button" data-id="'+c.id+'" data-h="'+cbEscape(c.heure)+'">'+cbEscape(c.heure)+'</button>'; });
+  hz.innerHTML = h+'</div>';
+  hz.querySelectorAll(".cbr-heure").forEach(function(b){
+    b.addEventListener("click", function(){ cbResaChoisirHeure(b.getAttribute("data-id"), b.getAttribute("data-h")); });
+  });
+}
+function cbResaChoisirHeure(id, heure){
+  cbResa.creneau=String(id);
+  cbResa.creneauTexte=dateLisible(cbResa.jourSel)+" — "+heure;
+  cbLock(cbResa.calPan);
+  cbBulleUser(cbResa.creneauTexte);
+  cbTyping(cbResaForm);
+}
+
+/* Étape 3 — coordonnées et confirmation. */
+function cbResaForm(){
+  var r=cbResaDico();
+  cbBulleBot({ bot:r.formIntro });
+  var pan=cbBulleRiche();
+  var recap=baliser(r.recap.replace("{type}", cbResaDico().types[cbResa.type]).replace("{q}", cbResa.creneauTexte));
+  pan.innerHTML = cbResaFil(3)
+    + '<div class="cbr-recap">'+cbSvg(CB_TYPE_ICONE[cbResa.type])+'<span>'+recap+'</span></div>'
+    + '<form class="cbr-form" novalidate>'
+    +   '<div class="cbr-champ"><label>'+baliser(r.champs.nom)+' *</label><input name="nom" required autocomplete="name"></div>'
+    +   '<div class="cbr-champ"><label>'+baliser(r.champs.courriel)+' *</label><input name="courriel" type="email" required autocomplete="email"></div>'
+    +   '<div class="cbr-champ"><label>'+baliser(r.champs.tel)+'</label><input name="tel" autocomplete="tel"></div>'
+    +   '<div class="cbr-champ"><label>'+baliser(r.champs.motif)+'</label><textarea name="motif" rows="2"></textarea></div>'
+    +   '<button class="cbr-env" type="submit">'+cbSvg("check")+'<span>'+baliser(r.confirmer)+'</span></button>'
+    +   '<p class="cbr-err" hidden></p>'
+    + '</form>';
+  var form=pan.querySelector("form"), env=pan.querySelector(".cbr-env"), err=pan.querySelector(".cbr-err");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    var donnees={ nom:form.nom.value, courriel:form.courriel.value, tel:form.tel.value, motif:form.motif.value };
+    env.disabled=true; env.querySelector("span").textContent=baliser(r.enCours); err.hidden=true;
+    posterJSON("/api/creneaux/"+cbResa.creneau+"/reserver", donnees)
+      .then(function(rep){
+        if(rep && rep.ok){ cbLock(pan); cbBulleUser(donnees.nom); cbTyping(function(){ cbResaConf(rep, donnees); }); }
+        else { throw new Error(rep && rep.erreur ? rep.erreur : ""); }
+      })
+      .catch(function(ex){
+        env.disabled=false; env.querySelector("span").textContent=baliser(r.confirmer);
+        err.innerHTML = cbSvg("alerte")+'<span>'+baliser((ex && ex.message) || r.erreur)+'</span>'; err.hidden=false;
+        cbPoserChips(["rdv","contact"]);
+      });
+  });
+  cbAuBas();
+}
+function cbResaConf(rep, donnees){
+  var r=cbResaDico(), t=cbResa.type, details="";
+  if(t==="visio" && rep.lien_visio){
+    details='<div class="l">'+cbSvg("cam")+'<span><b>'+baliser(r.lienVisio)+'</b><br><a class="cbr-lien" href="'+cbEscape(rep.lien_visio)+'" target="_blank" rel="noopener">'+cbEscape(rep.lien_visio)+'</a></span></div>';
+  } else if(t==="tel"){
+    details='<div class="l">'+cbSvg("tel")+'<span>'+baliser(r.detailsTel)+'</span></div>';
+  } else if(t==="pres"){
+    details='<div class="l">'+cbSvg("lieu")+'<span>'+baliser("{par:adresse}, {par:ville}")+'</span></div>';
+  }
+  var quand=dateLisible(rep.jour || cbResa.jourSel);
+  var pan=cbBulleRiche();
+  pan.innerHTML =
+    '<div class="cbr-conf"><div class="cbr-conf-tete">'+cbSvg("checkcercle")+baliser(r.confTitre)+'</div>'
+    + '<div class="cbr-conf-corps">'
+    +   '<div class="l">'+cbSvg(CB_TYPE_ICONE[t])+'<span><b>'+baliser(r.types[t])+'</b></span></div>'
+    +   '<div class="l">'+cbSvg("rdv")+'<span>'+cbEscape(quand)+'</span></div>'
+    +   '<div class="l">'+cbSvg("horloge")+'<span>'+cbEscape(rep.heure||"")+'</span></div>'
+    +   details
+    +   '<div class="l">'+cbSvg("mail")+'<span>'+r.confMail.replace("{mail}", "<b>"+cbEscape(donnees.courriel)+"</b>")+'</span></div>'
+    + '</div>'
+    + '<p class="cbr-note">'+baliser(r.confNote)+'</p></div>';
+  cbTyping(function(){ cbBulleBot({ bot:r.fini }); cbPoserChips(["dispo","visa","contact"]); });
+}
+
+/* « Y a-t-il des créneaux ? » — synthèse par type (un seul appel API). */
+function cbResaDispo(){
+  var r=cbResaDico();
+  if(modeDemo()){
+    cbBulleBot({ bot:r.demo, cta:{ t:dico().ui.assistant.sujets.rdv.chip, href:"#/rendezvous" } });
+    cbPoserChips(["rdv","contact"]); return;
+  }
+  var pan=cbBulleRiche();
+  pan.innerHTML='<p class="cbr-vide">'+baliser(r.chargement)+'</p>';
+  fetch("/api/creneaux")
+    .then(function(x){ return x.ok ? x.json() : null; })
+    .then(function(j){ cbResaDispoAfficher(pan, j && j.ok ? j.creneaux : []); })
+    .catch(function(){ cbResaDispoAfficher(pan, []); });
+}
+function cbResaDispoAfficher(pan, liste){
+  var r=cbResaDico(), par={}, total=0;
+  TYPES_ORDRE.forEach(function(t){ par[t]=[]; });
+  (liste||[]).forEach(function(c){ if(par[c.type]){ par[c.type].push(c); total++; } });
+  if(!total){ pan.innerHTML='<p class="cbr-vide">'+baliser(r.dispoAucun)+'</p>'; cbPoserChips(["contact"]); return; }
+  var lignes="";
+  TYPES_ORDRE.forEach(function(t){
+    var arr=par[t]; if(!arr.length) return;
+    arr.sort(function(a,b){ return (a.jour+a.heure) < (b.jour+b.heure) ? -1 : 1; });
+    var p0=arr[0];
+    var ligne=r.dispoLigne.replace("{type}", r.types[t]).replace("{n}", String(arr.length))
+      .replace("{j}", dateLisible(p0.jour)).replace("{h}", p0.heure);
+    lignes += '<div class="l">'+cbSvg(CB_TYPE_ICONE[t])+'<span>'+baliser(ligne)+'</span></div>';
+  });
+  pan.innerHTML = '<p class="cbr-titre">'+cbSvg("horloge")+baliser(r.dispoTitre)+'</p><div class="cbr-conf-corps" style="padding:0">'+lignes+'</div>';
+  cbTyping(function(){ cbBulleBot({ bot:r.dispoProposer }); cbPoserChips(["rdv","contact"]); });
 }
 function cbDemarrer(){
   var a = dico().ui.assistant; var c = cbCorpsEl(); if(!c) return;
