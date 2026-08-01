@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistant — Prise de rendez-vous dans le chat (maquette)</title>
+<style>
+:root{
+  --rouge:#CE1126; --jaune:#FCD116; --vert:#009E49;
+  --vert-fonce:#04452A; --vert-nuit:#032B1B;
+  --or:#E9C46A; --or-sombre:#C9A227;
+  --encre:#16201A; --gris:#5B6960; --ligne:#E3E7E3; --fond:#F7F9F7; --blanc:#fff;
+  --titre:'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --texte:'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r:3px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--texte);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+/* Bandeau maquette */
+.banniere{background:#fef7e0;border-bottom:1px solid #f0dca0;color:#6b5500;font-family:var(--titre);
+  font-size:.78rem;text-align:center;padding:.55em 1em}
+
+/* ---- Décor : aperçu de site en fond (contexte) ---- */
+.etat{background:linear-gradient(90deg,var(--vert-nuit),#06351f);color:#e7efe9;font-size:.78rem}
+.etat .in{max-width:1180px;margin:0 auto;padding:.5em 24px;display:flex;justify-content:space-between;align-items:center}
+.entete{background:#fff;border-bottom:1px solid var(--ligne)}
+.entete .in{max-width:1180px;margin:0 auto;padding:.8em 24px;display:flex;align-items:center;gap:1em}
+.embleme{width:46px;height:46px;border-radius:8px;background:var(--vert-fonce);color:var(--or);display:grid;place-items:center;flex:0 0 auto}
+.marque strong{display:block;font-family:var(--titre);font-weight:700;font-size:.95rem;color:var(--vert-nuit);line-height:1.15}
+.marque span{display:block;font-size:.76rem;color:var(--gris)}
+.nav{margin-left:auto;display:flex;gap:.3em;flex-wrap:wrap}
+.nav a{font-family:var(--titre);font-weight:600;font-size:.82rem;color:var(--vert-nuit);text-decoration:none;padding:.4em .7em;border-radius:var(--r)}
+.nav a.cta{background:var(--vert);color:#fff}
+.hero{background:linear-gradient(135deg,var(--vert-fonce),var(--vert-nuit));color:#eaf1ec;padding:clamp(40px,7vw,80px) 24px}
+.hero .in{max-width:1180px;margin:0 auto}
+.hero h1{font-family:var(--titre);font-weight:800;font-size:clamp(1.6rem,4vw,2.6rem);color:#fff;margin:0 0 .4em;max-width:20ch}
+.hero p{color:#cfe0d5;max-width:56ch;margin:0}
+.faux{max-width:1180px;margin:0 auto;padding:36px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.faux .c{background:#fff;border:1px solid var(--ligne);border-radius:14px;height:120px}
+
+/* ============ WIDGET ASSISTANT ============ */
+.cb-fab{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:.6em;
+  background:linear-gradient(135deg,var(--vert),var(--vert-fonce));color:#fff;border:none;cursor:pointer;
+  font-family:var(--titre);font-weight:700;font-size:.9rem;padding:14px 20px 14px 16px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(4,69,42,.35);transition:transform .15s,box-shadow .15s}
+.cb-fab:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(4,69,42,.45)}
+.cb-fab .ic{width:22px;height:22px}
+.cb-fab .pastille{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:var(--rouge);color:#fff;
+  border-radius:50%;font-size:.7rem;display:grid;place-items:center;font-family:var(--titre);border:2px solid var(--fond)}
+.cb-fab.cache{display:none}
+
+/* Panneau */
+.cb-panneau{position:fixed;right:24px;bottom:24px;z-index:61;width:390px;max-width:calc(100vw - 32px);
+  height:640px;max-height:calc(100vh - 40px);background:#fff;border-radius:20px;overflow:hidden;display:flex;
+  flex-direction:column;box-shadow:0 24px 70px rgba(3,43,27,.35);border:1px solid rgba(0,0,0,.06);
+  transform-origin:bottom right}
+.cb-panneau[hidden]{display:none}
+.cb-anim{animation:cbPop .25s cubic-bezier(.22,.9,.3,1)}
+@keyframes cbPop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+
+.cb-tete{background:linear-gradient(135deg,var(--vert-fonce),var(--vert-nuit));color:#fff;padding:16px 16px 18px;
+  display:flex;align-items:center;gap:.8em;position:relative;overflow:hidden}
+.cb-tete::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 10%,rgba(233,196,106,.18),transparent 50%)}
+.cb-av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(233,196,106,.5);
+  color:var(--or);display:grid;place-items:center;flex:0 0 auto;position:relative}
+.cb-av .ic{width:22px;height:22px}
+.cb-ti{position:relative}
+.cb-ti strong{font-family:var(--titre);font-weight:700;font-size:1rem;display:block;line-height:1.2}
+.cb-ti span{font-size:.76rem;color:#bcd2c4;display:flex;align-items:center;gap:.35em;margin-top:.15em}
+.cb-dot{width:7px;height:7px;border-radius:50%;background:#37d67a;display:inline-block}
+.cb-fermer{margin-left:auto;position:relative;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;
+  width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
+.cb-fermer:hover{background:rgba(255,255,255,.22)}
+
+.cb-corps{flex:1;overflow-y:auto;padding:16px;background:var(--fond);display:flex;flex-direction:column;gap:12px}
+.cb-msg{display:flex;gap:.5em;max-width:92%}
+.cb-msg .cb-bul{padding:11px 14px;border-radius:14px;font-size:.92rem;line-height:1.5}
+.cb-msg--bot{align-self:flex-start}
+.cb-msg--bot .cb-bul{background:#fff;border:1px solid var(--ligne);border-top-left-radius:4px;color:var(--encre)}
+.cb-msg--user{align-self:flex-end;flex-direction:row-reverse}
+.cb-msg--user .cb-bul{background:var(--vert);color:#fff;border-top-right-radius:4px}
+.cb-mini{width:28px;height:28px;border-radius:50%;background:var(--vert-fonce);color:var(--or);display:grid;place-items:center;flex:0 0 auto;align-self:flex-end}
+.cb-mini .ic{width:15px;height:15px}
+.cb-bul strong{color:var(--vert-fonce)}
+.cb-msg--user .cb-bul strong{color:#fff}
+
+.cb-cta{display:inline-flex;align-items:center;gap:.4em;margin-top:.6em;background:var(--vert-fonce);color:#fff;
+  text-decoration:none;font-family:var(--titre);font-weight:600;font-size:.82rem;padding:.55em .9em;border-radius:8px;border:none;cursor:pointer}
+.cb-cta:hover{background:var(--vert-nuit)}
+.cb-cta .ic{width:15px;height:15px}
+
+.cb-chips{display:flex;flex-wrap:wrap;gap:.5em;padding:0 16px 12px}
+.cb-chip{background:#fff;border:1px solid var(--vert);color:var(--vert-fonce);font-family:var(--titre);font-weight:600;
+  font-size:.82rem;padding:.5em .85em;border-radius:999px;cursor:pointer;transition:background .12s,color .12s;display:inline-flex;align-items:center;gap:.35em}
+.cb-chip:hover{background:var(--vert);color:#fff}
+.cb-chip .ic{width:14px;height:14px}
+
+.cb-typing{display:flex;gap:4px;padding:12px 14px;background:#fff;border:1px solid var(--ligne);border-radius:14px;border-top-left-radius:4px;width:fit-content}
+.cb-typing i{width:7px;height:7px;border-radius:50%;background:#b7c3bb;display:inline-block;animation:cbBlink 1.2s infinite}
+.cb-typing i:nth-child(2){animation-delay:.2s}.cb-typing i:nth-child(3){animation-delay:.4s}
+@keyframes cbBlink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+.cb-pied{border-top:1px solid var(--ligne);background:#fff;padding:10px 12px}
+.cb-saisie{display:flex;gap:.5em;align-items:center}
+.cb-saisie input{flex:1;border:1px solid var(--ligne);border-radius:999px;padding:.6em .9em;font-family:var(--texte);font-size:.9rem;outline:none}
+.cb-saisie input:focus{border-color:var(--vert)}
+.cb-envoi{width:40px;height:40px;border-radius:50%;background:var(--vert);color:#fff;border:none;cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.cb-envoi:hover{background:var(--vert-fonce)}
+.cb-legal{font-size:.68rem;color:var(--gris);text-align:center;margin:.5em 0 0;display:flex;align-items:center;justify-content:center;gap:.35em}
+.cb-legal .ic{width:12px;height:12px;color:var(--or-sombre)}
+
+/* ====== BLOCS SPÉCIFIQUES À LA RÉSERVATION (préfixe .rc-) ====== */
+/* Un « panneau » riche s'affiche dans une bulle bot large */
+.cb-msg--large{max-width:100%}
+.rc-panneau{background:#fff;border:1px solid var(--ligne);border-radius:14px;border-top-left-radius:4px;padding:12px;font-size:.9rem}
+.rc-titre{font-family:var(--titre);font-weight:700;color:var(--vert-fonce);font-size:.9rem;margin:0 0 .6em;display:flex;align-items:center;gap:.4em}
+.rc-titre .ic{width:16px;height:16px}
+
+/* Choix du type : cartes segmentées */
+.rc-types{display:grid;grid-template-columns:repeat(3,1fr);gap:.5em}
+.rc-type{border:1px solid var(--ligne);border-radius:10px;background:#fff;cursor:pointer;padding:.7em .4em;text-align:center;
+  font-family:var(--titre);font-weight:600;font-size:.75rem;color:var(--vert-nuit);display:flex;flex-direction:column;align-items:center;gap:.35em;transition:.12s}
+.rc-type .ic{width:20px;height:20px;color:var(--vert)}
+.rc-type:hover{border-color:var(--vert);background:#f2faf5}
+
+/* Étapes (fil d'ariane) */
+.rc-fil{display:flex;gap:.3em;margin:0 0 .7em;font-size:.68rem;color:var(--gris);font-family:var(--titre);font-weight:600}
+.rc-fil span{display:flex;align-items:center;gap:.3em}
+.rc-fil b{width:16px;height:16px;border-radius:50%;background:var(--ligne);color:#fff;display:grid;place-items:center;font-size:.62rem}
+.rc-fil .on b{background:var(--vert)}
+.rc-fil .on{color:var(--vert-fonce)}
+.rc-fil i{width:12px;height:1px;background:var(--ligne);align-self:center}
+
+/* Mini-calendrier */
+.rc-cal-tete{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5em}
+.rc-cal-tete strong{font-family:var(--titre);font-size:.82rem;color:var(--vert-nuit);text-transform:capitalize}
+.rc-nav{width:26px;height:26px;border:1px solid var(--ligne);background:#fff;border-radius:6px;cursor:pointer;display:grid;place-items:center;color:var(--vert-fonce)}
+.rc-nav:hover{background:#f2faf5;border-color:var(--vert)}
+.rc-nav .ic{width:14px;height:14px}
+.rc-grille{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.rc-jn{text-align:center;font-size:.62rem;color:var(--gris);font-family:var(--titre);font-weight:700;padding:2px 0}
+.rc-jour{aspect-ratio:1;border:none;background:transparent;border-radius:7px;cursor:default;font-family:var(--texte);
+  font-size:.78rem;color:#c2ccc5;display:flex;align-items:center;justify-content:center;position:relative}
+.rc-jour.dispo{background:#e9f7ef;color:var(--vert-fonce);cursor:pointer;font-weight:700}
+.rc-jour.dispo:hover{background:var(--vert);color:#fff}
+.rc-jour.sel{background:var(--vert-fonce);color:#fff}
+.rc-jour.dispo::after{content:"";position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--vert)}
+.rc-jour.sel::after,.rc-jour.dispo:hover::after{background:#fff}
+
+/* Horaires du jour choisi */
+.rc-hor-tete{margin:.7em 0 .4em;font-size:.75rem;color:var(--gris);font-family:var(--titre);font-weight:600}
+.rc-heures{display:flex;flex-wrap:wrap;gap:.4em}
+.rc-heure{border:1px solid var(--vert);color:var(--vert-fonce);background:#fff;border-radius:8px;padding:.4em .7em;
+  font-family:var(--titre);font-weight:700;font-size:.8rem;cursor:pointer}
+.rc-heure:hover{background:var(--vert);color:#fff}
+
+/* Formulaire coordonnées */
+.rc-form{display:grid;gap:.5em}
+.rc-champ label{display:block;font-size:.72rem;color:var(--gris);font-family:var(--titre);font-weight:600;margin-bottom:.2em}
+.rc-champ input,.rc-champ textarea{width:100%;border:1px solid var(--ligne);border-radius:8px;padding:.5em .7em;font-family:var(--texte);font-size:.85rem;outline:none}
+.rc-champ input:focus,.rc-champ textarea:focus{border-color:var(--vert)}
+.rc-recap{background:#f2faf5;border:1px solid #cdead9;border-radius:8px;padding:.5em .7em;font-size:.8rem;color:var(--vert-fonce);margin-bottom:.4em;display:flex;align-items:center;gap:.5em}
+.rc-recap .ic{width:15px;height:15px;flex:0 0 auto}
+.rc-env{width:100%;background:var(--vert);color:#fff;border:none;border-radius:9px;padding:.7em;font-family:var(--titre);font-weight:700;font-size:.88rem;cursor:pointer;margin-top:.2em;display:flex;align-items:center;justify-content:center;gap:.4em}
+.rc-env:hover{background:var(--vert-fonce)}
+.rc-env .ic{width:16px;height:16px}
+
+/* Carte de confirmation */
+.rc-conf{border:1px solid #cdead9;border-radius:12px;overflow:hidden}
+.rc-conf-tete{background:linear-gradient(135deg,var(--vert),var(--vert-fonce));color:#fff;padding:.8em 1em;display:flex;align-items:center;gap:.5em;font-family:var(--titre);font-weight:700;font-size:.9rem}
+.rc-conf-tete .ic{width:20px;height:20px}
+.rc-conf-corps{padding:.8em 1em;display:grid;gap:.45em;font-size:.85rem}
+.rc-conf-corps .l{display:flex;gap:.5em;align-items:flex-start}
+.rc-conf-corps .l .ic{width:15px;height:15px;color:var(--vert-fonce);margin-top:.2em;flex:0 0 auto}
+.rc-conf-corps .l b{font-family:var(--titre);color:var(--vert-nuit)}
+.rc-lien{color:var(--vert-fonce);word-break:break-all;font-size:.8rem}
+.rc-note{font-size:.72rem;color:var(--gris);padding:0 1em .8em}
+
+@media (max-width:460px){
+  .cb-panneau{right:8px;left:8px;bottom:8px;width:auto;height:calc(100vh - 16px)}
+  .cb-fab{right:14px;bottom:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="banniere">Maquette — Prise de rendez-vous DANS le chat (démo locale, créneaux fictifs, aucune donnée envoyée). À valider avant intégration.</div>
+
+<!-- ===== Décor : aperçu du site en fond ===== -->
+<div class="etat"><div class="in"><span>République de Guinée-Bissau</span><span>Permanence téléphonique · +41 22 908 15 99</span></div></div>
+<header class="entete"><div class="in">
+  <span class="embleme"><svg class="ic" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 2l2.4 5 5.6.6-4 4 1 5.4L12 19l-5 3 1-5.4-4-4 5.6-.6z"/></svg></span>
+  <span class="marque"><strong>Consulat honoraire de la République de Guinée-Bissau</strong><span>à Genève</span></span>
+  <nav class="nav">
+    <a href="#">Accueil</a><a href="#">Services</a><a href="#">Visas</a><a href="#">Contact</a><a href="#" class="cta">Rendez-vous</a>
+  </nav>
+</div></header>
+<section class="hero"><div class="in">
+  <h1>Informer, orienter et assister les ressortissants</h1>
+  <p>Le Consulat honoraire vous accompagne dans vos démarches et reçoit les demandes de visa d'entrée en Guinée-Bissau.</p>
+</div></section>
+<div class="faux"><div class="c"></div><div class="c"></div><div class="c"></div></div>
+
+<!-- ===== Bouton flottant ===== -->
+<button class="cb-fab" id="cbFab" aria-label="Ouvrir l'assistant du consulat">
+  <svg class="ic" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+  Besoin d'aide ?
+  <span class="pastille">1</span>
+</button>
+
+<!-- ===== Panneau de conversation ===== -->
+<section class="cb-panneau cb-anim" id="cbPanneau" role="dialog" aria-label="Assistant du consulat">
+  <div class="cb-tete">
+    <span class="cb-av"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7v3a3 3 0 0 0 3 3h1v-6H7V9a5 5 0 0 1 10 0v0h-2v6h1a3 3 0 0 0 3-3V9a7 7 0 0 0-7-7z"/><path d="M12 19h4a2 2 0 0 0 2-2"/></svg></span>
+    <span class="cb-ti">
+      <strong>Assistant du consulat</strong>
+      <span><i class="cb-dot"></i> Orientation &amp; rendez-vous · en ligne</span>
+    </span>
+    <button class="cb-fermer" id="cbFermer" aria-label="Fermer l'assistant">
+      <svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="cb-corps" id="cbCorps" aria-live="polite"></div>
+  <div class="cb-chips" id="cbChips"></div>
+
+  <div class="cb-pied">
+    <form class="cb-saisie" id="cbForm">
+      <input id="cbInput" type="text" placeholder="Posez votre question…" autocomplete="off" aria-label="Votre message">
+      <button class="cb-envoi" type="submit" aria-label="Envoyer">
+        <svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+      </button>
+    </form>
+    <p class="cb-legal"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Réservation directe · confirmation immédiate</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  var corps = document.getElementById('cbCorps');
+  var chipsZone = document.getElementById('cbChips');
+  var panneau = document.getElementById('cbPanneau');
+  var fab = document.getElementById('cbFab');
+
+  function el(t,c,html){ var e=document.createElement(t); if(c)e.className=c; if(html!=null)e.innerHTML=html; return e; }
+  function icone(p,style){ return '<svg class="ic" viewBox="0 0 24 24"'+(style?' style="'+style+'"':'')+'>'+p+'</svg>'; }
+  var IC = {
+    visa:'<path d="M2 7h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M2 10h20M6 15h4"/>',
+    rdv:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    aide:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4M12 17h.01"/>',
+    tel:'<path d="M22 16.9V20a2 2 0 0 1-2.2 2A19 19 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2L8 9.5a15 15 0 0 0 6 6l1-1.2a2 2 0 0 1 2-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+    cam:'<rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3z"/>',
+    batiment:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 8h.01M12 8h.01M9 12h.01M12 12h.01M9 16h.01M12 16h.01"/>',
+    fleche:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    gauche:'<path d="M15 18l-6-6 6-6"/>',
+    droite:'<path d="M9 6l6 6-6 6"/>',
+    lieu:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>',
+    checkcercle:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+    perso:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    stylo:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'
+  };
+  var TYPE_INFO = {
+    visio:{nom:"Visioconférence", ic:IC.cam},
+    tel:{nom:"Téléphonique", ic:IC.tel},
+    pres:{nom:"Présentiel", ic:IC.batiment}
+  };
+  var MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  var JN = ["Lu","Ma","Me","Je","Ve","Sa","Di"];
+
+  /* ===== Données de démonstration : créneaux "libres" fictifs =====
+     En production, ceci vient de GET /api/creneaux?type=…  (aucune invention). */
+  function ajoute(n){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+n); return d; }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  /* Chaque type a quelques jours avec des heures. id fictif pour la démo. */
+  var DEMO = { visio:{}, tel:{}, pres:{} };
+  (function seed(){
+    var plan = {
+      visio:[[2,["09:00","09:30","10:00","14:00"]],[3,["09:00","11:00"]],[9,["10:00","10:30","15:00"]]],
+      tel:  [[2,["15:00","15:30"]],[4,["09:00","09:30","10:00"]],[10,["16:00"]]],
+      pres: [[4,["15:00","15:30","16:00"]],[6,["15:00"]],[11,["15:30","16:00","16:30"]]]
+    };
+    var id=100;
+    Object.keys(plan).forEach(function(type){
+      plan[type].forEach(function(x){
+        var j=iso(ajoute(x[0]));
+        DEMO[type][j]=x[1].map(function(h){ return {id:id++, heure:h}; });
+      });
+    });
+  })();
+  function joursDispo(type){ return Object.keys(DEMO[type]).sort(); }
+  function prochain(type){ var j=joursDispo(type); if(!j.length) return null; return {jour:j[0], heure:DEMO[type][j[0]][0].heure}; }
+
+  /* ===== État du parcours de réservation ===== */
+  var resa = {};
+
+  /* ===== Réponses simples (orientation) ===== */
+  var REPONSES = {
+    dispo:{
+      user:"Y a-t-il des créneaux disponibles ?",
+      apres:function(){
+        var lignes = ["visio","tel","pres"].map(function(t){
+          var p=prochain(t); var n=joursDispo(t).reduce(function(s,j){return s+DEMO[t][j].length;},0);
+          return '<div class="l">'+icone(TYPE_INFO[t].ic)+'<span><b>'+TYPE_INFO[t].nom+'</b> — '+n+' créneaux · prochain le '+dateCourt(p.jour)+' à '+p.heure+'</span></div>';
+        }).join('');
+        bulleRiche('<p class="rc-titre">'+icone(IC.horloge)+'Disponibilités en ce moment</p><div class="rc-conf-corps" style="padding:0">'+lignes+'</div>');
+        typing(function(){ bulleBot({bot:"Souhaitez-vous <strong>réserver</strong> l'un de ces créneaux ?"}); poserChips(["rdv","contact"]); });
+      }
+    },
+    contact:{
+      user:"Horaires & contact",
+      bot:"Voici comment joindre le consulat :",
+      fiche:[
+        {ic:IC.lieu,t:"14, Quai du Seujet, 1201 Genève"},
+        {ic:IC.tel,t:"+41 22 908 15 99"},
+        {ic:IC.mail,t:"secretariat@consulatgb.ch"},
+        {ic:IC.horloge,t:"Lun, mar, jeu · 15h–17h (sur rendez-vous)"}
+      ],
+      chips:["rdv","dispo"]
+    },
+    visa:{
+      user:"Demander un visa",
+      bot:"Le consulat honoraire <strong>reçoit et traite les demandes de visa d'entrée</strong>. Le dépôt du dossier se fait sur rendez-vous — je peux vous en réserver un tout de suite.",
+      chips:["rdv","dispo"]
+    }
+  };
+
+  var LIBELLE_CHIP = {
+    rdv:{t:"Prendre rendez-vous",ic:IC.rdv},
+    dispo:{t:"Voir les disponibilités",ic:IC.horloge},
+    contact:{t:"Horaires & contact",ic:IC.tel},
+    visa:{t:"Demander un visa",ic:IC.visa}
+  };
+
+  function detecter(txt){
+    var t = txt.toLowerCase();
+    if(/dispo|disponib|libre|reste|y a.?t.?il/.test(t)) return 'dispo';
+    if(/rendez|rdv|créneau|creneau|réserv|reserv|appointment|prendre/.test(t)) return 'rdv';
+    if(/visa|visto/.test(t)) return 'visa';
+    if(/horaire|contact|adresse|téléphone|telephone|mail|courriel|email|ouvert|joindre/.test(t)) return 'contact';
+    return 'contact';
+  }
+
+  /* ===== Rendu des bulles ===== */
+  function bulleBot(rep){
+    var wrap = el('div','cb-msg cb-msg--bot');
+    wrap.appendChild(el('span','cb-mini', icone(IC.aide)));
+    var bul = el('div','cb-bul', rep.bot);
+    if(rep.fiche){ var f=el('div','cb-fiche'); rep.fiche.forEach(function(x){ f.appendChild(el('div',null, icone(x.ic)+'<span>'+x.t+'</span>')); }); bul.appendChild(f); }
+    wrap.appendChild(bul);
+    corps.appendChild(wrap);
+    corps.scrollTop = corps.scrollHeight;
+    return bul;
+  }
+  /* Bulle « large » qui contient un panneau interactif (calendrier, formulaire…) */
+  function bulleRiche(html){
+    var wrap = el('div','cb-msg cb-msg--bot cb-msg--large');
+    wrap.appendChild(el('span','cb-mini', icone(IC.rdv)));
+    var pan = el('div','rc-panneau', html);
+    wrap.appendChild(pan);
+    corps.appendChild(wrap);
+    corps.scrollTop = corps.scrollHeight;
+    return pan;
+  }
+  function bulleUser(txt){
+    var wrap = el('div','cb-msg cb-msg--user');
+    wrap.appendChild(el('div','cb-bul', txt));
+    corps.appendChild(wrap);
+    corps.scrollTop = corps.scrollHeight;
+  }
+  function typing(cb){
+    var t = el('div','cb-msg cb-msg--bot');
+    t.appendChild(el('span','cb-mini', icone(IC.aide)));
+    t.appendChild(el('div','cb-typing','<i></i><i></i><i></i>'));
+    corps.appendChild(t); corps.scrollTop = corps.scrollHeight;
+    setTimeout(function(){ corps.removeChild(t); cb(); }, 600);
+  }
+  function poserChips(cles){
+    chipsZone.innerHTML='';
+    cles.forEach(function(k){
+      var d = LIBELLE_CHIP[k]; if(!d) return;
+      var b = el('button','cb-chip', icone(d.ic)+'<span>'+d.t+'</span>');
+      b.addEventListener('click', function(){ repondre(k); });
+      chipsZone.appendChild(b);
+    });
+  }
+  function fil(etape){
+    var pas=[["1","Type"],["2","Date"],["3","Coordonnées"]];
+    return '<div class="rc-fil">'+pas.map(function(p,i){
+      return (i?'<i></i>':'')+'<span class="'+(i+1<=etape?'on':'')+'"><b>'+p[0]+'</b>'+p[1]+'</span>';
+    }).join('')+'</div>';
+  }
+  function dateCourt(j){ var d=new Date(j+'T00:00:00'); return JN[(d.getDay()+6)%7]+' '+d.getDate()+' '+MOIS[d.getMonth()].slice(0,4)+'.'; }
+  function dateLong(j){ var d=new Date(j+'T00:00:00'); var jn=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"]; return jn[d.getDay()]+' '+d.getDate()+' '+MOIS[d.getMonth()]+' '+d.getFullYear(); }
+
+  function repondre(cle){
+    if(cle==='rdv'){ bulleUser("Prendre rendez-vous"); chipsZone.innerHTML=''; typing(demarrerResa); return; }
+    var rep = REPONSES[cle]; if(!rep) return;
+    if(rep.user) bulleUser(rep.user);
+    chipsZone.innerHTML='';
+    typing(function(){
+      if(rep.apres){ rep.apres(); return; }
+      bulleBot(rep); poserChips(rep.chips || ["rdv","contact"]);
+    });
+  }
+
+  /* ============ PARCOURS DE RÉSERVATION ============ */
+  function demarrerResa(){
+    resa = {};
+    bulleBot({bot:"Avec plaisir. Un rendez-vous en <strong>3 étapes</strong>, avec confirmation immédiate. Quel type de rendez-vous souhaitez-vous ?"});
+    var pan = bulleRiche(
+      fil(1)+
+      '<p class="rc-titre">'+icone(IC.rdv)+'1. Choisissez le type</p>'+
+      '<div class="rc-types">'+
+        typeBtn('visio')+typeBtn('tel')+typeBtn('pres')+
+      '</div>');
+    pan.querySelectorAll('.rc-type').forEach(function(b){
+      b.addEventListener('click', function(){ choisirType(b.getAttribute('data-t')); });
+    });
+  }
+  function typeBtn(t){ return '<button class="rc-type" data-t="'+t+'">'+icone(TYPE_INFO[t].ic)+TYPE_INFO[t].nom+'</button>'; }
+
+  function choisirType(t){
+    resa.type = t;
+    bulleUser(TYPE_INFO[t].nom);
+    chipsZone.innerHTML='';
+    typing(etapeDate);
+  }
+
+  function etapeDate(){
+    resa.moisRef = null; /* mois affiché ; null = 1er mois dispo */
+    var jours = joursDispo(resa.type);
+    if(!jours.length){
+      bulleBot({bot:"Désolé, aucun créneau <strong>"+TYPE_INFO[resa.type].nom.toLowerCase()+"</strong> n'est ouvert pour le moment. Essayez un autre type ou contactez le secrétariat."});
+      poserChips(["rdv","contact"]); return;
+    }
+    var premier = new Date(jours[0]+'T00:00:00');
+    resa.annee = premier.getFullYear(); resa.mois = premier.getMonth();
+    bulleBot({bot:"Voici les jours où un créneau <strong>"+TYPE_INFO[resa.type].nom.toLowerCase()+"</strong> est libre. Choisissez une date."});
+    resa.calPan = bulleRiche('<div id="rcCalZone"></div>');
+    rendreCal();
+  }
+
+  function rendreCal(){
+    var dispo = DEMO[resa.type];
+    var zone = resa.calPan.querySelector('#rcCalZone');
+    var premierJour = new Date(resa.annee, resa.mois, 1);
+    var decal = (premierJour.getDay()+6)%7; /* lundi=0 */
+    var nbJours = new Date(resa.annee, resa.mois+1, 0).getDate();
+    var cells='';
+    for(var i=0;i<decal;i++) cells+='<div class="rc-jour"></div>';
+    for(var d=1;d<=nbJours;d++){
+      var jstr = resa.annee+'-'+String(resa.mois+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      var estDispo = !!dispo[jstr];
+      var sel = (resa.jour===jstr)?' sel':'';
+      cells+='<button class="rc-jour'+(estDispo?' dispo':'')+sel+'"'+(estDispo?' data-j="'+jstr+'"':' disabled')+'>'+d+'</button>';
+    }
+    zone.innerHTML =
+      fil(2)+
+      '<div class="rc-cal-tete">'+
+        '<button class="rc-nav" id="rcPrev" aria-label="Mois précédent">'+icone(IC.gauche)+'</button>'+
+        '<strong>'+MOIS[resa.mois]+' '+resa.annee+'</strong>'+
+        '<button class="rc-nav" id="rcNext" aria-label="Mois suivant">'+icone(IC.droite)+'</button>'+
+      '</div>'+
+      '<div class="rc-grille">'+JN.map(function(j){return '<div class="rc-jn">'+j+'</div>';}).join('')+cells+'</div>'+
+      '<div id="rcHor"></div>';
+    zone.querySelector('#rcPrev').addEventListener('click', function(){ moisDelta(-1); });
+    zone.querySelector('#rcNext').addEventListener('click', function(){ moisDelta(1); });
+    zone.querySelectorAll('.rc-jour.dispo').forEach(function(b){
+      b.addEventListener('click', function(){ resa.jour=b.getAttribute('data-j'); rendreCal(); rendreHeures(); });
+    });
+    if(resa.jour) rendreHeures();
+    corps.scrollTop = corps.scrollHeight;
+  }
+  function moisDelta(n){
+    var m=resa.mois+n, y=resa.annee;
+    if(m<0){m=11;y--;} if(m>11){m=0;y++;}
+    resa.mois=m; resa.annee=y; rendreCal();
+  }
+  function rendreHeures(){
+    var zone = resa.calPan.querySelector('#rcHor');
+    var heures = DEMO[resa.type][resa.jour]||[];
+    zone.innerHTML =
+      '<div class="rc-hor-tete">Créneaux du '+dateLong(resa.jour)+' :</div>'+
+      '<div class="rc-heures">'+heures.map(function(h){ return '<button class="rc-heure" data-id="'+h.id+'" data-h="'+h.heure+'">'+h.heure+'</button>'; }).join('')+'</div>';
+    zone.querySelectorAll('.rc-heure').forEach(function(b){
+      b.addEventListener('click', function(){ choisirHeure(b.getAttribute('data-id'), b.getAttribute('data-h')); });
+    });
+    corps.scrollTop = corps.scrollHeight;
+  }
+
+  function choisirHeure(id, h){
+    resa.id=id; resa.heure=h;
+    bulleUser(dateCourt(resa.jour)+' · '+h);
+    typing(etapeForm);
+  }
+
+  function etapeForm(){
+    bulleBot({bot:"Parfait. Dernière étape : vos coordonnées pour confirmer et vous envoyer le récapitulatif."});
+    var pan = bulleRiche(
+      fil(3)+
+      '<div class="rc-recap">'+icone(TYPE_INFO[resa.type].ic)+'<span><b>'+TYPE_INFO[resa.type].nom+'</b> — '+dateLong(resa.jour)+' à '+resa.heure+'</span></div>'+
+      '<form class="rc-form" id="rcForm">'+
+        '<div class="rc-champ"><label>Nom et prénom *</label><input required id="rcNom" autocomplete="name"></div>'+
+        '<div class="rc-champ"><label>Courriel *</label><input required type="email" id="rcMail" autocomplete="email"></div>'+
+        '<div class="rc-champ"><label>Téléphone</label><input id="rcTel" autocomplete="tel"></div>'+
+        '<div class="rc-champ"><label>Motif (facultatif)</label><textarea id="rcMotif" rows="2"></textarea></div>'+
+        '<button class="rc-env" type="submit">'+icone(IC.check)+'Confirmer le rendez-vous</button>'+
+      '</form>');
+    pan.querySelector('#rcForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      resa.nom = pan.querySelector('#rcNom').value.trim();
+      resa.mail = pan.querySelector('#rcMail').value.trim();
+      resa.tel = pan.querySelector('#rcTel').value.trim();
+      resa.motif = pan.querySelector('#rcMotif').value.trim();
+      if(!resa.nom || !resa.mail) return;
+      /* on fige le formulaire */
+      pan.querySelector('.rc-env').textContent = 'Réservation en cours…';
+      pan.querySelector('.rc-env').disabled = true;
+      bulleUser(resa.nom);
+      chipsZone.innerHTML='';
+      typing(confirmer);
+    });
+  }
+
+  function confirmer(){
+    /* En production : POST /api/creneaux/:id/reserver → réponse {ok,type,jour,heure,lien_visio} */
+    var t=resa.type;
+    var details;
+    if(t==='visio'){ details = '<div class="l">'+icone(IC.cam)+'<span><b>Lien visio</b><br><span class="rc-lien">https://meet.jit.si/ConsulatGuineeBissau-4f8ac2</span></span></div>'; }
+    else if(t==='tel'){ details = '<div class="l">'+icone(IC.tel)+'<span>Le consulat vous appellera au <b>'+(resa.tel||'numéro indiqué')+'</b> à l\'heure convenue.</span></div>'; }
+    else { details = '<div class="l">'+icone(IC.lieu)+'<span><b>14, Quai du Seujet, 1201 Genève</b></span></div>'; }
+
+    bulleRiche(
+      '<div class="rc-conf">'+
+        '<div class="rc-conf-tete">'+icone(IC.checkcercle)+'Rendez-vous confirmé</div>'+
+        '<div class="rc-conf-corps">'+
+          '<div class="l">'+icone(TYPE_INFO[t].ic)+'<span><b>'+TYPE_INFO[t].nom+'</b></span></div>'+
+          '<div class="l">'+icone(IC.rdv)+'<span>'+dateLong(resa.jour)+'</span></div>'+
+          '<div class="l">'+icone(IC.horloge)+'<span>'+resa.heure+'</span></div>'+
+          details+
+          '<div class="l">'+icone(IC.mail)+'<span>Récapitulatif envoyé à <b>'+escap(resa.mail)+'</b></span></div>'+
+        '</div>'+
+        '<p class="rc-note">Un e-mail de confirmation vient de vous être envoyé. Pour modifier ou annuler, répondez à cet e-mail ou contactez le secrétariat.</p>'+
+      '</div>');
+    typing(function(){
+      bulleBot({bot:"C'est fait&nbsp;! Puis-je vous aider pour autre chose&nbsp;?"});
+      poserChips(["dispo","visa","contact"]);
+    });
+  }
+  function escap(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  /* ===== Accueil ===== */
+  function demarrer(){
+    corps.innerHTML='';
+    bulleBot({ bot:"Bonjour. Je suis l'<strong>assistant du Consulat honoraire</strong>. Je peux vous <strong>orienter</strong> et même vous <strong>prendre un rendez-vous</strong> directement ici, avec confirmation immédiate. Que souhaitez-vous&nbsp;?" });
+    poserChips(["rdv","dispo","visa","contact"]);
+  }
+
+  document.getElementById('cbForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var input = document.getElementById('cbInput');
+    var v = (input.value||'').trim(); if(!v) return;
+    bulleUser(v); input.value='';
+    chipsZone.innerHTML='';
+    var cle = detecter(v);
+    typing(function(){
+      if(cle==='rdv'){ demarrerResa(); return; }
+      var rep=REPONSES[cle];
+      if(rep && rep.apres){ rep.apres(); return; }
+      bulleBot(rep); poserChips(rep.chips || ["rdv","contact"]);
+    });
+  });
+
+  function ouvrir(){ panneau.hidden=false; panneau.classList.remove('cb-anim'); void panneau.offsetWidth; panneau.classList.add('cb-anim'); fab.classList.add('cache'); }
+  function fermer(){ panneau.hidden=true; fab.classList.remove('cache'); }
+  fab.addEventListener('click', ouvrir);
+  document.getElementById('cbFermer').addEventListener('click', fermer);
+
+  demarrer();
+})();
+</script>
+</body>
+</html>
